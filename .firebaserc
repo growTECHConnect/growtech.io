@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "growtech-production",
+    "staging": "growtech-staging"
+  }
+}
