@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux'
+import Recaptcha from 'react-recaptcha';
 import actions from '../actions';
 
 class SignUp extends React.Component {
@@ -13,6 +14,7 @@ class SignUp extends React.Component {
             confirm: '',
             errors: false,
             redirect: false,
+            disabled: true,
         }
     }
 
@@ -69,8 +71,12 @@ class SignUp extends React.Component {
         actions.user.signUp(this.state).then(() => this.setState({ redirect: true }));
     };
 
+    onVerify = () => {
+        this.setState({ disabled: false });
+    };
+
     render() {
-        const { errors, redirect } = this.state;
+        const { disabled, errors, redirect } = this.state;
         const emailGroupClass = `network_fields form-group ${errors.email ? 'has-error' : ''}`;
         const passwordGroupClass = `network_fields form-group ${errors.password ? 'has-error' : ''}`;
         const confirmGroupClass = `network_fields form-group ${errors.confirm ? 'has-error' : ''}`;
@@ -111,10 +117,13 @@ class SignUp extends React.Component {
                                         <input id="confirm" className="form-control" type="password" value={this.state.confirm} onChange={this.setConfirm}/>
                                         <span className="help-block">{errors.confirm}</span>
                                     </div>
-                                    <div className="g-recaptcha" data-sitekey="6LeSlCYUAAAAAOvleAOIrHGXNDgcWsKezRIU-5vJ"></div>
+                                    <Recaptcha
+                                        sitekey="6LeSlCYUAAAAAOvleAOIrHGXNDgcWsKezRIU-5vJ"
+                                        verifyCallback={this.onVerify}
+                                    />
                                     <div className="clearfix"></div>
                                     <div className="network_fields">
-                                        <button className="network_submit_btn">
+                                        <button className="network_submit_btn submit_disabled" disabled={disabled}>
                                             Sign Up
                                         </button>
                                     </div>
