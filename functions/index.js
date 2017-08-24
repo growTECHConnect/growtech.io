@@ -6,28 +6,23 @@ const ref = admin.database().ref();
 
 exports.initializeUser = functions.auth.user().onCreate((event) => {
     const user = event.data;
-    const groupRef = ref.child('/groups');
-    const groupKey = groupRef.push().key;
+    const companyRef = ref.child('/companies');
+    const companyKey = companyRef.push().key;
 
-    const newGroup = ref.child(`groups/${groupKey}`).update({
+    const company = ref.child(`/companies/${companyKey}`).update({
         createdAt: new Date(),
     });
 
-    const newAccount = ref.child(`/account/${user.uid}`).update({
+    const account = ref.child(`/account/${user.uid}`).update({
         email: user.email,
-        group: groupKey,
-        role: 'user',
         createdAt: new Date(),
     });
 
-    const newCompany = ref.child(`/companies/${groupKey}`).update({
-        name: `My New Company`,
+    const access = ref.child(`/access/${user.uid}`).update({
+        role: 'edit',
+        company: companyKey,
         createdAt: new Date(),
     });
 
-    const newNews = ref.child(`/news/${groupKey}`).update(false);
-
-    const newEvents = ref.child(`/events/${groupKey}`).update(false);
-
-    return Promise.all([newGroup, newAccount, newCompany, newNews, newEvents]);
+    return Promise.all([company, account]);
 });
