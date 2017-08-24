@@ -2169,7 +2169,10 @@ input:checked + .slider:before {
 font-family: 'Montserrat', sans-serif;
 */
 
-
+.gt_save_msg {
+    color: rgba(111, 111, 111, 0.5);
+    font-size: 14px;
+}
 
 .radio_group_wrap label {
     margin-bottom: 17px;
