@@ -38,8 +38,12 @@ export default class Account {
             firebase.database().ref(`/account/${uid}`).off();
 
             firebase.database().ref(`/account/${uid}`).on('value', (snapshot) => {
-                this.store.dispatch(this.setAccount(snapshot.val()));
-                resolve(snapshot.val());
+                const account = snapshot.val();
+
+                if (account) {
+                    this.store.dispatch(this.setAccount(account));
+                    resolve(account);
+                }
             });
         });
     };
