@@ -7,9 +7,12 @@ class ListingForm extends React.Component {
 
         this.state = {
             form: {
+                employmentType: '',
                 hiring: false,
                 jobsiteUrl: '',
-                hours: 'full',
+            },
+            dropdown: {
+                employmentType: null,
             },
             errors: false,
         };
@@ -25,90 +28,146 @@ class ListingForm extends React.Component {
         }
     }
 
-    setData = ({ company }) => {
+    setData = ({company}) => {
         if (company) {
             this.setState({
                 form: {
+                    employmentType: company.employmentType || '',
                     hiring: company.hiring || false,
                     jobsiteUrl: company.jobsiteUrl || '',
-                    hours: company.hours || 'full',
                 },
             });
         }
     };
 
     setField = (event) => {
-        const { id, value } = event.target;
-
-        this.setState({
-            form: {
-                ...this.state.form,
-                [id]: value,
-            },
-            errors: false,
+        const {id, value} = event.target;
+        this.setState({form: {...this.state.form, [id]: value}, errors: false}, () => {
+            if (this.updateTimeout) {
+                clearTimeout(this.updateTimeout);
+            }
+            this.updateTimeout = setTimeout(() => this.update({id, value}), 2000);
         });
     };
 
     setChecked = (id, value) => {
-        console.log(id, value);
-
-        this.setField({ target: { id, value }});
+        this.setField({target: {id, value}});
     };
 
-    updateCompany = (event) => {
+    update = (field) => {
+        const {actions, company} = this.props;
+        const {id, value} = field;
+
+        if (value !== company[id]) {
+            this.setState({saveMsg: 'saving...'}, () => {
+                actions.company.update(this.state.form).then(() => {
+                    this.setState({saveMsg: 'saved'}, () => {
+                        setTimeout(() => this.setState({saveMsg: null}), 1000);
+                    })
+                });
+            });
+        }
+    };
+
+    getGroupClass = (field) => {
+        const {errors} = this.state;
+
+        return errors[field] ? 'network_fields form-group has-error' : 'network_fields form-group';
+    };
+
+    toggleDropdown = (field) => {
         event.preventDefault();
-        const { account: { group } } = this.props;
-        //actions.company.update(group, this.state.form);
+        this.setState({
+            dropdown: {
+                ...this.state.dropdown,
+                [field]: this.state.dropdown[field] ? null : {display: 'block'},
+            }
+        })
     };
 
-    cancel = () => {
-        this.setData(this.props);
-    };
-
-    hasError = (field) => {
-        const { errors } = this.state;
-        return errors[field] ? 'has-error' : '';
-    };
+    renderDropdownOptions(options, id) {
+        return Object.keys(options).map((key, index) => {
+            return (
+                <li
+                    key={index}
+                    onClick={() => {
+                        this.setField({target: {id, value: key}});
+                        this.toggleDropdown(id);
+                    }}
+                >
+                    {options[key].text}
+                </li>
+            );
+        });
+    }
 
     render() {
-        const { dropdown, errors, form } = this.state;
+        const {dropdown, form} = this.state;
+        const employmentTypes = {
+            'FULL_TIME': {
+                text: 'Full Time',
+            },
+            'PART_TIME': {
+                text: 'Part Time',
+            },
+        };
+        const employmentTypeText = employmentTypes[form.employmentType] ? employmentTypes[form.employmentType].text : null;
 
         return (
-            <form noValidate onSubmit={(event) => event.preventDefault()}>
-                <div className="cmp_job_wrap">
-                    <div className="switch_wrap col-sm-3">
-                        <span>Hiring</span>
-                        <label className="switch">
-                            <input id="hiring" type="checkbox" checked={form.hiring} value={form.hiring} onChange={() => this.setChecked('hiring', !form.hiring)}/>
-                            <div className="slider round"></div>
-                        </label>
-                        <span>Not Hiring</span>
-                    </div>
-                    <div className="col-sm-5 cmp_field_wrap">
-                        <div className="acc_form_wrap">
+            <div className="acc_form_section">
+                <h2>Company Job Listings</h2>
+                <form noValidate onSubmit={(event) => event.preventDefault()}>
+                    <div className="acc_form_wrap">
+                        <div className="acc_form_wrap acc_form_three_col">
                             <div className="acc_form_fields">
-                                <div className="network_fields">
+                                <div className={this.getGroupClass('jobsiteUrl')}>
                                     <label>Job Site URL</label>
-                                    <input id="jobsiteUrl" type="text" value={form.jobsiteUrl} onChange={this.setField}/>
+                                    <input id="jobsiteUrl" type="text" value={form.jobsiteUrl}
+                                           onChange={this.setField}/>
+                                    <span className="help-block"></span>
+                                </div>
+                            </div>
+                            <div className="acc_form_fields">
+                                <div className={this.getGroupClass('employmentType')}>
+                                    <label>Employment Type</label>
+                                    <div className="btn-group gt_select">
+                                        <button
+                                            className="btn btn-default btn-lg dropdown-toggle"
+                                            onClick={() => this.toggleDropdown('employmentType')}
+                                        >
+                                            <span className="gt_selected">{employmentTypeText}</span>
+                                            <span className="caret"></span>
+                                        </button>
+                                        <ul className="dropdown-menu" style={dropdown.employmentType}>
+                                            {this.renderDropdownOptions(employmentTypes, 'employmentType')}
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="col-sm-4 cmp_btns_wrap">
-                        <div className="acc_form_fields acc_form_btns">
-                            <button onClick={this.cancel}>Cancel</button>
-                            <button onClick={this.updateCompany}>Save</button>
+                    <div className="cmp_job_wrap">
+                        <div className="switch_wrap">
+                            <span>Hiring</span>
+                            <label className="switch">
+                                <input id="hiring" type="checkbox" checked={form.hiring} value={form.hiring}
+                                       onChange={() => this.setChecked('hiring', !form.hiring)}/>
+                                <div className="slider round"></div>
+                            </label>
+                            <span>Not Hiring</span>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         );
     }
 }
 
 const mapStateToProps = (state) => {
     return {
-        account: state.account.data,
+        actions: {
+            company: state.company.actions,
+        },
         company: state.company.data,
     }
 };

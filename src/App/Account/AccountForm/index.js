@@ -12,13 +12,12 @@ class AccountForm extends React.Component {
         super(props);
 
         this.state = {
-            firstName: '',
-            lastName: '',
-            email: '',
-            phone: '',
-            old: '',
-            password: '',
-            confirm: '',
+            form: {
+                firstName: '',
+                lastName: '',
+                email: '',
+                phone: '',
+            },
             errors: false,
             saveMsg: null,
         };
@@ -37,10 +36,12 @@ class AccountForm extends React.Component {
     setData = ({account}) => {
         if (account) {
             this.setState({
-                firstName: account.firstName || '',
-                lastName: account.lastName || '',
-                email: account.email || '',
-                phone: account.phone || '',
+                form: {
+                    firstName: account.firstName || '',
+                    lastName: account.lastName || '',
+                    email: account.email || '',
+                    phone: account.phone || '',
+                }
             });
         }
     };
@@ -51,7 +52,7 @@ class AccountForm extends React.Component {
 
         if (value !== account[id]) {
             this.setState({saveMsg: 'saving...'}, () => {
-                actions.account.update(this.state).then(() => {
+                actions.account.update(this.state.form).then(() => {
                     this.setState({saveMsg: 'saved'}, () => {
                         setTimeout(() => this.setState({saveMsg: null}), 1000);
                     })
@@ -62,7 +63,7 @@ class AccountForm extends React.Component {
 
     setField = (event) => {
         const {id, value} = event.target;
-        this.setState({[id]: value, errors: false}, () => {
+        this.setState({form: {...this.state.form, [id]: value}, errors: false}, () => {
             if (this.updateTimeout) {
                 clearTimeout(this.updateTimeout);
             }
@@ -77,8 +78,6 @@ class AccountForm extends React.Component {
     };
 
     render() {
-        const {user} = this.props;
-        const company = this.props.company || {};
         const {errors, saveMsg} = this.state;
 
         return (
@@ -90,7 +89,7 @@ class AccountForm extends React.Component {
                             <div className={this.getGroupClass('firstName')}>
                                 <label className="control-label" htmlFor="firstName">First Name</label>
                                 <input id="firstName" className="form-control" type="text"
-                                       value={this.state.firstName} onChange={this.setField}/>
+                                       value={this.state.form.firstName} onChange={this.setField}/>
                                 <span className="help-block">{errors.firstName}</span>
                             </div>
                         </div>
@@ -98,7 +97,7 @@ class AccountForm extends React.Component {
                             <div className={this.getGroupClass('lastName')}>
                                 <label className="control-label" htmlFor="lastName">Last Name</label>
                                 <input id="lastName" className="form-control" type="text"
-                                       value={this.state.lastName} onChange={this.setField}/>
+                                       value={this.state.form.lastName} onChange={this.setField}/>
                                 <span className="help-block">{errors.lastName}</span>
                             </div>
                         </div>
@@ -108,7 +107,7 @@ class AccountForm extends React.Component {
                             <div className={this.getGroupClass('email')}>
                                 <label className="control-label" htmlFor="email">Email</label>
                                 <input id="email" className="form-control" type="text"
-                                       value={this.state.email} onChange={this.setField}/>
+                                       value={this.state.form.email} onChange={this.setField}/>
                                 <span className="help-block">{errors.email}</span>
                             </div>
                         </div>
@@ -116,7 +115,7 @@ class AccountForm extends React.Component {
                             <div className={this.getGroupClass('phone')}>
                                 <label className="control-label" htmlFor="phone">Phone</label>
                                 <input id="phone" className="form-control" type="text"
-                                       value={this.state.phone} onChange={this.setField}/>
+                                       value={this.state.form.phone} onChange={this.setField}/>
                                 <span className="help-block">{errors.phone}</span>
                             </div>
                         </div>
@@ -133,8 +132,6 @@ const mapStateToProps = (state) => {
             account: state.account.actions,
         },
         account: state.account.data,
-        company: state.company.data,
-        user: state.user.data,
     }
 };
 

@@ -7,8 +7,11 @@ class ConfigForm extends React.Component {
 
         this.state = {
             form: {
-                type: '',
-                industry: [],
+                companyType: '',
+                industryType: [],
+            },
+            dropdown: {
+                companyType: null,
             },
             errors: false,
         };
@@ -28,8 +31,8 @@ class ConfigForm extends React.Component {
         if (company) {
             this.setState({
                 form: {
-                    type: company.type || '',
-                    industry: company.industry || [],
+                    companyType: company.companyType || '',
+                    industryType: company.industryType || [],
                 },
             });
         }
@@ -37,70 +40,101 @@ class ConfigForm extends React.Component {
 
     setField = (event) => {
         const {id, value} = event.target;
-
-        this.setState({
-            form: {
-                ...this.state.form,
-                [id]: value,
-            },
-            errors: false,
+        this.setState({form: {...this.state.form, [id]: value}, errors: false}, () => {
+            if (this.updateTimeout) {
+                clearTimeout(this.updateTimeout);
+            }
+            this.updateTimeout = setTimeout(() => this.update({id, value}), 2000);
         });
     };
 
-    setChecked = (value) => {
-        const { form: { industry }} = this.state;
-        const newIndustry = [value, ...industry.slice(0, 1)];
-        this.setField({target: { id: 'industry', value: newIndustry}});
+    setIndustry= (value) => {
+        let types;
+
+        if (this.state.form.industryType.indexOf(value) > -1) {
+            types = this.state.form.industryType.filter((type) => type !== value);
+        } else {
+            types = [...this.state.form.industryType, value];
+        }
+
+        if (types.length < 3) {
+            this.setState({
+                form: {
+                    ...this.state.form,
+                    industryType: types,
+                },
+            }, () => {
+                if (this.updateTimeout) {
+                    clearTimeout(this.updateTimeout);
+                }
+                this.updateTimeout = setTimeout(() => this.update({
+                    id: 'industryType',
+                    value: this.state.form.industryType,
+                }), 2000);
+            });
+        }
     };
 
-    setType = (value) => {
-        this.setField({target: { id: 'type', value }});
+    update = (field) => {
+        const {actions, company} = this.props;
+        const {id, value} = field;
+
+        if (value !== company[id]) {
+            this.setState({saveMsg: 'saving...'}, () => {
+                actions.company.update(this.state.form).then(() => {
+                    this.setState({saveMsg: 'saved'}, () => {
+                        setTimeout(() => this.setState({saveMsg: null}), 1000);
+                    })
+                });
+            });
+        }
     };
 
-    updateCompany = (event) => {
-        event.preventDefault();
-        const {account: {group}} = this.props;
-       // actions.company.update(group, this.state.form);
-    };
-
-    cancel = () => {
-        this.setData(this.props);
-    };
-
-    hasError = (field) => {
+    getGroupClass = (field) => {
         const {errors} = this.state;
-        return errors[field] ? 'has-error' : '';
+
+        return errors[field] ? 'network_fields form-group has-error' : 'network_fields form-group';
     };
 
-    renderType() {
-        const { type } = this.props.config;
-        const { form } = this.state;
-
-        return type.map((type, index) => {
-            const selected = form.type === type;
-
-            return (
-                <span key={index} className="gt_radio">
-                    <input type="radio" id={`radio${index}`} name="type" checked={selected} onChange={() => this.setType(type)}/>
-                    <label htmlFor={`radio${index}`}>{type}</label>
-                </span>
-            );
+    toggleDropdown = (field) => {
+        event.preventDefault();
+        this.setState({
+            dropdown: {
+                ...this.state.dropdown,
+                [field]: this.state.dropdown[field] ? null : {display: 'block'},
+            }
         })
+    };
 
+    renderDropdownOptions(options, id) {
+        return Object.keys(options).map((key, index) => {
+            return (
+                <li
+                    key={index}
+                    onClick={() => {
+                        this.setField({target: {id, value: key}});
+                        this.toggleDropdown(id);
+                    }}
+                >
+                    {options[key].text}
+                </li>
+            );
+        });
     }
 
     renderIndustry() {
-        const { industry } = this.props.config;
-        const { form } = this.state;
+        const {industries} = this.props.config;
+        const {form} = this.state;
 
-        return industry.map((industry, index) => {
-            const checked = form.industry.indexOf(industry) > -1;
+        return Object.keys(industries).map((key, index) => {
+            const checked = form.industryType.indexOf(key) > -1;
 
             return (
                 <div key={index} className="col-md-4 col-sm-6">
                     <div className="gt_checkbox">
-                        <input id={`industry${index}`} name="checkbox" type="checkbox" checked={checked} onChange={() => this.setChecked(industry)}/>
-                        <label htmlFor={`industry${index}`}>{industry}</label>
+                        <input id={`industry${index}`} name="checkbox" type="checkbox" checked={checked}
+                               onChange={() => this.setIndustry(key)}/>
+                        <label htmlFor={`industry${index}`}>{industries[key].text}</label>
                     </div>
                 </div>
             );
@@ -108,35 +142,49 @@ class ConfigForm extends React.Component {
     }
 
     render() {
-        const {errors, form} = this.state;
+        const {dropdown, form} = this.state;
+        const {types} = this.props.config;
+        const companyTypeText = types[form.companyType] ? types[form.companyType].text : null;
+        const remaining = 2 - form.industryType.length;
 
         return (
-            <form noValidate onSubmit={(event) => event.preventDefault()}>
-               <div className="type_wrap">
-                    <h3>Type</h3>
-                    <div className="clearfix"></div>
-                    {this.renderType()}
-                </div>
-                <div className="type_wrap inds_wrap">
-                    <h3>Industry <span>Select up to 2 industries (0 remain)</span></h3>
-                    <div className="clearfix"></div>
-                    {this.renderIndustry()}
-                </div>
-                <div className="col-sm-4 cmp_btns_wrap">
-                    <div className="acc_form_fields acc_form_btns">
-                        <button onClick={this.cancel}>Cancel</button>
-                        <button onClick={this.updateCompany}>Save</button>
+            <div className="acc_form_section">
+                <h2>Company Type and Industry</h2>
+                <form noValidate onSubmit={(event) => event.preventDefault()}>
+                    <div className="acc_form_fields">
+                        <div className="type_wrap">
+                            <h3 className="form_subtitle">Type</h3>
+                            <div className="btn-group gt_select">
+                                <button
+                                    className="btn btn-default btn-lg dropdown-toggle"
+                                    onClick={() => this.toggleDropdown('companyType')}
+                                >
+                                    <span className="gt_selected">{companyTypeText}</span>
+                                    <span className="caret"></span>
+                                </button>
+                                <ul className="dropdown-menu" style={dropdown.companyType}>
+                                    {this.renderDropdownOptions(types, 'companyType')}
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </form>
+                    <div className="type_wrap inds_wrap">
+                        <h3>Industry <span>{`Select up to 2 industries (${remaining} remain)`}</span></h3>
+                        <div className="clearfix"></div>
+                        {this.renderIndustry()}
+                    </div>
+                </form>
+            </div>
         );
     }
 }
 
 const mapStateToProps = (state) => {
     return {
-        account: state.account,
-        company: state.company,
+        actions: {
+            company: state.company.actions,
+        },
+        company: state.company.data,
         config: state.config.data,
     }
 };

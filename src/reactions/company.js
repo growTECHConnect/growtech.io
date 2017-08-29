@@ -38,7 +38,7 @@ class Company {
                         };
                     });
 
-                    return firebase.database().ref(`/companies/${gid}/mediaFiles`).update(mediaFiles);
+                    return firebase.database().ref(`/companies/${cid}/mediaFiles`).update(mediaFiles);
                 });
         },
     };
