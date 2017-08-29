@@ -32,8 +32,12 @@ export default class Access {
             firebase.database().ref(`/access/${uid}`).off();
 
             firebase.database().ref(`/access/${uid}`).on('value', (snapshot) => {
-                this.store.dispatch(this.setAccess(snapshot.val()));
-                resolve(snapshot.val());
+                const access = snapshot.val();
+
+                if (access) {
+                    this.store.dispatch(this.setAccess(access));
+                    resolve(access);
+                }
             });
         });
     };
