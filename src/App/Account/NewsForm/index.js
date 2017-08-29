@@ -6,11 +6,11 @@ class NewsForm extends React.Component {
         super(props);
 
         this.state = {
-            news: {},
+            news: [],
             form: {
                 title: '',
-                body: '',
-                key: null,
+                link: '',
+                date: '',
             },
             selected: {
                 title: '',
@@ -19,7 +19,8 @@ class NewsForm extends React.Component {
             errors: false,
             dropdown: {
                 news: null,
-            }
+            },
+            showNew: false,
         };
     }
 
@@ -33,165 +34,197 @@ class NewsForm extends React.Component {
         }
     }
 
-    setData = ({ news }) => {
-        if (news) {
+    setData = ({company}) => {
+        if (company && company.news) {
             this.setState({
-                news: news || {},
+                news: company.news.map((item) => {
+                    item.hidden = true;
+                    return item;
+                }),
             });
         }
     };
 
     setField = (event) => {
-        const { id, value } = event.target;
+        const {id, value} = event.target;
+        this.setState({form: {...this.state.form, [id]: value}, errors: false});
+    };
 
+    setNews = (event, index) => {
+        const {id, value} = event.target;
         this.setState({
-            form: {
-                ...this.state.form,
-                [id]: value,
-            },
-            errors: false,
+            news: this.state.news.map((item, itemIndex) => {
+                if (itemIndex === index) {
+                    item[id] = value;
+                }
+                return item;
+            }),
         });
     };
 
-    setSelected = (news) => {
+    showEdit = (index) => {
         this.setState({
-            form: news,
-            selected: news,
-            dropdown: {
-                selected: null,
-            }
+            news: this.state.news.map((item, itemIndex) => {
+                item.hidden = itemIndex === index ? !item.hidden : true;
+                return item;
+            }),
+            showNew: false,
         });
     };
 
-    createNews = (event) => {
-        event.preventDefault();
-        const { account: { group } } = this.props;
-        const { form } = this.state;
-
-        //actions.news.create(group, form);
-        this.cancel();
-    };
-
-    updateNews = (event) => {
-        event.preventDefault();
-        const { account: { group } } = this.props;
-        const { form } = this.state;
-
-        //actions.news.update(group, form);
-        this.cancel();
-    };
-
-    cancel = () => {
+    showNew = () => {
         this.setState({
+            news: this.state.news.map((item) => {
+                item.hidden = true;
+                return item;
+            }),
+            showNew: true
+        });
+    };
+
+    hideNew = () => {
+        this.setState({showNew: false});
+    };
+
+    updateNews = () => {
+        const {actions} = this.props;
+        const news = this.state.news.map((item) => {
+            item.hidden = true;
+            return item;
+        });
+
+        actions.company.update({news});
+    };
+
+    addNews = () => {
+        const {form, news} = this.state;
+
+        this.setState({
+            news: [
+                ...news,
+                {
+                    ...form,
+                    hidden: true,
+                },
+            ],
             form: {
                 title: '',
-                body: '',
-                key: null,
+                link: '',
+                date: '',
             },
-            selected: {
-                title: '',
-                body: '',
-            },
+            showNew: false,
+        }, () => {
+            this.updateNews();
         });
     };
 
-    hasError = (field) => {
-        const { errors } = this.state;
-        return errors[field] ? 'has-error' : '';
-    };
-
-    toggleDropdown = (field) => {
-        event.preventDefault();
+    deleteNews = (index) => {
         this.setState({
-            dropdown: {
-                ...this.state.dropdown,
-                [field]: this.state.dropdown[field] ? null : {display: 'block'},
-            }
-        })
+            news: this.state.news.filter((item, itemIndex) => {
+                return index !== itemIndex;
+            }),
+        }, () => {
+            this.updateNews();
+        });
     };
 
-    renderDropdownOptions(existingNews, id) {
-        return existingNews.map((news, index) => {
+    renderNews() {
+        const {form, news} = this.state;
+
+        return news.map((item, index) => {
+            const editClass = item.hidden ? 'hidden' : '';
+            const editText = item.hidden ? 'Edit' : 'Close';
+
             return (
-                <li
-                    key={index}
-                    onClick={() => {
-                        this.setSelected(news);
-                    }}
-                >
-                    {news.title}
-                </li>
+                <div key={index} className="acc_form_wrap">
+                    <div className="gt_edit_row">
+                        <span>{item.title}</span>
+                        <button className="gt_small_button" onClick={() => this.showEdit(index)}>{editText}</button>
+                    </div>
+                    <form className={`gt_edit_form ${editClass}`} noValidate
+                          onSubmit={(event) => event.preventDefault()}>
+                        <div className="acc_form_wrap acc_form_bg">
+                            <div className="acc_form_fields gt_news_edit">
+                                <div className="network_fields">
+                                    <label>Title</label>
+                                    <input id="title" type="text" value={item.title}
+                                           onChange={(event) => this.setNews(event, index)}/>
+                                </div>
+                            </div>
+                            <div className="acc_form_fields gt_news_edit">
+                                <div className="network_fields">
+                                    <label>Link</label>
+                                    <input id="link" type="text" value={item.link}
+                                           onChange={(event) => this.setNews(event, index)}/>
+                                </div>
+                            </div>
+                            <div className="acc_form_fields gt_news_edit">
+                                <div className="network_fields">
+                                    <label>Date</label>
+                                    <input id="date" type="text" value={item.date}
+                                           onChange={(event) => this.setNews(event, index)}/>
+                                </div>
+                            </div>
+                            <div className="acc_form_btns">
+                                <button onClick={() => this.deleteNews(index)}>Delete</button>
+                                <button onClick={this.updateNews}>Update</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div className="gt_edit_row_spacer"/>
+                </div>
             );
         });
     }
 
-    renderActionButton() {
-        const {form} = this.state;
-
-        if (form.key) {
-            return <button onClick={this.updateNews}>Save Edit</button>;
-        }
-
-        return  <button onClick={this.createNews}>Save New</button>;
-    }
-
     render() {
-        const { dropdown, errors, form, news, selected } = this.state;
-        const existingNews = Object.keys(news).map((key) => {
-            return { ...news[key], key };
-        });
+        const {dropdown, errors, form, news, selected} = this.state;
+        const newClass = this.state.showNew ? '' : 'hidden';
 
         return (
-            <form noValidate onSubmit={(event) => event.preventDefault()}>
-                <div className="acc_form_wrap gt_news_dropdown">
-                    <div className="acc_form_fields">
-                        <div className="network_fields">
-                            <label>Existing News</label>
-                            <div className="btn-group gt_select">
-                                <button
-                                    className="btn btn-default btn-lg dropdown-toggle"
-                                    onClick={() => this.toggleDropdown('selected')}
-                                >
-                                    <span className="gt_selected">{selected.title || 'Select exiting post to edit'}</span>
-                                    <span className="caret"></span>
-                                </button>
-                                <ul className="dropdown-menu" style={dropdown.selected}>
-                                    {this.renderDropdownOptions(existingNews, 'selected')}
-                                </ul>
+            <div className="acc_form_section">
+                <div className="gt_form_header">
+                    <h2>Company News</h2>
+                    <button className="gt_small_button" onClick={this.showNew}>Add</button>
+                </div>
+                <form className={`gt_new_form ${newClass}`} noValidate onSubmit={(event) => event.preventDefault()}>
+                    <div className="acc_form_wrap acc_form_bg">
+                        <div className="acc_form_fields gt_news_edit">
+                            <div className="network_fields">
+                                <label>Title</label>
+                                <input id="title" type="text" value={form.title} onChange={this.setField}/>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div className="acc_form_wrap acc_form_bg">
-                    <div className="acc_form_fields gt_news_edit">
-                        <div className="network_fields">
-                            <label>Title</label>
-                            <input id="title" type="text" value={form.title} onChange={this.setField}/>
+                        <div className="acc_form_fields gt_news_edit">
+                            <div className="network_fields">
+                                <label>Link</label>
+                                <input id="link" type="text" value={form.link} onChange={this.setField}/>
+                            </div>
+                        </div>
+                        <div className="acc_form_fields gt_news_edit">
+                            <div className="network_fields">
+                                <label>Date</label>
+                                <input id="date" type="text" value={form.date} onChange={this.setField}/>
+                            </div>
+                        </div>
+                        <div className="acc_form_btns">
+                            <button onClick={this.hideNew}>Cancel</button>
+                            <button onClick={this.addNews}>Save</button>
                         </div>
                     </div>
-                    <div className="acc_form_fields gt_news_edit">
-                        <div className="network_fields">
-                            <label>Body</label>
-                            <textarea id="body" value={form.body} onChange={this.setField}/>
-                        </div>
-                    </div>
-                    <div className="acc_form_wrap">
-                        <div className="acc_form_fields acc_form_btns">
-                            <button onClick={this.cancel}>Cancel</button>
-                            {this.renderActionButton()}
-                        </div>
-                    </div>
-                </div>
-            </form>
+                </form>
+                {this.renderNews()}
+            </div>
         );
     }
 }
 
 const mapStateToProps = (state) => {
     return {
-        account: state.account.data,
+        actions: {
+            company: state.company.actions,
+        },
         company: state.company.data,
-        news: state.news.data,
     }
 };
 

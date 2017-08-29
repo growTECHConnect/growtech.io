@@ -5,7 +5,7 @@ import Header from '../Components/Header';
 import Footer from '../Components/Footer';
 import Network from '../Components/Network';
 import AccountForm from './AccountForm';
-import ContactForm from './ContactForm';
+import CompanyForm from './CompanyForm';
 import MediaForm from './MediaForm';
 import SocialForm from './SocialForm';
 import NewsForm from './NewsForm';
@@ -29,44 +29,15 @@ class Account extends React.Component {
             <div>
                 <Header/>
                 <section className="my_company">
-                    {/*<div className="container">*/}
-                        {/*<div className="breadcrumb">*/}
-                            {/*<Link to="/my-account"><span className="back_arrow">*/}
-                                {/*<img src="/images/breadcrumb_arrow.png"/></span>*/}
-                                {/*Back to My Account*/}
-                            {/*</Link>*/}
-                        {/*</div>*/}
-                    {/*</div>*/}
                     <div className="container-fluid my_company_container">
                         <AccountForm/>
-                        <div className="acc_form_section">
-                            <h2>Company Info</h2>
-                            <ContactForm/>
-                        </div>
-                        <div className="acc_form_section">
-                            <h2>Company Media</h2>
-                            <MediaForm/>
-                        </div>
-                        <div className="acc_form_section">
-                            <h2>Company Social</h2>
-                            <SocialForm/>
-                        </div>
-                        <div className="acc_form_section company_news_links">
-                            <h2>Company News</h2>
-                            <NewsForm/>
-                        </div>
-                        <div className="acc_form_section">
-                            <h2>Company Job Listings</h2>
-                            <ListingForm/>
-                        </div>
-                        <div className="acc_form_section cmp_event_wrap">
-                            <h2>Company Event Listings</h2>
-                            <EventsForm/>
-                        </div>
-                        <div className="acc_form_section cmp_type_inds">
-                            <h2>Company Type and Industry</h2>
-                            <ConfigForm/>
-                        </div>
+                        <CompanyForm/>
+                        <MediaForm/>
+                        <SocialForm/>
+                        <NewsForm/>
+                        <EventsForm/>
+                        <ListingForm/>
+                        <ConfigForm/>
                     </div>
                 </section>
                 <Network/>

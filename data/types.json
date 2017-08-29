@@ -1,0 +1,28 @@
+{
+  "types": {
+    "PUBLIC_COMPANY": {
+      "text": "Public Company"
+    },
+    "EDUCATIONAL": {
+      "text": "Educational Institution"
+    },
+    "SELF_EMPLOYED": {
+      "text": "Self-Employed"
+    },
+    "GOVERNMENT_AGENCY": {
+      "text": "Government Agency"
+    },
+    "NON_PROFIT": {
+      "text": "Nonprofit"
+    },
+    "SELF_OWNED": {
+      "text": "Sole Proprietorship"
+    },
+    "PRIVATELY_HELD": {
+      "text": "Privately Held"
+    },
+    "PARTNERSHIP": {
+      "text": "Partnership"
+    }
+  }
+}

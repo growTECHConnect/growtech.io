@@ -7,7 +7,12 @@ class MediaForm extends React.Component {
 
         this.state = {
             files: [],
-            mediaFiles: {},
+            mediaFiles: {
+                heroImg: {name: '[Click To Upload]'},
+                listingsImg: {name: '[Click To Upload]'},
+                featuredImg: {name: '[Click To Upload]'},
+                companyImg: {name: '[Click To Upload]'},
+            },
             errors: false,
         };
     }
@@ -34,9 +39,10 @@ class MediaForm extends React.Component {
     };
 
     setFile = (event) => {
+        const {company} = this.props.actions;
         const reader = new FileReader();
         const file = event.target.files[0];
-        const { id } = event.target;
+        const {id} = event.target;
 
         reader.onload = (upload) => {
             this.setState({
@@ -55,27 +61,15 @@ class MediaForm extends React.Component {
                     }
                 }
             }, () => {
-                console.log(this.state);
+                company.updateMediaFiles(this.state.files);
             });
         };
 
         reader.readAsDataURL(file);
     };
 
-    uploadFiles = (event) => {
-        event.preventDefault();
-        const {company} = this.props.actions;
-
-        company.updateMediaFiles(this.state.files);
-    };
-
-    cancel = (event) => {
-        event.preventDefault();
-        this.setData(this.props);
-    };
-
     getImageState = (id) => {
-        const { mediaFiles }  = this.state;
+        const {mediaFiles} = this.state;
         const img = mediaFiles[id] || {};
 
         if (img && img.state === 'success') {
@@ -106,57 +100,54 @@ class MediaForm extends React.Component {
     };
 
     render() {
-        const { mediaFiles } = this.state;
-        const heroImg = mediaFiles.heroImg || {};
-        const listingsImg = mediaFiles.listingsImg || {};
-        const featuredImg = mediaFiles.featuredImg || {};
-        const companyImg = mediaFiles.companyImg || {};
+        const {mediaFiles: {heroImg, listingsImg, featuredImg, companyImg}} = this.state;
 
         return (
-            <form noValidate onSubmit={(event) => event.preventDefault()}>
-                <div className="acc_form_wrap">
-                    <div className="acc_form_fields">
-                        <div className="network_fields">
-                            <label>Hero Graphic</label>
-                            <input type="file" id="heroImg" className="inputfile" onChange={this.setFile}/>
-                            <label htmlFor="heroImg"><span>{heroImg.name}</span></label>
-                            <span className="char_counter">{this.getImageState('heroImg').message || 'Best if 800 x 200 pixels in PNG format'}</span>
+            <div className="acc_form_section">
+                <h2>Company Media</h2>
+                <form noValidate onSubmit={(event) => event.preventDefault()}>
+                    <div className="acc_form_wrap">
+                        <div className="acc_form_fields">
+                            <div className="network_fields">
+                                <label>Hero Graphic</label>
+                                <input type="file" id="heroImg" className="inputfile" onChange={this.setFile}/>
+                                <label htmlFor="heroImg"><span>{heroImg.name}</span></label>
+                                <span
+                                    className="char_counter">{this.getImageState('heroImg').message || 'Best if 800 x 200 pixels in PNG format'}</span>
+                            </div>
+                        </div>
+                        <div className="acc_form_fields">
+                            <div className="network_fields">
+                                <label>Listings Graphic</label>
+                                <input type="file" id="listingsImg" className="inputfile" onChange={this.setFile}/>
+                                <label htmlFor="listingsImg"><span>{listingsImg.name}</span></label>
+                                <span
+                                    className="char_counter">{this.getImageState('listingsImg').message || 'Best if 300 x 100 pixels'}</span>
+                            </div>
                         </div>
                     </div>
-                    <div className="acc_form_fields">
-                        <div className="network_fields">
-                            <label>Listings Graphic</label>
-                            <input type="file" id="listingsImg" className="inputfile" onChange={this.setFile}/>
-                            <label htmlFor="listingsImg"><span>{listingsImg.name}</span></label>
-                            <span className="char_counter">{this.getImageState('listingsImg').message || 'Best if 300 x 100 pixels'}</span>
+                    <div className="acc_form_wrap">
+                        <div className="acc_form_fields">
+                            <div className="network_fields">
+                                <label>Featured Graphic</label>
+                                <input type="file" id="featuredImg" className="inputfile" onChange={this.setFile}/>
+                                <label htmlFor="featuredImg"><span>{featuredImg.name}</span></label>
+                                <span
+                                    className="char_counter">{this.getImageState('featuredImg').message || 'Best if 400 x 75 pixels'}</span>
+                            </div>
+                        </div>
+                        <div className="acc_form_fields">
+                            <div className="network_fields">
+                                <label>Company Logo</label>
+                                <input type="file" id="companyImg" className="inputfile" onChange={this.setFile}/>
+                                <label htmlFor="companyImg"><span>{companyImg.name}</span></label>
+                                <span
+                                    className="char_counter">{this.getImageState('companyImg').message || 'Best if 80 x 100 pixels'}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="acc_form_wrap">
-                    <div className="acc_form_fields">
-                        <div className="network_fields">
-                            <label>Featured Graphic</label>
-                            <input type="file" id="featuredImg" className="inputfile" onChange={this.setFile}/>
-                            <label htmlFor="featuredImg"><span>{featuredImg.name}</span></label>
-                            <span className="char_counter">{this.getImageState('featuredImg').message || 'Best if 400 x 75 pixels'}</span>
-                        </div>
-                    </div>
-                    <div className="acc_form_fields">
-                        <div className="network_fields">
-                            <label>Company Logo</label>
-                            <input type="file" id="companyImg" className="inputfile" onChange={this.setFile}/>
-                            <label htmlFor="companyImg"><span>{companyImg.name}</span></label>
-                            <span className="char_counter">{this.getImageState('companyImg').message || 'Best if 80 x 100 pixels'}</span>
-                        </div>
-                    </div>
-                </div>
-                <div className="acc_form_wrap">
-                    <div className="acc_form_fields acc_form_btns">
-                        <button onClick={this.cancel}>Cancel</button>
-                        <button onClick={this.uploadFiles}>Save</button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         );
     }
 }
@@ -166,7 +157,6 @@ const mapStateToProps = (state) => {
         actions: {
             company: state.company.actions,
         },
-        account: state.account.data,
         company: state.company.data,
     }
 };
