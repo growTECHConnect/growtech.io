@@ -11,6 +11,9 @@ exports.initializeUser = functions.auth.user().onCreate((event) => {
 
     const company = ref.child(`/companies/${companyKey}`).update({
         createdAt: new Date(),
+        active: false,
+        hiring: false,
+        employmentType: 'FULL_TIME',
     });
 
     const account = ref.child(`/account/${user.uid}`).update({

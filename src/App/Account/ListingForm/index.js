@@ -103,15 +103,8 @@ class ListingForm extends React.Component {
 
     render() {
         const {dropdown, form} = this.state;
-        const employmentTypes = {
-            'FULL_TIME': {
-                text: 'Full Time',
-            },
-            'PART_TIME': {
-                text: 'Part Time',
-            },
-        };
-        const employmentTypeText = employmentTypes[form.employmentType] ? employmentTypes[form.employmentType].text : null;
+        const {employments} = this.props.config;
+        const employmentTypeText = employments[form.employmentType] ? employments[form.employmentType].text : null;
 
         return (
             <div className="acc_form_section">
@@ -139,7 +132,7 @@ class ListingForm extends React.Component {
                                             <span className="caret"></span>
                                         </button>
                                         <ul className="dropdown-menu" style={dropdown.employmentType}>
-                                            {this.renderDropdownOptions(employmentTypes, 'employmentType')}
+                                            {this.renderDropdownOptions(employments, 'employmentType')}
                                         </ul>
                                     </div>
                                 </div>
@@ -169,6 +162,7 @@ const mapStateToProps = (state) => {
             company: state.company.actions,
         },
         company: state.company.data,
+        config: state.config.data,
     }
 };
 

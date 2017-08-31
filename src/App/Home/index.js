@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux'
+import {Link, Redirect} from 'react-router-dom';
+import {connect} from 'react-redux'
 import Header from '../Components/Header';
 import Footer from '../Components/Footer';
 import Network from '../Components/Network';
@@ -12,9 +12,14 @@ class Home extends React.Component {
         super(props);
 
         this.state = {
+            employmentType: 'ALL_COMPANIES',
+            employmentTypes: {
+                'ALL_COMPANIES': {text: 'All Companies'},
+                ...props.config.employments,
+            },
             hoursFilter: 'all',
             dropdown: {
-                hours: null,
+                employmentType: null,
             },
         };
     }
@@ -25,8 +30,34 @@ class Home extends React.Component {
         });
     };
 
+    toggleDropdown = (field) => {
+        event.preventDefault();
+        this.setState({
+            dropdown: {
+                ...this.state.dropdown,
+                [field]: this.state.dropdown[field] ? null : {display: 'block'},
+            }
+        })
+    };
+
+    renderDropdownOptions(options, id) {
+        return Object.keys(options).map((key, index) => {
+            return (
+                <li
+                    key={index}
+                    onClick={() => {
+                        this.setState({employmentType: key});
+                        this.toggleDropdown(id);
+                    }}
+                >
+                    {options[key].text}
+                </li>
+            );
+        });
+    }
+
     renderFeatured() {
-        const { companies, site } = this.props;
+        const {companies, config: {site}} = this.props;
         const featuredCompanies = site.featuredCompanies || [];
 
         return featuredCompanies.map((key, index) => {
@@ -37,21 +68,22 @@ class Home extends React.Component {
     }
 
     renderHiring() {
-        const { companies } = this.props;
-        const { hoursFilter } = this.state;
+        const {companies} = this.props;
+        const {employmentType} = this.state;
 
-        return Object.keys(companies || {}).map((key, index) => {
-            if (companies[key].hiring) {
-                if (companies[key].hours === hoursFilter || hoursFilter === 'all') {
-                    return <Hiring company={companies[key]} key={index}/>;
-                }
-            }
-        });
+        return Object.keys(companies)
+            .filter((key) => companies[key].hiring)
+            .filter((key) => companies[key].employmentType === employmentType || employmentType === 'ALL_COMPANIES')
+            .map((key, index) => {
+                return <Hiring company={companies[key]} key={index}/>;
+            });
     }
 
     render() {
-        const { user, site } = this.props;
-        const companies = Object.keys(this.props.companies || {}).map((key) => key);
+        const {companies} = this.props;
+        const {dropdown, employmentType, employmentTypes} = this.state;
+        const {config: {site}} = this.props;
+        const companyCount = Object.keys(companies).filter((key) => companies[key].active).length;
 
         return (
             <div>
@@ -63,11 +95,13 @@ class Home extends React.Component {
                             <div className="col-md-8 col-sm-7">
                                 <h1>LET’S growTECH</h1>
                                 <h2>Careers, Culture & Community</h2>
-                                <h3>{companies.length} members and growing fast</h3>
+                                <h3>{companyCount} members and growing fast</h3>
                             </div>
                             <div className="col-md-4 col-sm-5 register_box">
                                 <div className="register_wrap">
-                                    <Link to="/sign-up" className="register_btn">Register</Link> or <Link to="/sign-in" className="sign_in_btn">Sign In</Link>
+                                    <Link to="/sign-up" className="register_btn">Register</Link> or <Link to="/sign-in"
+                                                                                                          className="sign_in_btn">Sign
+                                    In</Link>
                                     <p>
                                         List your company today!<br/>
                                         Start by creating an account.
@@ -100,7 +134,8 @@ class Home extends React.Component {
                         </div>
                         <div className="row">
                             <div className="col-sm-12 featured_top featured_bottom">
-                                <p>Don't see what you're looking for? <Link to="/companies">Browse our directory.</Link></p>
+                                <p>Don't see what you're looking for? <Link to="/companies">Browse our directory.</Link>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -112,11 +147,18 @@ class Home extends React.Component {
                                 <h2>
                                     Now Hiring
                                     <div className="company_select">
-                                        <select value={this.state.hoursFilter} onChange={this.selectHours}>
-                                            <option value="all">All Companies</option>
-                                            <option value="full">Full Time</option>
-                                            <option value="part">Part Time</option>
-                                        </select>
+                                        <div className="btn-group gt_select_heavy">
+                                            <button
+                                                className="btn btn-default btn-lg dropdown-toggle"
+                                                onClick={() => this.toggleDropdown('employmentType')}
+                                            >
+                                                <span className="gt_selected">{employmentTypes[employmentType].text}</span>
+                                                <span className="caret"></span>
+                                            </button>
+                                            <ul className="dropdown-menu" style={dropdown.employmentType}>
+                                                {this.renderDropdownOptions(employmentTypes, 'employmentType')}
+                                            </ul>
+                                        </div>
                                     </div>
                                 </h2>
                             </div>
@@ -142,7 +184,7 @@ const mapStateToProps = (state) => {
     return {
         user: state.user.data,
         companies: state.companies.data,
-        site: state.config.data.site,
+        config: state.config.data,
     }
 };
 
