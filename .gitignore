@@ -3,3 +3,6 @@
 /node_modules/
 /functions/node_modules/
 /firebase-debug.log
+/public/app.js
+/public/index.html
+/public/manifest.appcache
