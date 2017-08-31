@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AppCachePlugin = require('appcache-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
     entry: './src/App/index.js',
@@ -12,7 +13,6 @@ module.exports = {
             ]
         }),
         new HtmlWebpackPlugin({
-            title: 'growTECH',
             template: 'src/index.ejs'
         })
     ],
