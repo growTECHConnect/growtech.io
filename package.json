@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "webpack": "webpack -wd"
+    "webpack": "webpack -wd",
+    "deploy:production": "cross-env webpack --optimize-minimize --define process.env.NODE_ENV=\"'production'\" && firebase deploy -P default",
+    "deploy:staging": "cross-env webpack && firebase deploy -P staging"
   },
   "author": "",
   "license": "ISC",
@@ -32,6 +34,8 @@
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-react-transform": "^2.0.2",
     "babel-preset-stage-0": "^6.24.1",
-    "html-webpack-plugin": "^2.30.1"
+    "cross-env": "^5.0.5",
+    "html-webpack-plugin": "^2.30.1",
+    "uglifyjs-webpack-plugin": "^0.4.6"
   }
 }

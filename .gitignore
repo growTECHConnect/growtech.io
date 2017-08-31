@@ -2,5 +2,7 @@
 
 /node_modules/
 /functions/node_modules/
-/public/app/
 /firebase-debug.log
+/public/app.js
+/public/index.html
+/public/manifest.appcache
