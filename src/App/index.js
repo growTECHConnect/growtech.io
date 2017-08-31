@@ -30,9 +30,19 @@ const App = ({reactions, store}) => {
     );
 };
 
-reactions.init().then(() => {
-    ReactDOM.render(
-        <App reactions={reactions} store={store}/>,
-        document.getElementById("root")
-    );
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    try {
+        let app = firebase.app();
+
+        reactions.init().then(() => {
+            ReactDOM.render(
+                <App reactions={reactions} store={store}/>,
+                document.getElementById("root")
+            );
+        });
+    } catch (e) {
+        console.error(e);
+    }
 });
