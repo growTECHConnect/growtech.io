@@ -11,7 +11,7 @@ class CompanyForm extends React.Component {
                 url: '',
                 founded: '',
                 email: '',
-                employees: '0',
+                employeeSize: 0,
                 active: false,
                 city: '',
                 state: '',
@@ -46,7 +46,7 @@ class CompanyForm extends React.Component {
                     url: company.url || '',
                     founded: company.founded || '',
                     email: company.email || '',
-                    employees: company.employees || '0',
+                    employeeSize: company.employeeSize || 0,
                     active: company.active || false,
                     city: company.city || '',
                     state: company.state || '',
@@ -105,7 +105,7 @@ class CompanyForm extends React.Component {
     };
 
     renderDropdownOptions(options, id) {
-        return options.map((value, index) => {
+        return Object.keys(options).map((value, index) => {
             return (
                 <li
                     key={index}
@@ -114,13 +114,14 @@ class CompanyForm extends React.Component {
                         this.toggleDropdown(id);
                     }}
                 >
-                    {value}
+                    {options[value].text}
                 </li>
             );
         });
     }
 
     render() {
+        const {config: {sizes, states}} = this.props;
         const {dropdown, errors, form, saveMsg} = this.state;
 
         return (
@@ -179,13 +180,13 @@ class CompanyForm extends React.Component {
                                 <div className="btn-group gt_select">
                                     <button
                                         className="btn btn-default btn-lg dropdown-toggle"
-                                        onClick={() => this.toggleDropdown('employees')}
+                                        onClick={() => this.toggleDropdown('employeeSize')}
                                     >
-                                        <span className="gt_selected">{form.employees}</span>
+                                        <span className="gt_selected">{sizes[form.employeeSize].text}</span>
                                         <span className="caret"></span>
                                     </button>
-                                    <ul className="dropdown-menu" style={dropdown.employees}>
-                                        {this.renderDropdownOptions(['10', '50', '100'], 'employees')}
+                                    <ul className="dropdown-menu" style={dropdown.employeeSize}>
+                                        {this.renderDropdownOptions(sizes, 'employeeSize')}
                                     </ul>
                                 </div>
                             </div>
@@ -212,10 +213,9 @@ class CompanyForm extends React.Component {
                                         <span className="caret"></span>
                                     </button>
                                     <ul className="dropdown-menu" style={dropdown.state}>
-                                        {this.renderDropdownOptions(['CA', 'NV', 'OR'], 'state')}
+                                        {this.renderDropdownOptions(states, 'state')}
                                     </ul>
                                 </div>
-
                             </div>
                         </div>
                         <div className="acc_form_fields"></div>
@@ -267,6 +267,7 @@ const mapStateToProps = (state) => {
             company: state.company.actions,
         },
         company: state.company.data,
+        config: state.config.data,
     }
 };
 

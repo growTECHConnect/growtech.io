@@ -5,7 +5,7 @@ import Header from '../Components/Header';
 import Footer from '../Components/Footer';
 import Network from '../Components/Network';
 import Featured from '../Components/Featured';
-import Hiring from '../Components/Hiring';
+import Tile from '../Components/Tile';
 
 class Home extends React.Component {
     constructor(props) {
@@ -57,25 +57,29 @@ class Home extends React.Component {
     }
 
     renderFeatured() {
-        const {companies, config: {site}} = this.props;
+        const {companies, config: {site, types}} = this.props;
         const featuredCompanies = site.featuredCompanies || [];
 
         return featuredCompanies.map((key, index) => {
             if (companies[key]) {
-                return <Featured company={companies[key]} key={index}/>;
+                const companyType = companies[key].companyType;
+
+                return <Featured key={index} id={key} company={companies[key]} type={types[companyType].text}/>;
             }
         });
     }
 
     renderHiring() {
-        const {companies} = this.props;
+        const {companies, config: {types}} = this.props;
         const {employmentType} = this.state;
 
         return Object.keys(companies)
             .filter((key) => companies[key].hiring)
             .filter((key) => companies[key].employmentType === employmentType || employmentType === 'ALL_COMPANIES')
             .map((key, index) => {
-                return <Hiring company={companies[key]} key={index}/>;
+                const companyType = companies[key].companyType;
+
+                return <Tile key={index} id={key} company={companies[key]} type={types[companyType].text}/>;
             });
     }
 
