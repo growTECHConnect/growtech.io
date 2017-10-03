@@ -13,12 +13,13 @@ module.exports = {
             ]
         }),
         new HtmlWebpackPlugin({
-            template: 'src/index.ejs'
+            template: 'src/index.ejs',
+            inject: false,
         })
     ],
     output: {
         path: path.resolve(__dirname, 'public'),
-        filename: 'app.js'
+        filename: 'app.js',
     },
     module: {
         rules: [

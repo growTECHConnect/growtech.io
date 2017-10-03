@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch:webpack": "webpack -wd",
     "deploy:production": "cross-env webpack --optimize-minimize --define process.env.NODE_ENV=\"'production'\" && firebase deploy -P default",
-    "deploy:staging": "cross-env webpack && firebase deploy -P staging"
+    "deploy:staging": "cross-env webpack && firebase deploy -P staging",
+    "serve:production": "cross-env webpack && firebase serve -P default",
+    "serve:staging": "cross-env webpack && firebase serve -P staging"
   },
   "author": "",
   "license": "ISC",
