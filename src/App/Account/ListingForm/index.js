@@ -9,6 +9,7 @@ class ListingForm extends React.Component {
             form: {
                 employmentType: '',
                 hiring: false,
+                interns: false,
                 jobsiteUrl: '',
             },
             dropdown: {
@@ -34,6 +35,7 @@ class ListingForm extends React.Component {
                 form: {
                     employmentType: company.employmentType || '',
                     hiring: company.hiring || false,
+                    interns: company.interns || false,
                     jobsiteUrl: company.jobsiteUrl || '',
                 },
             });
@@ -148,6 +150,17 @@ class ListingForm extends React.Component {
                                 <div className="slider round"></div>
                             </label>
                             <span>Not Hiring</span>
+                        </div>
+                    </div>
+                    <div className="cmp_job_wrap">
+                        <div className="switch_wrap">
+                            <span>Looking For Interns</span>
+                            <label className="switch">
+                                <input id="interns" type="checkbox" checked={form.interns} value={form.interns}
+                                       onChange={() => this.setChecked('interns', !form.interns)}/>
+                                <div className="slider round"></div>
+                            </label>
+                            <span>Not Now</span>
                         </div>
                     </div>
                 </form>

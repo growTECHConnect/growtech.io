@@ -1990,7 +1990,7 @@ input:checked + .slider:before {
 }
 .switch_wrap {
     margin-top:25px;
-    max-width:268px;
+    max-width:400px;
     width:100%;
 }
 .switch_wrap span {
