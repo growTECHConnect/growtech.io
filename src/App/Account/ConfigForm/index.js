@@ -8,10 +8,11 @@ class ConfigForm extends React.Component {
         this.state = {
             form: {
                 companyType: '',
-                industryType: [],
+                industryType: '',
             },
             dropdown: {
                 companyType: null,
+                industryType: null
             },
             errors: false,
         };
@@ -32,7 +33,7 @@ class ConfigForm extends React.Component {
             this.setState({
                 form: {
                     companyType: company.companyType || '',
-                    industryType: company.industryType || [],
+                    industryType: company.industryType || '',
                 },
             });
         }
@@ -46,33 +47,6 @@ class ConfigForm extends React.Component {
             }
             this.updateTimeout = setTimeout(() => this.update({id, value}), 2000);
         });
-    };
-
-    setIndustry= (value) => {
-        let types;
-
-        if (this.state.form.industryType.indexOf(value) > -1) {
-            types = this.state.form.industryType.filter((type) => type !== value);
-        } else {
-            types = [...this.state.form.industryType, value];
-        }
-
-        if (types.length < 3) {
-            this.setState({
-                form: {
-                    ...this.state.form,
-                    industryType: types,
-                },
-            }, () => {
-                if (this.updateTimeout) {
-                    clearTimeout(this.updateTimeout);
-                }
-                this.updateTimeout = setTimeout(() => this.update({
-                    id: 'industryType',
-                    value: this.state.form.industryType,
-                }), 2000);
-            });
-        }
     };
 
     update = (field) => {
@@ -122,30 +96,12 @@ class ConfigForm extends React.Component {
         });
     }
 
-    renderIndustry() {
-        const {industries} = this.props.config;
-        const {form} = this.state;
-
-        return Object.keys(industries).map((key, index) => {
-            const checked = form.industryType.indexOf(key) > -1;
-
-            return (
-                <div key={index} className="col-md-4 col-sm-6">
-                    <div className="gt_checkbox">
-                        <input id={`industry${index}`} name="checkbox" type="checkbox" checked={checked}
-                               onChange={() => this.setIndustry(key)}/>
-                        <label htmlFor={`industry${index}`}>{industries[key].text}</label>
-                    </div>
-                </div>
-            );
-        });
-    }
-
     render() {
         const {dropdown, form} = this.state;
-        const {types} = this.props.config;
-        const companyTypeText = types[form.companyType] ? types[form.companyType].text : null;
-        const remaining = 2 - form.industryType.length;
+        const {types, industries} = this.props.config;
+        const typeText = types[form.companyType] ? types[form.companyType].text : null;
+        const industryText = industries[form.industryType] ? industries[form.industryType].text : null;
+        //const remaining = 2 - form.industryType.length;
 
         return (
             <div className="acc_form_section">
@@ -159,7 +115,7 @@ class ConfigForm extends React.Component {
                                     className="btn btn-default btn-lg dropdown-toggle"
                                     onClick={() => this.toggleDropdown('companyType')}
                                 >
-                                    <span className="gt_selected">{companyTypeText}</span>
+                                    <span className="gt_selected">{typeText}</span>
                                     <span className="caret"></span>
                                 </button>
                                 <ul className="dropdown-menu" style={dropdown.companyType}>
@@ -168,10 +124,22 @@ class ConfigForm extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="type_wrap inds_wrap">
-                        <h3>Industry <span>{`Select up to 2 industries (${remaining} remain)`}</span></h3>
-                        <div className="clearfix"></div>
-                        {this.renderIndustry()}
+                    <div className="acc_form_fields">
+                        <div className="type_wrap">
+                            <h3 className="form_subtitle">Industry</h3>
+                            <div className="btn-group gt_select">
+                                <button
+                                    className="btn btn-default btn-lg dropdown-toggle"
+                                    onClick={() => this.toggleDropdown('industryType')}
+                                >
+                                    <span className="gt_selected">{industryText}</span>
+                                    <span className="caret"></span>
+                                </button>
+                                <ul className="dropdown-menu" style={dropdown.industryType}>
+                                    {this.renderDropdownOptions(industries, 'industryType')}
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
