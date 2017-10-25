@@ -10,12 +10,6 @@ class Company extends React.Component {
         super(props);
     }
 
-    renderIndustryTypes(types) {
-        const {config: {industries}} = this.props;
-
-        return types.map((type) => industries[type].text).join(', ');
-    }
-
     renderSocialLinks() {
 
         return (
@@ -30,7 +24,7 @@ class Company extends React.Component {
     }
 
     render() {
-        const {companies, config: {sizes, types}, match: {params}} = this.props;
+        const {companies, config: {industries, sizes, types}, match: {params}} = this.props;
         const company = companies[params.key];
         const heroImg = company.mediaFiles && company.mediaFiles.heroImg ? company.mediaFiles.heroImg.url : '/images/feat_img.jpg';
 
@@ -86,8 +80,8 @@ class Company extends React.Component {
                                         <h5>{types[company.companyType].text}</h5>
                                     </div>
                                     <div className="company_box">
-                                        <h4>Industries</h4>
-                                        <h5>{this.renderIndustryTypes(company.industryType)}</h5>
+                                        <h4>Industry</h4>
+                                        <h5>{industries[company.industryType].text}</h5>
                                     </div>
                                     {this.renderSocialLinks()}
                                 </div>

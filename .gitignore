@@ -6,3 +6,4 @@
 /public/app.js
 /public/index.html
 /public/manifest.appcache
+npm-debug.log.*
