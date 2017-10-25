@@ -86,8 +86,8 @@ class Company extends React.Component {
                                         <h5>{types[company.companyType].text}</h5>
                                     </div>
                                     <div className="company_box">
-                                        <h4>Industries</h4>
-                                        <h5>{this.renderIndustryTypes(company.industryType)}</h5>
+                                        <h4>Industry</h4>
+                                        <h5>{company.industryType}</h5>
                                     </div>
                                     {this.renderSocialLinks()}
                                 </div>
