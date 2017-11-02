@@ -86,19 +86,19 @@ class Home extends React.Component {
     render() {
         const {companies} = this.props;
         const {dropdown, employmentType, employmentTypes} = this.state;
-        const {config: {site}} = this.props;
+        const {page} = this.props;
         const companyCount = Object.keys(companies).filter((key) => companies[key].active).length;
 
         return (
             <div>
-                <Header isHome={true}/>
+                <Header withSpace={true}/>
                 <section className="mainframe">
-                    <div className="mainframe_img"><img src="/images/banner.jpg"/></div>
+                    <div className="mainframe_img home_img"></div>
                     <div className="container custom_container">
                         <div className="row">
                             <div className="col-md-8 col-sm-7">
-                                <h1>LET’S growTECH</h1>
-                                <h2>Careers, Culture & Community</h2>
+                                <h1>{page.tagText}</h1>
+                                <h2>{page.tagSubText}</h2>
                                 <h3>{companyCount} members and growing fast</h3>
                             </div>
                             <div className="col-md-4 col-sm-5 register_box">
@@ -119,7 +119,7 @@ class Home extends React.Component {
                     <div className="container custom_container">
                         <div className="row">
                             <div className="col-sm-12">
-                                <p>{site.aboutText}</p>
+                                <p>{page.bannerText}</p>
                                 <Link to="/sign-up">Learn More</Link>
                             </div>
                         </div>
@@ -130,7 +130,7 @@ class Home extends React.Component {
                         <div className="row">
                             <div className="col-sm-12 featured_top">
                                 <h2>FEATURED COMPANIES</h2>
-                                <p>{site.featuredText} <Link to="#">Get featured.</Link></p>
+                                <p>{page.featuredText} <Link to="#">Get featured.</Link></p>
                             </div>
                         </div>
                         <div className="row">
@@ -186,9 +186,9 @@ class Home extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user.data,
         companies: state.companies.data,
         config: state.config.data,
+        page: state.pages.data.home || {},
     }
 };
 
