@@ -10,8 +10,11 @@ class Company extends React.Component {
         super(props);
     }
 
-    renderSocialLinks() {
+    renderMarkup = (html) => {
+        return {__html: html};
+    };
 
+    renderSocialLinks() {
         return (
             <div className="company_social">
                 <a href="#" target="_blank"><img src="/images/youtube-company.png" className="img-responsive"/></a>
@@ -27,6 +30,8 @@ class Company extends React.Component {
         const {companies, config: {industries, sizes, types}, match: {params}} = this.props;
         const company = companies[params.key];
         const heroImg = company.mediaFiles && company.mediaFiles.heroImg ? company.mediaFiles.heroImg.url : '/images/feat_img.jpg';
+        const companyType = types[company.companyType] ? types[company.companyType].text : null;
+        const industryType = industries[company.industryType] ? industries[company.industryType].text : null;
 
         if (!company) {
             return <Redirect to="/no-match"/>;
@@ -77,11 +82,11 @@ class Company extends React.Component {
                                     </div>
                                     <div className="company_box">
                                         <h4>Type</h4>
-                                        <h5>{types[company.companyType].text}</h5>
+                                        <h5>{companyType}</h5>
                                     </div>
                                     <div className="company_box">
                                         <h4>Industry</h4>
-                                        <h5>{industries[company.industryType].text}</h5>
+                                        <h5>{industryType}</h5>
                                     </div>
                                     {this.renderSocialLinks()}
                                 </div>
@@ -98,15 +103,15 @@ class Company extends React.Component {
                             <div className="col-sm-7 company_right">
                                 <div className="company_info_details">
                                     <h2>Why Work With Us?</h2>
-                                    <p>{company.why}</p>
+                                    <p dangerouslySetInnerHTML={this.renderMarkup(company.why)}></p>
                                 </div>
                                 <div className="company_info_details">
                                     <h2>Culture</h2>
-                                    <p>{company.culture}</p>
+                                    <p dangerouslySetInnerHTML={this.renderMarkup(company.culture)}></p>
                                 </div>
                                 <div className="company_info_details">
                                     <h2>Perks &amp; Benefits</h2>
-                                    <p>{company.benefits}</p>
+                                    <p dangerouslySetInnerHTML={this.renderMarkup(company.benefits)}></p>
                                 </div>
                                 <h2>In the News</h2>
                             </div>
