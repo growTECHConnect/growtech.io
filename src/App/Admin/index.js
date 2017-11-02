@@ -11,16 +11,7 @@ class Admin extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            firstName: '',
-            lastName: '',
-            email: '',
-            phone: '',
-            old: '',
-            password: '',
-            confirm: '',
-            errors: false,
-        };
+        this.state = {};
     }
 
     componentWillMount() {

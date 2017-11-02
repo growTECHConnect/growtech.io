@@ -2279,10 +2279,17 @@ font-family: 'Montserrat', sans-serif;
 }
 
 .mainframe_img {
-    background-image: url("/images/banner.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: 50% 50%;
+}
+
+.home_img {
+    background-image: url("/images/banner.jpg");
+}
+
+.about_img {
+    background-image: url("/images/about_bg.jpg");
 }
 
 @media (max-width: 990px) and (min-width: 768px) {

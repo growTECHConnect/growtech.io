@@ -5,11 +5,11 @@ import PropTypes from 'prop-types'
 
 class Header extends React.Component {
     static propTypes = {
-        isHome: PropTypes.bool,
+        withSpace: PropTypes.bool,
     };
 
     static defaultProps = {
-        isHome: false,
+        withSpace: false,
     };
 
     constructor(props) {
@@ -56,8 +56,8 @@ class Header extends React.Component {
     }
 
     render() {
-        const { isHome } = this.props;
-        const headerClass = isHome ? '' : 'inner_header';
+        const { withSpace } = this.props;
+        const headerClass = withSpace ? '' : 'inner_header';
 
         return (
             <header className={headerClass}>
