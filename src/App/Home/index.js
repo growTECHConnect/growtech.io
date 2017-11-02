@@ -120,7 +120,7 @@ class Home extends React.Component {
                         <div className="row">
                             <div className="col-sm-12">
                                 <p>{page.bannerText}</p>
-                                <Link to="/sign-up">Learn More</Link>
+                                <Link to="/about">Learn More</Link>
                             </div>
                         </div>
                     </div>
