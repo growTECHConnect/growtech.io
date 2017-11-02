@@ -138,7 +138,7 @@ class Home extends React.Component {
                         </div>
                         <div className="row">
                             <div className="col-sm-12 featured_top featured_bottom">
-                                <p>Don't see what you're looking for? <Link to="/companies">Browse our directory.</Link>
+                                <p>Don't see what you're looking for? <Link to="/directory">Browse our directory.</Link>
                                 </p>
                             </div>
                         </div>
