@@ -30,6 +30,9 @@ class Home extends React.Component {
 
         return Object.keys(companies)
             .filter((key) => {
+                return companies[key].active;
+            })
+            .filter((key) => {
                 return companies[key].fulltime || companies[key].parttime || companies[key].internship;
             })
             .map((key, index) => {

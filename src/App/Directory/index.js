@@ -200,6 +200,10 @@ class Directory extends React.Component {
         const filteredKeys = Object.keys(companies)
             .filter((key) => {
                 const company = companies[key];
+                return company.active;
+            })
+            .filter((key) => {
+                const company = companies[key];
                 return company.name.toLowerCase().includes(search.toLowerCase());
             })
             .filter((key) => {
