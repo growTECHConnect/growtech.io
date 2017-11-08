@@ -2210,6 +2210,7 @@ font-family: 'Montserrat', sans-serif;
     border-width: 0;
     border-bottom-width: 1px;
     font-size: 18px;
+    margin-bottom: 0 !important;
 }
 
 .gt_select .dropdown-menu li:hover {

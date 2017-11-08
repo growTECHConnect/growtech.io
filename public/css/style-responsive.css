@@ -177,7 +177,7 @@
         padding:25px 15px 5px 15px;
     }
     .filters ul li {
-        margin-bottom:20px;
+        margin-bottom:10px;
     }
     .gt_checkbox input[type="checkbox"] + label {
         padding-left:25px;
@@ -352,7 +352,7 @@
         padding:25px 15px 5px 15px;
     }
     .filters ul li {
-        margin-bottom:20px;
+        margin-bottom:10px;
     }
     .gt_checkbox input[type="checkbox"] + label {
         padding-left:25px;
@@ -740,7 +740,7 @@
         padding:25px 15px 5px 15px;
     }
     .filters ul li {
-        margin-bottom:20px;
+        margin-bottom:10px;
     }
     .gt_checkbox input[type="checkbox"] + label {
         padding-left:25px;
@@ -1097,7 +1097,7 @@
     }
 }
 @media (max-width:479px) and (min-width:200px) {
-    
+
 }
 @media (max-width:609px) and (min-width:200px) {
     .company_img_full, .company_img_half, .company_img_half:last-child {

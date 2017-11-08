@@ -12,31 +12,176 @@ class Directory extends React.Component {
         super(props);
 
         this.state = {
-            filter: {
-                hiring: true,
-                interns: true,
+            filters: {
+                fulltime: true,
+                internship: true,
+                parttime: true,
             },
             search: '',
+            types: [],
+            sizes: [],
+            industries: [],
         };
-
-        this.filterCompanies.bind(this);
     }
 
-    filterCompanies = ({target: {id}}) => {
+    componentWillMount() {
+        this.setFilters(this.props);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {companies, config} = this.props;
+
+        if (companies !== nextProps.companies || config !== nextProps.config) {
+            this.setFilters(nextProps);
+        }
+    }
+
+    setFilters = (props) => {
+        const {companies, config: {industries, sizes, types}} = props;
+        const typeFilters = Object.keys(types)
+            .map((type) => {
+                const count = Object.keys(companies).filter((company) => {
+                    return companies[company].companyType === type;
+                }).length;
+
+                return {...types[type], key: type, count};
+            })
+            .filter((type) => {
+                return type.count > 0;
+            })
+            .sort(function (a, b) {
+                return b.count - a.count;
+            });
+        const industryFilters = Object.keys(industries)
+            .map((industry) => {
+                const count = Object.keys(companies).filter((company) => {
+                    return companies[company].industryType === industry;
+                }).length;
+
+                return {...industries[industry], key: industry, count};
+            })
+            .filter((industry) => {
+                return industry.count > 0;
+            })
+            .sort(function (a, b) {
+                return b.count - a.count;
+            });
+        const sizeFilters = sizes.map((size, index) => {
+                const count = Object.keys(companies).filter((company) => {
+                    return companies[company].employeeSize === index.toString();
+                }).length;
+                const key = size.text.replace('-', '_').replace(' ', '_');
+
+                return {...size, key, count};
+            })
+            .filter((size) => {
+                return size.count > 0;
+            })
+            .sort(function (a, b) {
+                return b.count - a.count;
+            });
+        let filters = {};
+
+        industryFilters.forEach((industry) => {
+            filters[industry.key] = true;
+        });
+
+        typeFilters.forEach((type) => {
+            filters[type.key] = true;
+        });
+
+        sizeFilters.forEach((size) => {
+            filters[size.key] = true;
+        });
+
         this.setState({
-            filter: {
-                ...this.state.filter,
-                [id]: !this.state.filter[id],
-            }
-        }, () => {
-
-
-
-            console.log('filterCompanies', id);
+            filters: {
+                ...filters,
+                ...this.state.filters,
+            },
+            industries: industryFilters,
+            sizes: sizeFilters,
+            types: typeFilters,
         });
     };
 
-    renderFeatured() {
+    searchFilter = ({target: {value}}) => {
+        this.setState({search: value});
+    };
+
+    toggleFilter = ({target: {id}}) => {
+        this.setState({
+            filters: {
+                ...this.state.filters,
+                [id]: !this.state.filters[id],
+            }
+        });
+    };
+
+    renderTypeFilters = () => {
+        const {types} = this.state;
+
+        return types.map((filter, index) => {
+            const text = `${filter.text} ${filter.count > 0 ? '(' + filter.count + ')' : ''}`;
+
+            return (
+                <li key={index}>
+                    <div className="gt_checkbox">
+                        <input id={filter.key}
+                               type="checkbox"
+                               checked={this.state.filters[filter.key]}
+                               onChange={this.toggleFilter}
+                        />
+                        <label htmlFor={filter.key}>{text}</label>
+                    </div>
+                </li>
+            );
+        });
+    };
+
+    renderIndustryFilters = () => {
+        const {industries} = this.state;
+
+        return industries.map((filter, index) => {
+            const text = `${filter.text} ${filter.count > 0 ? '(' + filter.count + ')' : ''}`;
+
+            return (
+                <li key={index}>
+                    <div className="gt_checkbox">
+                        <input id={filter.key}
+                               type="checkbox"
+                               checked={this.state.filters[filter.key]}
+                               onChange={this.toggleFilter}
+                        />
+                        <label htmlFor={filter.key}>{text}</label>
+                    </div>
+                </li>
+            );
+        });
+    };
+
+    renderSizeFilters = () => {
+        const {sizes} = this.state;
+
+        return sizes.map((filter, index) => {
+            const text = `${filter.text} ${filter.count > 0 ? '(' + filter.count + ')' : ''}`;
+
+            return (
+                <li key={index}>
+                    <div className="gt_checkbox">
+                        <input id={filter.key}
+                               type="checkbox"
+                               checked={this.state.filters[filter.key]}
+                               onChange={this.toggleFilter}
+                        />
+                        <label htmlFor={filter.key}>{text}</label>
+                    </div>
+                </li>
+            );
+        });
+    };
+
+    renderFeatured = () => {
         const {companies, config: {site, types}} = this.props;
         const featuredCompanies = site.featuredCompanies || [];
 
@@ -47,27 +192,64 @@ class Directory extends React.Component {
                 return <Featured key={index} id={key} company={companies[key]} type={types[companyType].text}/>;
             }
         });
-    }
+    };
 
-    renderCompanies() {
-        const {companies, config: {types}} = this.props;
-        const filteredKeys = Object.keys(companies).filter((key) => {
+    renderCompanies = () => {
+        const {companies, config: {sizes, types}} = this.props;
+        const {filters, search} = this.state;
+        const filteredKeys = Object.keys(companies)
+            .filter((key) => {
                 const company = companies[key];
+                return company.name.toLowerCase().includes(search.toLowerCase());
+            })
+            .filter((key) => {
+                const company = companies[key];
+                const filtersKey = Object.keys(filters);
+                const matches = filtersKey.filter((key) => {
+                    return filters[key] && filters[key] === company[key];
+                });
 
-                return company.hiring === this.state.filter.hiring &&
-                    company.interns === this.state.filter.interns;
+                return matches.length > 0;
+            })
+            .filter((key) => {
+                const company = companies[key];
+                const filtersKey = Object.keys(filters);
+                const matches = filtersKey.filter((key) => {
+                    return filters[key] && key === company.companyType;
+                });
+
+                return matches.length > 0;
+            })
+            .filter((key) => {
+                const company = companies[key];
+                const filtersKey = Object.keys(filters);
+                const matches = filtersKey.filter((key) => {
+                    return filters[key] && key === company.industryType;
+                });
+
+                return matches.length > 0;
+            })
+            .filter((key) => {
+                const company = companies[key];
+                const filtersKey = Object.keys(filters);
+                const sizeKey = sizes[company.employeeSize].text.replace('-', '_').replace(' ', '_');
+                const matches = filtersKey.filter((key) => {
+                    return filters[key] && key === sizeKey;
+                });
+
+                return matches.length > 0;
             });
 
         return filteredKeys.map((key, index) => {
             const companyType = companies[key].companyType;
+            const companyTypeText = types[companyType] ? types[companyType].text : null;
 
-            return <Tile key={index} id={key} company={companies[key]} type={types[companyType].text} large={true}/>;
+            return <Tile key={index} id={key} company={companies[key]} type={companyTypeText} large={true}/>;
         });
-    }
+    };
 
     render() {
-        const {user, config: {site, types}} = this.props;
-        const companies = Object.keys(this.props.companies || {}).map((key) => key);
+        const {page} = this.props;
 
         return (
             <div>
@@ -84,14 +266,13 @@ class Directory extends React.Component {
                         </div>
                         <div className="row">
                             <div className="col-sm-12 featured_top featured_bottom">
-                                <p>{site.featuredText} <a href="#">Get featured.</a></p>
+                                <p>{page.featuredText} <a href="#">Get featured.</a></p>
                             </div>
                         </div>
                     </div>
                     <div className="container matches_wrap">
                         <div className="row">
                             <div className="col-sm-5 filters_wrap">
-
                                 <h2>
                                     Filters
                                     <button className="c-hamburger c-hamburger--htla filter_icon">
@@ -99,34 +280,56 @@ class Directory extends React.Component {
                                     </button>
                                 </h2>
                                 <div className="search_wrap">
-                                    <input type="text" placeholder="Search"/>
+                                    <input id="name" type="text" placeholder="Search" value={this.state.search} onChange={this.searchFilter}/>
                                     <button type="submit">
                                         <img src="images/search_filter.png" className="img-responsive"/>
                                     </button>
                                 </div>
                                 <div className="filters">
-                                    <h3>Status</h3>
+                                    <h3>Now Hiring</h3>
                                     <ul>
                                         <li>
                                             <div className="gt_checkbox">
-                                                <input id="hiring"
+                                                <input id="fulltime"
                                                        type="checkbox"
-                                                       checked={this.state.filter.hiring}
-                                                       onChange={this.filterCompanies}
+                                                       checked={this.state.filters.fulltime}
+                                                       onChange={this.toggleFilter}
                                                 />
-                                                <label htmlFor="hiring">Now Hiring</label>
+                                                <label htmlFor="fulltime">Full Time</label>
                                             </div>
                                         </li>
                                         <li>
                                             <div className="gt_checkbox">
-                                                <input id="interns"
+                                                <input id="parttime"
                                                        type="checkbox"
-                                                       checked={this.state.filter.interns}
-                                                       onChange={this.filterCompanies}
+                                                       checked={this.state.filters.parttime}
+                                                       onChange={this.toggleFilter}
                                                 />
-                                                <label htmlFor="interns">Looking For Interns</label>
+                                                <label htmlFor="parttime">Part Time</label>
                                             </div>
                                         </li>
+                                        <li>
+                                            <div className="gt_checkbox">
+                                                <input id="internship"
+                                                       type="checkbox"
+                                                       checked={this.state.filters.internship}
+                                                       onChange={this.toggleFilter}
+                                                />
+                                                <label htmlFor="internship">Internship</label>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <h3>Company Type</h3>
+                                    <ul>
+                                        {this.renderTypeFilters()}
+                                    </ul>
+                                    <h3>Industry Type</h3>
+                                    <ul>
+                                        {this.renderIndustryFilters()}
+                                    </ul>
+                                    <h3>Company Size</h3>
+                                    <ul>
+                                        {this.renderSizeFilters()}
                                     </ul>
                                 </div>
                             </div>
@@ -138,220 +341,6 @@ class Directory extends React.Component {
                                     {this.renderCompanies()}
                                 </div>
                             </div>
-
-
-
-                            {/*<div className="col-sm-5 col-md-4 filters_wrap">*/}
-
-
-                                {/*<div className="row filter_responsive">*/}
-                                    {/*<div className="col-sm-12">*/}
-
-
-                                        {/*<div className="filters">*/}
-                                            {/*<h3>Type</h3>*/}
-                                            {/*<ul>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxt1" name="checkbox" type="checkbox"*/}
-                                                               {/*checked={false}*/}
-                                                               {/*onChange={this.onCheck}*/}
-                                                        {/*/>*/}
-                                                        {/*<label htmlFor="checkboxt1">Advertising/Marketing (68)</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxt2" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxt2">Agency (91)</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxt3" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxt3">Angel or VC Firm (19)</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxt4" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxt4">Automotive (15)</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxt5" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxt5">Big Data (62)</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxt6" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxt6">Clean &amp; Green Tech (25)</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxt7" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxt7">Co-Working Space or Incubator*/}
-                                                            {/*(2)</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxt8" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxt8">Professional Services (31)</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxt9" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxt9">Technology Company (44)</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                            {/*</ul>*/}
-                                            {/*<ul className="toggle_options">*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxt10" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxt10">Co-Working Space or Incubator*/}
-                                                            {/*(2)</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxt11" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxt11">Professional Services (31)</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxt12" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxt12">Technology Company (44)</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                            {/*</ul>*/}
-                                            {/*<span className="option_toggler">Show More</span>*/}
-                                        {/*</div>*/}
-
-                                        {/*<div className="filters">*/}
-                                            {/*<h3>Sort By</h3>*/}
-                                            {/*<ul>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxso1" name="checkbox" type="checkbox"*/}
-                                                               {/*checked={false}*/}
-                                                               {/*onChange={this.onCheck}*/}
-                                                        {/*/>*/}
-                                                        {/*<label htmlFor="checkboxso1">Recently Launched</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxso2" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxso2">Recently Funded</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxso3" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxso3">Recent Exits</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                            {/*</ul>*/}
-                                        {/*</div>*/}
-
-                                        {/*<div className="filters">*/}
-                                            {/*<h3>Company Size</h3>*/}
-                                            {/*<ul>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxc1" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxc1">Self-employed / Remote</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxc2" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxc2">1-10 employees</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxc3" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxc3">11-50 employees</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxc4" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxc4">51-200 employees</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxc5" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxc5">201-500 employees</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxc6" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxc6">501-1000 employees</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxc7" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxc7">1001-5000 employees</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxc8" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxc8">5001-10,000 employees</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                                {/*<li>*/}
-                                                    {/*<div className="gt_checkbox">*/}
-                                                        {/*<input id="checkboxc9" name="checkbox" type="checkbox"/>*/}
-                                                        {/*<label htmlFor="checkboxc9">10,001+ employees</label>*/}
-                                                    {/*</div>*/}
-                                                {/*</li>*/}
-                                            {/*</ul>*/}
-                                        {/*</div>*/}
-
-
-                                    {/*</div>*/}
-                                {/*</div>*/}
-                            {/*</div>*/}
-
-
-                            {/*<div className="col-sm-7 col-md-8 all_matches_wrap">*/}
-                                {/*<div className="row">*/}
-                                    {/*<div className="col-sm-12 featured_top">*/}
-                                        {/*<h2 className="text-left">All Matches</h2>*/}
-                                    {/*</div>*/}
-                                {/*</div>*/}
-                                {/*<div className="row">*/}
-                                    {/*<div className="col-sm-6 col-md-4 hiring_box">*/}
-                                        {/*<a href="company.html" className="hiring_wrap">*/}
-                                            {/*<span className="hiring_logo">*/}
-                                                {/*<img src="images/demo_logo2.png" className="img-responsive"/>*/}
-                                            {/*</span>*/}
-                                            {/*<h2>DIGITAL AGENCY</h2>*/}
-                                            {/*<h3>Springbox</h3>*/}
-                                        {/*</a>*/}
-                                    {/*</div>*/}
-                                {/*</div>*/}
-                                {/*<div className="row">*/}
-                                    {/*<div className="col-sm-12 load_companies">*/}
-                                        {/*<a href="#">LOAD MORE COMPANIES</a>*/}
-                                    {/*</div>*/}
-                                {/*</div>*/}
-                            {/*</div>*/}
-
-
                         </div>
                     </div>
                 </section>
@@ -367,6 +356,7 @@ const mapStateToProps = (state) => {
     user: state.user.data,
     companies: state.companies.data,
     config: state.config.data,
+    page: state.pages.data.directory || {},
 }
 };
 

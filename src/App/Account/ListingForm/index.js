@@ -7,14 +7,12 @@ class ListingForm extends React.Component {
 
         this.state = {
             form: {
-                employmentType: '',
-                hiring: false,
-                interns: false,
+                fulltime: true,
+                parttime: false,
+                internship: false,
                 jobsiteUrl: '',
             },
-            dropdown: {
-                employmentType: null,
-            },
+            saveMsg: null,
             errors: false,
         };
     }
@@ -33,9 +31,9 @@ class ListingForm extends React.Component {
         if (company) {
             this.setState({
                 form: {
-                    employmentType: company.employmentType || '',
-                    hiring: company.hiring || false,
-                    interns: company.interns || false,
+                    fulltime: company.fulltime || false,
+                    parttime: company.parttime || false,
+                    internship: company.internship || false,
                     jobsiteUrl: company.jobsiteUrl || '',
                 },
             });
@@ -52,8 +50,8 @@ class ListingForm extends React.Component {
         });
     };
 
-    setChecked = (id, value) => {
-        this.setField({target: {id, value}});
+    setChecked = ({target: {id, value}}) => {
+        this.setField({target: {id, value: !this.state.form[id]}});
     };
 
     update = (field) => {
@@ -77,90 +75,50 @@ class ListingForm extends React.Component {
         return errors[field] ? 'network_fields form-group has-error' : 'network_fields form-group';
     };
 
-    toggleDropdown = (field) => {
-        event.preventDefault();
-        this.setState({
-            dropdown: {
-                ...this.state.dropdown,
-                [field]: this.state.dropdown[field] ? null : {display: 'block'},
-            }
-        })
-    };
-
-    renderDropdownOptions(options, id) {
-        return Object.keys(options).map((key, index) => {
-            return (
-                <li
-                    key={index}
-                    onClick={() => {
-                        this.setField({target: {id, value: key}});
-                        this.toggleDropdown(id);
-                    }}
-                >
-                    {options[key].text}
-                </li>
-            );
-        });
-    }
-
     render() {
-        const {dropdown, form} = this.state;
-        const {employments} = this.props.config;
-        const employmentTypeText = employments[form.employmentType] ? employments[form.employmentType].text : null;
+        const {form, saveMsg} = this.state;
 
         return (
             <div className="acc_form_section">
-                <h2>Company Job Listings</h2>
+                <h2>Company Job Listings <span className="gt_save_msg">{saveMsg}</span></h2>
                 <form noValidate onSubmit={(event) => event.preventDefault()}>
                     <div className="acc_form_wrap">
-                        <div className="acc_form_wrap acc_form_three_col">
-                            <div className="acc_form_fields">
-                                <div className={this.getGroupClass('jobsiteUrl')}>
-                                    <label>Job Site URL</label>
-                                    <input id="jobsiteUrl" type="text" value={form.jobsiteUrl}
-                                           onChange={this.setField}/>
-                                    <span className="help-block"></span>
+                        <div className="acc_form_fields">
+                            <div className="type_wrap">
+                                <h3 className="form_subtitle">Hiring For</h3>
+                                <div className="gt_checkbox">
+                                    <input id="fulltime"
+                                           type="checkbox"
+                                           checked={form.fulltime}
+                                           onChange={this.setChecked}
+                                    />
+                                    <label htmlFor="fulltime">Full Time</label>
                                 </div>
-                            </div>
-                            <div className="acc_form_fields">
-                                <div className={this.getGroupClass('employmentType')}>
-                                    <label>Employment Type</label>
-                                    <div className="btn-group gt_select">
-                                        <button
-                                            className="btn btn-default btn-lg dropdown-toggle"
-                                            onClick={() => this.toggleDropdown('employmentType')}
-                                        >
-                                            <span className="gt_selected">{employmentTypeText}</span>
-                                            <span className="caret"></span>
-                                        </button>
-                                        <ul className="dropdown-menu" style={dropdown.employmentType}>
-                                            {this.renderDropdownOptions(employments, 'employmentType')}
-                                        </ul>
-                                    </div>
+                                <div className="gt_checkbox">
+                                    <input id="parttime"
+                                           type="checkbox"
+                                           checked={form.parttime}
+                                           onChange={this.setChecked}
+                                    />
+                                    <label htmlFor="parttime">Part Time</label>
+                                </div>
+                                <div className="gt_checkbox">
+                                    <input id="internship"
+                                           type="checkbox"
+                                           checked={form.internship}
+                                           onChange={this.setChecked}
+                                    />
+                                    <label htmlFor="internship">Internships</label>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="cmp_job_wrap">
-                        <div className="switch_wrap">
-                            <span>Hiring</span>
-                            <label className="switch">
-                                <input id="hiring" type="checkbox" checked={form.hiring} value={form.hiring}
-                                       onChange={() => this.setChecked('hiring', !form.hiring)}/>
-                                <div className="slider round"></div>
-                            </label>
-                            <span>Not Hiring</span>
-                        </div>
-                    </div>
-                    <div className="cmp_job_wrap">
-                        <div className="switch_wrap">
-                            <span>Looking For Interns</span>
-                            <label className="switch">
-                                <input id="interns" type="checkbox" checked={form.interns} value={form.interns}
-                                       onChange={() => this.setChecked('interns', !form.interns)}/>
-                                <div className="slider round"></div>
-                            </label>
-                            <span>Not Now</span>
+                        <div className="acc_form_fields">
+                            <div className={this.getGroupClass('jobsiteUrl')}>
+                                <label>Job Site URL</label>
+                                <input id="jobsiteUrl" type="text" value={form.jobsiteUrl}
+                                       onChange={this.setField}/>
+                                <span className="help-block"></span>
+                            </div>
                         </div>
                     </div>
                 </form>
