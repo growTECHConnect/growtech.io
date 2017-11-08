@@ -238,6 +238,18 @@ class Directory extends React.Component {
                 });
 
                 return matches.length > 0;
+            })
+            .sort((a, b) => {
+                const nameA = companies[a].name.toLowerCase();
+                const nameB = companies[b].name.toLowerCase();
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+
+                return 0;
             });
 
         return filteredKeys.map((key, index) => {
