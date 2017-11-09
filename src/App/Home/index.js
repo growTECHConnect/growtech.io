@@ -35,6 +35,18 @@ class Home extends React.Component {
             .filter((key) => {
                 return companies[key].fulltime || companies[key].parttime || companies[key].internship;
             })
+            .sort((a, b) => {
+                const nameA = companies[a].name.toLowerCase();
+                const nameB = companies[b].name.toLowerCase();
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+
+                return 0;
+            })
             .map((key, index) => {
                 const companyType = companies[key].companyType;
 
