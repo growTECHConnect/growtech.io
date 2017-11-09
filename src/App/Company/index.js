@@ -29,7 +29,7 @@ class Company extends React.Component {
     render() {
         const {companies, config: {industries, sizes, types}, match: {params}} = this.props;
         const company = companies[params.key];
-        const heroImg = company.mediaFiles && company.mediaFiles.heroImg ? company.mediaFiles.heroImg.url : '/images/feat_img.jpg';
+        const companyImg = company.mediaFiles && company.mediaFiles.companyImg ? company.mediaFiles.companyImg.url : null;
         const companyType = types[company.companyType] ? types[company.companyType].text : null;
         const industryType = industries[company.industryType] ? industries[company.industryType].text : null;
 
@@ -48,7 +48,7 @@ class Company extends React.Component {
                     </div>
                     <div className="container custom_container company_top_details">
                         <div className="company_logo">
-                            <img src={heroImg}/>
+                            <img src={companyImg}/>
                         </div>
                         <p>{company.description}</p>
                         <a href={company.url} target="_blank">Contact Us</a>
