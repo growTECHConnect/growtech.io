@@ -16,6 +16,7 @@ class Directory extends React.Component {
                 fulltime: true,
                 internship: true,
                 parttime: true,
+                notHiring: true,
             },
             search: '',
             types: [],
@@ -41,7 +42,7 @@ class Directory extends React.Component {
         const typeFilters = Object.keys(types)
             .map((type) => {
                 const count = Object.keys(companies).filter((company) => {
-                    return companies[company].companyType === type;
+                    return companies[company].active && companies[company].companyType === type;
                 }).length;
 
                 return {...types[type], key: type, count};
@@ -55,7 +56,7 @@ class Directory extends React.Component {
         const industryFilters = Object.keys(industries)
             .map((industry) => {
                 const count = Object.keys(companies).filter((company) => {
-                    return companies[company].industryType === industry;
+                    return companies[company].active && companies[company].industryType === industry;
                 }).length;
 
                 return {...industries[industry], key: industry, count};
@@ -68,7 +69,7 @@ class Directory extends React.Component {
             });
         const sizeFilters = sizes.map((size, index) => {
                 const count = Object.keys(companies).filter((company) => {
-                    return companies[company].employeeSize === index.toString();
+                    return companies[company].active && companies[company].employeeSize === index.toString();
                 }).length;
                 const key = size.text.replace('-', '_').replace(' ', '_');
 
@@ -208,12 +209,22 @@ class Directory extends React.Component {
             })
             .filter((key) => {
                 const company = companies[key];
-                const filtersKey = Object.keys(filters);
-                const matches = filtersKey.filter((key) => {
-                    return filters[key] && filters[key] === company[key];
-                });
 
-                return matches.length > 0;
+                if (company.fulltime && filters.fulltime) {
+                    return true;
+                }
+
+                if (company.parttime && filters.parttime) {
+                    return true;
+                }
+
+                if (company.internship && filters.internship) {
+                    return true;
+                }
+
+                if (!company.fulltime && !company.parttime && !company.internship && filters.notHiring) {
+                    return true;
+                }
             })
             .filter((key) => {
                 const company = companies[key];
@@ -332,6 +343,16 @@ class Directory extends React.Component {
                                                        onChange={this.toggleFilter}
                                                 />
                                                 <label htmlFor="internship">Internship</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div className="gt_checkbox">
+                                                <input id="notHiring"
+                                                       type="checkbox"
+                                                       checked={this.state.filters.notHiring}
+                                                       onChange={this.toggleFilter}
+                                                />
+                                                <label htmlFor="notHiring">Not Hiring</label>
                                             </div>
                                         </li>
                                     </ul>
