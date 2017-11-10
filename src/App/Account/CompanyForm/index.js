@@ -1,11 +1,19 @@
 import React from 'react';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
+import {EditorState, convertToRaw, ContentState} from 'draft-js';
+import {Editor} from 'react-draft-wysiwyg';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import '../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 class CompanyForm extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            benefitsEditorState: EditorState.createEmpty(),
+            cultureEditorState: EditorState.createEmpty(),
+            whyEditorState: EditorState.createEmpty(),
             form: {
                 name: '',
                 url: '',
@@ -30,13 +38,47 @@ class CompanyForm extends React.Component {
 
     componentDidMount() {
         this.setData(this.props);
+
+        if (this.props.company && this.props.company.benefits) {
+            this.setEditorContent('benefits', this.props.company.benefits);
+        }
+
+        if (this.props.company && this.props.company.culture) {
+            this.setEditorContent('culture', this.props.company.culture);
+        }
+
+        if (this.props.company && this.props.company.why) {
+            this.setEditorContent('why', this.props.company.why);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.company && nextProps.company !== this.props.company) {
             this.setData(nextProps);
         }
+
+        if (nextProps.company && nextProps.company.benefits != this.props.company.benefits) {
+            this.setEditorContent('benefits', nextProps.company.benefits);
+        }
+
+        if (nextProps.company && nextProps.company.culture != this.props.company.culture) {
+            this.setEditorContent('culture', nextProps.company.culture);
+        }
+
+        if (nextProps.company && nextProps.company.why !== this.props.company.why) {
+            this.setEditorContent('why', nextProps.company.why);
+        }
     }
+
+    setEditorContent = (id, content) => {
+        const { contentBlocks, entityMap } = htmlToDraft(content);
+        const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+        const editorState = EditorState.createWithContent(contentState);
+
+        id = `${id}EditorState`;
+
+        this.setState({[id]: editorState});
+    };
 
     setData = ({company}) => {
         if (company) {
@@ -51,9 +93,6 @@ class CompanyForm extends React.Component {
                     city: company.city || '',
                     state: company.state || '',
                     description: company.description || '',
-                    why: company.why || '',
-                    culture: company.culture || '',
-                    benefits: company.benefits || '',
                 },
             });
         }
@@ -102,6 +141,18 @@ class CompanyForm extends React.Component {
                 [field]: this.state.dropdown[field] ? null : {display: 'block'},
             }
         })
+    };
+
+    onEditorChange = (id, editorState) => {
+        const html = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+        this.setField({target: {id, value: html}});
+
+        id = `${id}EditorState`;
+
+        this.setState({[id]: editorState}, () => {
+            const html = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+            this.setField({target: {id, value: html}});
+        });
     };
 
     renderDropdownOptions(options, id) {
@@ -221,7 +272,7 @@ class CompanyForm extends React.Component {
                         <div className="acc_form_fields"></div>
                     </div>
                     <div className="acc_form_wrap">
-                        <div className="acc_form_fields">
+                        <div className="acc_form_fields full">
                             <div className={this.getGroupClass('description')}>
                                 <label className="control-label" htmlFor="description">Company Description</label>
                                 <textarea id="description" className="form-control" value={form.description}
@@ -229,29 +280,43 @@ class CompanyForm extends React.Component {
                                 <span className="help-block">{errors.description}</span>
                             </div>
                         </div>
-                        <div className="acc_form_fields">
+                    </div>
+                    <div className="acc_form_wrap">
+                        <div className="acc_form_fields full">
                             <div className={this.getGroupClass('why')}>
                                 <label className="control-label" htmlFor="why">Why Work With Us</label>
-                                <textarea id="why" className="form-control" value={form.why} onChange={this.setField}/>
-                                <span className="help-block">{errors.why}</span>
+                                <Editor
+                                    wrapperClassName="wrapper-control"
+                                    editorClassName="editor-control"
+                                    editorState={this.state.whyEditorState}
+                                    onEditorStateChange={(editorState) => this.onEditorChange('why', editorState)}
+                                />
                             </div>
                         </div>
                     </div>
                     <div className="acc_form_wrap">
-                        <div className="acc_form_fields">
+                        <div className="acc_form_fields full">
                             <div className={this.getGroupClass('culture')}>
                                 <label className="control-label" htmlFor="culture">Culture</label>
-                                <textarea id="culture" className="form-control" value={form.culture}
-                                          onChange={this.setField}/>
-                                <span className="help-block">{errors.culture}</span>
+                                <Editor
+                                    wrapperClassName="wrapper-control"
+                                    editorClassName="editor-control"
+                                    editorState={this.state.cultureEditorState}
+                                    onEditorStateChange={(editorState) => this.onEditorChange('culture', editorState)}
+                                />
                             </div>
                         </div>
-                        <div className="acc_form_fields">
+                    </div>
+                    <div className="acc_form_wrap">
+                        <div className="acc_form_fields full">
                             <div className={this.getGroupClass('benefits')}>
                                 <label className="control-label" htmlFor="benefits">Perks &amp; Benefits</label>
-                                <textarea id="benefits" className="form-control" value={form.benefits}
-                                          onChange={this.setField}/>
-                                <span className="help-block">{errors.benefits}</span>
+                                <Editor
+                                    wrapperClassName="wrapper-control"
+                                    editorClassName="editor-control"
+                                    editorState={this.state.benefitsEditorState}
+                                    onEditorStateChange={(editorState) => this.onEditorChange('benefits', editorState)}
+                                />
                             </div>
                         </div>
                     </div>
