@@ -1861,6 +1861,11 @@ footer .foot_menu h2 {
 .acc_form_fields .network_fields {
     position:relative;
 }
+
+.acc_form_fields .full {
+    width: 100% !important;
+}
+
 .char_counter {
     position:absolute;
     bottom:5px;
@@ -2375,8 +2380,15 @@ font-family: 'Montserrat', sans-serif;
     display: inline-block;
 }
 
-.form_subtitle
+.editor-control {
+    border: 1px solid #6f6f6f;
+    min-height: 100px;
+    padding: 15px;
+}
 
+.wrappper-control {
+    border: 1px solid #6f6f6f;
+}
 
 
 

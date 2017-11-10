@@ -68,6 +68,10 @@
         width:48%;
         margin-right:2%;
     }
+    .my_company .acc_form_fields.full {
+        width:100%;
+        margin-right:2%;
+    }
     .my_company_container .acc_form_section.company_news_links {
         padding-right:32px;
     }
@@ -217,6 +221,11 @@
         width:48%;
         margin-right:2%;
         float:left;
+    }
+    .my_company .acc_form_fields.full {
+        width:100%;
+        margin-right:2%;
+        float:none;
     }
     .my_company .selecter {
         min-width:100%;
