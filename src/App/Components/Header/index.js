@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect, Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
@@ -14,6 +14,10 @@ class Header extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            buttonOpen: false,
+        };
     }
 
     signOut = () => {
@@ -21,33 +25,39 @@ class Header extends React.Component {
         user.signOut();
     };
 
+    onMenuClick = () => {
+        this.setState({buttonOpen: !this.state.buttonOpen});
+    };
+
     renderLinks() {
         const { user } = this.props;
+        const homeClass = document.location.pathname === '/' ? 'active' : '';
+        const menuClass = `navbar-collapse ${this.state.buttonOpen ? '' : 'full_page_menu'}`;
 
         if (user) {
             return (
-                <div id="navbar" className="navbar-collapse collapse full_page_menu">
+                <div id="navbar" className={menuClass}>
                     <ul className="nav navbar-nav navbar-right">
-                        <li><Link to="/">Home</Link></li>
-                        <li><Link to="/directory">Directory</Link></li>
-                        <li><Link to="/news">News</Link></li>
-                        <li><Link to="/about">About</Link></li>
+                        <li><Link to="" className={homeClass}>Home</Link></li>
+                        <li><NavLink to="/directory">Directory</NavLink></li>
+                        <li><NavLink to="/news">News</NavLink></li>
+                        <li><NavLink to="/about">About</NavLink></li>
                         <li><a href="/" onClick={this.signOut}>Sign Out</a></li>
-                        <li className="register"><Link to="/account">Account</Link></li>
+                        <li className="register"><NavLink to="/account">Account</NavLink></li>
                     </ul>
                 </div>
             );
         }
 
         return (
-            <div id="navbar" className="navbar-collapse collapse full_page_menu">
+            <div id="navbar" className={menuClass}>
                 <ul className="nav navbar-nav navbar-right">
-                    <li><Link to="/">Home</Link></li>
-                    <li><Link to="/directory">Directory</Link></li>
-                    <li><Link to="/news">News</Link></li>
-                    <li><Link to="/about">About</Link></li>
-                    <li><Link to="/sign-in">Sign In</Link></li>
-                    <li className="register"><Link to="/sign-up">Register</Link></li>
+                    <li><Link to="" className={homeClass}>Home</Link></li>
+                    <li><NavLink to="/directory">Directory</NavLink></li>
+                    <li><NavLink to="/news">News</NavLink></li>
+                    <li><NavLink to="/about">About</NavLink></li>
+                    <li><NavLink to="/sign-in">Sign In</NavLink></li>
+                    <li className="register"><NavLink to="/sign-up">Register</NavLink></li>
                 </ul>
             </div>
         );
@@ -56,6 +66,7 @@ class Header extends React.Component {
     render() {
         const { withSpace } = this.props;
         const headerClass = withSpace ? '' : 'inner_header';
+        const buttonClass = `navbar-toggle nav-icon ${this.state.buttonOpen ? 'open' : ''}`;
 
         return (
             <header className={headerClass}>
@@ -70,7 +81,15 @@ class Header extends React.Component {
                         </div>
                         <div className="col-sm-10 col-xs-12 main_menu">
                             <div className="navbar-header">
-                                <button type="button" className="navbar-toggle collapsed nav-icon" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                <button
+                                    type="button"
+                                    className={buttonClass}
+                                    data-toggle="collapse"
+                                    data-target="#navbar"
+                                    aria-expanded="false"
+                                    aria-controls="navbar"
+                                    onClick={this.onMenuClick}
+                                >
                                     <span></span>
                                     <span></span>
                                     <span></span>
