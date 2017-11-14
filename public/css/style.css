@@ -168,6 +168,10 @@ header.inner_header {
     color:#bbd537;
 }
 
+.main_menu .navbar-nav>li.register a.active {
+    border-color:#bbd537;
+}
+
 .main_menu .navbar-nav>li>a {
     color:#fff;
     font-size:16px;
