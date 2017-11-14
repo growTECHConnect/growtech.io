@@ -1,9 +1,11 @@
 import React from 'react';
 import {Link, Redirect} from 'react-router-dom';
 import {connect} from 'react-redux'
+import moment from 'moment';
 import Header from '../Components/Header';
 import Footer from '../Components/Footer';
 import Network from '../Components/Network';
+
 
 class Company extends React.Component {
     constructor(props) {
@@ -14,7 +16,7 @@ class Company extends React.Component {
         return {__html: html};
     };
 
-    renderSocialLinks() {
+    renderSocialLinks = () => {
         return (
             <div className="company_social">
                 <a href="#" target="_blank"><img src="/images/youtube-company.png" className="img-responsive"/></a>
@@ -24,7 +26,33 @@ class Company extends React.Component {
                 <a href="#" target="_blank"><img src="/images/linkedin-company.png" className="img-responsive"/></a>
             </div>
         );
-    }
+    };
+
+    renderEvents = (company) => {
+        return company.events.map((item, index) => {
+            const date = item.date ? moment(item.date).format('ll') : '';
+
+            return (
+                <div key={index} className="company_box">
+                    <a target="_blank" href={item.link}>{item.title}</a>
+                    <h6>{date}</h6>
+                </div>
+            );
+        });
+    };
+
+    renderNews = (company) => {
+        return company.news.map((item, index) => {
+            const date = item.date ? moment(item.date).format('ll') : '';
+
+            return (
+                <div key={index} className="list_company">
+                    <a target="_blank" href={item.link}>{item.title}</a>
+                    <h4>{date}</h4>
+                </div>
+            );
+        });
+    };
 
     render() {
         const {companies, config: {industries, sizes, types}, match: {params}} = this.props;
@@ -98,6 +126,7 @@ class Company extends React.Component {
                                 </div>
                                 <div className="company_block">
                                     <h3>UPCOMING EVENTS</h3>
+                                    {this.renderEvents(company)}
                                 </div>
                             </div>
                             <div className="col-sm-7 company_right">
@@ -114,6 +143,7 @@ class Company extends React.Component {
                                     <p dangerouslySetInnerHTML={this.renderMarkup(company.benefits)}></p>
                                 </div>
                                 <h2>In the News</h2>
+                                {this.renderNews(company)}
                             </div>
                         </div>
                     </div>

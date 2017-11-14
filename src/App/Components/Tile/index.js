@@ -11,8 +11,6 @@ const Tile = ({ company, id, type, large = false }) => {
         backgroundRepeat: 'no-repeat',
     };
 
-    console.log(company);
-
     return (
         <div className={columnClass}>
             <Link to={`/company/${id}`} className="hiring_wrap">

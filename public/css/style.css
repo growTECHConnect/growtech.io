@@ -1756,6 +1756,10 @@ footer .foot_menu h2 {
     width:570px;
     margin-right:60px;
 }
+.acc_form_fields.full {
+    width:100%;
+    margin-right:2%;
+}
 .acc_form_fields:last-child {
     margin-right:0;
 }
