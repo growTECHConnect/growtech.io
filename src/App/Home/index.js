@@ -63,7 +63,7 @@ class Home extends React.Component {
             <div>
                 <Header withSpace={true}/>
                 <section className="mainframe">
-                    <div className="mainframe_img home_img"></div>
+                    <div className="mainframe_img home_img bg-color"></div>
                     <div className="container custom_container">
                         <div className="row">
                             <div className="col-md-8 col-sm-7">

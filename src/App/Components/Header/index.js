@@ -32,7 +32,7 @@ class Header extends React.Component {
     renderLinks() {
         const { user } = this.props;
         const homeClass = document.location.pathname === '/' ? 'active' : '';
-        const menuClass = `navbar-collapse ${this.state.buttonOpen ? '' : 'full_page_menu'}`;
+        const menuClass = `navbar-collapse full_page_menu collapse ${this.state.buttonOpen ? 'in' : ''}`;
 
         if (user) {
             return (

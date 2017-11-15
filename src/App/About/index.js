@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux'
-import Instafeed from 'instafeed.js';
+//import Instafeed from 'instafeed.js';
 import Header from '../Components/Header';
 import Footer from '../Components/Footer';
 import Network from '../Components/Network';
@@ -16,15 +16,15 @@ class About extends React.Component {
     }
 
     componentDidMount() {
-        const feed = new Instafeed({
-            get: 'tagged',
-            tagName: 'chicoca',
-            userId: '',
-            clientId: '6bdb72b86cc745f2bc2a1b519fff4db6',
-            accessToken: '',
-        });
-
-        feed.run();
+        // const feed = new Instafeed({
+        //     get: 'tagged',
+        //     tagName: 'chicoca',
+        //     userId: '',
+        //     clientId: '6bdb72b86cc745f2bc2a1b519fff4db6',
+        //     accessToken: '',
+        // });
+        //
+        // feed.run();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -42,7 +42,7 @@ class About extends React.Component {
             <div>
                 <Header withSpace={true}/>
                 <section className="mainframe abt_mainframe">
-                    <div className="mainframe_img about_img"></div>
+                    <div className="mainframe_img about_img bg-color"></div>
                     <div className="container custom_container">
                         <div className="row">
                             <div className="col-md-12 col-sm-12">
