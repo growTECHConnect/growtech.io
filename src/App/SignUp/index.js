@@ -81,6 +81,7 @@ class SignUp extends React.Component {
     };
 
     render() {
+        const {page} = this.props;
         const {disabled, errors, redirect, waitForAccess} = this.state;
 
         if (redirect && !waitForAccess) {
@@ -93,8 +94,8 @@ class SignUp extends React.Component {
                     <div className="full_page_logo">
                         <Link to="/"><img src="/images/logo.png" className="img-responsive"/></Link>
                     </div>
-                    <h1>Let’s GROW Chico</h1>
-                    <h2>make a life, not just a living</h2>
+                    <h1>{page.tagText}</h1>
+                    <h2>{page.tagSubText}</h2>
                     <Link to="/" className="back_to_site"><img src="/images/back_to_site.png"/>Back to main site</Link>
                 </div>
                 <div className="full_page_right">
@@ -158,6 +159,7 @@ const mapStateToProps = (state) => {
         error: {
             ...state.user.error
         },
+        page: state.pages.data.signup || {},
     }
 };
 
