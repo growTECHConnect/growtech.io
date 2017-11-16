@@ -69,15 +69,17 @@ class About extends React.Component {
                                 <div className="about_resources" dangerouslySetInnerHTML={this.renderMarkup(page.contentResources)}></div>
                                 <h4>Chico’s Cost of Living</h4>
                                 <div className="abt_chico_img">
-                                    <img src="/images/Chico_Infographic.png" className="img-responsive"/>
+                                    <a href="/infographic/092117_growTECH_infographic.pdf">
+                                        <img src="/images/Chico_Infographic.png" className="img-responsive"/>
+                                    </a>
                                 </div>
                                 <h5>SHARE &amp; DOWNLOAD</h5>
                                 <div className="abt_social">
-                                    <a href="#"><img src="/images/abt_twitter.png"/></a>
-                                    <a href="#"><img src="/images/abt_linkedin.png"/></a>
-                                    <a href="#"><img src="/images/abt_facebook.png"/></a>
-                                    <a href="#"><img src="/images/abt_insta.png"/></a>
-                                    <a download="Chico_Infographic.png" href="/images/Chico_Infographic.png"><img src="/images/abt_download.png"/></a>
+                                    {/*<a href="#"><img src="/images/abt_twitter.png"/></a>*/}
+                                    {/*<a href="#"><img src="/images/abt_linkedin.png"/></a>*/}
+                                    {/*<a href="#"><img src="/images/abt_facebook.png"/></a>*/}
+                                    {/*<a href="#"><img src="/images/abt_insta.png"/></a>*/}
+                                    <a download="092117_growTECH_infographic.pdf" href="/infographic/092117_growTECH_infographic.pdf"><img src="/images/abt_download.png"/></a>
                                 </div>
                             </div>
                         </div>
