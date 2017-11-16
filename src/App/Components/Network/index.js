@@ -13,7 +13,7 @@ class Network extends React.Component {
                 <div className="container custom_container">
                     <div className="row">
                         <div className="col-sm-12">
-                            <p>A member of the GROW Chico Network - Tech | <Link to="/">Manu</Link> | <Link to="/">Ag</Link></p>
+                            <p>A member of the GROW Chico Network - Tech | <a target="_blank" href="https://manufacturer-directory.com">Manu</a></p>
                         </div>
                     </div>
                 </div>
