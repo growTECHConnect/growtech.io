@@ -61,7 +61,8 @@ class SignIn extends React.Component {
     };
 
     render() {
-        const { errors, redirect } = this.state;
+        const {page} = this.props;
+        const {errors, redirect} = this.state;
 
         if (redirect) {
             return  <Redirect to="/account"/>;
@@ -73,8 +74,8 @@ class SignIn extends React.Component {
                     <div className="full_page_logo">
                         <Link to="/"><img src="/images/logo.png" className="img-responsive"/></Link>
                     </div>
-                    <h1>Let’s GROW Chico</h1>
-                    <h2>make a life, not just a living</h2>
+                    <h1>{page.tagText}</h1>
+                    <h2>{page.tagSubText}</h2>
                     <div className="full_page_register_left">
                         <h5>Don't have an account?</h5>
                         <Link to="/sign-up">Register</Link>
@@ -121,7 +122,8 @@ const mapStateToProps = (state) => {
         },
         error: {
             ...state.user.error,
-        }
+        },
+        page: state.pages.data.signin || {},
     }
 };
 
