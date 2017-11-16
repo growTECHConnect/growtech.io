@@ -15,6 +15,16 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: 'src/index.ejs',
             inject: false,
+            hash: true,
+            files: {
+                css: [],
+                js: [ 'app.js'],
+                chunks: {
+                    main: {
+                        entry: 'app.js',
+                    },
+                }
+            }
         })
     ],
     output: {
