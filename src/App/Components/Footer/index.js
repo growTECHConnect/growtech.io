@@ -1,11 +1,22 @@
 import React from 'react';
-import { Redirect, Link } from 'react-router-dom';
-import PropTypes from 'prop-types'
+import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
 
 class Footer extends React.Component {
+
     constructor(props) {
         super(props);
     }
+
+    renderSocialLinks = () => {
+        const {social} = this.props.config;
+
+        return Object.keys(social).map((key) => {
+            return (
+                <a href={social[key].url}><img src={`/images/${key}.png`} className="img-responsive"/></a>
+            );
+        });
+    };
 
     render() {
         return (
@@ -14,10 +25,7 @@ class Footer extends React.Component {
                     <div className="row">
                         <div className="col-sm-3 col-md-3 social_links">
                             <h2>FOLLOW GROWTECH</h2>
-                            <Link to="/"><img src="/images/twitter.png" className="img-responsive"/></Link>
-                            <Link to="/"><img src="/images/linkedin.png" className="img-responsive"/></Link>
-                            <Link to="/"><img src="/images/facebook.png" className="img-responsive"/></Link>
-                            <Link to="/"><img src="/images/instagram.png" className="img-responsive"/></Link>
+                            {this.renderSocialLinks()}
                         </div>
                     </div>
                     <div className="row">
@@ -34,5 +42,12 @@ class Footer extends React.Component {
     }
 }
 
-export default Footer;
+
+const mapStateToProps = (state) => {
+    return {
+        config: state.config.data,
+    }
+};
+
+export default connect(mapStateToProps, null)(Footer);
 

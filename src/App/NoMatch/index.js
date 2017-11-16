@@ -6,9 +6,6 @@ import Network from '../Components/Network';
 class NoMatch extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-        };
     }
 
     render() {
@@ -16,7 +13,11 @@ class NoMatch extends React.Component {
             <div>
                 <Header/>
                 <section className="featured_companies hiring">
-                    <h1>No Matching Page</h1>
+                    <div className="col-sm-3"></div>
+                    <div className="col-sm-6 text-center">
+                        <h1>No Matching Page</h1>
+                    </div>
+                    <div className="col-sm-3"></div>
                 </section>
                 <Network/>
                 <Footer/>

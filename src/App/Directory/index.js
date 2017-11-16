@@ -300,12 +300,7 @@ class Directory extends React.Component {
                     <div className="container matches_wrap">
                         <div className="row">
                             <div className="col-sm-5 filters_wrap">
-                                <h2>
-                                    Filters
-                                    <button className="c-hamburger c-hamburger--htla filter_icon">
-                                        <span>toggle menu</span>
-                                    </button>
-                                </h2>
+                                <h2>Filters</h2>
                                 <div className="search_wrap">
                                     <input id="name" type="text" placeholder="Search" value={this.state.search} onChange={this.searchFilter}/>
                                     <button type="submit">
