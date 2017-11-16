@@ -29,7 +29,7 @@ class EventsForm extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.events && nextProps.events !== this.props.events) {
+        if (nextProps.company) {
             this.setData(nextProps);
         }
     }

@@ -29,7 +29,7 @@ class NewsForm extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.news && nextProps.news !== this.props.news) {
+        if (nextProps.company) {
             this.setData(nextProps);
         }
     }

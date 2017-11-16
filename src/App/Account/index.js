@@ -19,10 +19,14 @@ class Account extends React.Component {
     }
 
     render() {
-        const { user } = this.props;
+        const { company, user } = this.props;
 
         if (!user) {
             return  <Redirect to="/"/>;
+        }
+
+        if (!company) {
+            return <div/>;
         }
 
         return (
