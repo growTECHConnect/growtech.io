@@ -16,19 +16,30 @@ class Company extends React.Component {
         return {__html: html};
     };
 
-    renderSocialLinks = () => {
-        return (
-            <div className="company_social">
-                <a href="#" target="_blank"><img src="/images/youtube-company.png" className="img-responsive"/></a>
-                <a href="#" target="_blank"><img src="/images/facebook-company.png" className="img-responsive"/></a>
-                <a href="#" target="_blank"><img src="/images/twitter-company.png" className="img-responsive"/></a>
-                <a href="#" target="_blank"><img src="/images/instagram-company.png" className="img-responsive"/></a>
-                <a href="#" target="_blank"><img src="/images/linkedin-company.png" className="img-responsive"/></a>
-            </div>
-        );
+    renderSocialLinks = (company) => {
+        const social = {
+            youtube: {url: company.youtubeUrl},
+            facebook: {url: company.facebookUrl},
+            twitter: {url: company.twitterUrl},
+            instagram: {url: company.instagramUrl},
+            linkedin: {url: company.linkedinUrl},
+        };
+
+        return Object.keys(social)
+            .filter((key) => social[key].url && social[key].url.length > 0)
+            .map((key) => {
+                return (
+                    <a href={social[key].url} target="_blank"><img src={`/images/${key}-company.png`} className="img-responsive"/></a>
+                );
+            });
     };
 
     renderEvents = (company) => {
+
+        if (!company.events) {
+            return null;
+        }
+
         return company.events.map((item, index) => {
             const date = item.date ? moment(item.date).format('ll') : '';
 
@@ -42,6 +53,11 @@ class Company extends React.Component {
     };
 
     renderNews = (company) => {
+
+        if (!company.news) {
+            return null;
+        }
+        
         return company.news.map((item, index) => {
             const date = item.date ? moment(item.date).format('ll') : '';
 
@@ -116,7 +132,9 @@ class Company extends React.Component {
                                         <h4>Industry</h4>
                                         <h5>{industryType}</h5>
                                     </div>
-                                    {this.renderSocialLinks()}
+                                    <div className="company_social">
+                                        {this.renderSocialLinks(company)}
+                                    </div>
                                 </div>
                                 <div className="company_block">
                                     <h3>JOB SITE</h3>
