@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link, Redirect} from 'react-router-dom';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
 import moment from 'moment';
 import Header from '../Components/Header';
 import Footer from '../Components/Footer';
