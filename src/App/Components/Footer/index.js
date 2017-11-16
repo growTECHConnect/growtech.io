@@ -11,9 +11,9 @@ class Footer extends React.Component {
     renderSocialLinks = () => {
         const {social} = this.props.config;
 
-        return Object.keys(social).map((key) => {
+        return Object.keys(social).map((key, index) => {
             return (
-                <a href={social[key].url}><img src={`/images/${key}.png`} className="img-responsive"/></a>
+                <a key={index} href={social[key].url}><img src={`/images/${key}.png`} className="img-responsive"/></a>
             );
         });
     };

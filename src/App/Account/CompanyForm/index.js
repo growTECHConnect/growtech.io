@@ -58,15 +58,15 @@ class CompanyForm extends React.Component {
                 this.setData(nextProps);
             }
 
-            if (nextProps.company && nextProps.company.benefits != this.props.company.benefits) {
+            if (nextProps.company.benefits) {
                 this.setEditorContent('benefits', nextProps.company.benefits);
             }
 
-            if (nextProps.company && nextProps.company.culture != this.props.company.culture) {
+            if (nextProps.company.culture) {
                 this.setEditorContent('culture', nextProps.company.culture);
             }
 
-            if (nextProps.company && nextProps.company.why !== this.props.company.why) {
+            if (nextProps.company.why) {
                 this.setEditorContent('why', nextProps.company.why);
             }
         }
