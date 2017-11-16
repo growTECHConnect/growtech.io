@@ -57,7 +57,7 @@ class Company extends React.Component {
         if (!company.news) {
             return null;
         }
-        
+
         return company.news.map((item, index) => {
             const date = item.date ? moment(item.date).format('ll') : '';
 
@@ -95,7 +95,7 @@ class Company extends React.Component {
                             <img src={companyImg}/>
                         </div>
                         <p>{company.description}</p>
-                        <a href={company.url} target="_blank">Contact Us</a>
+                        <a href={company.contactUsUrl} target="_blank">Contact Us</a>
                     </div>
                 </section>
                 <section className="company_full_details">
