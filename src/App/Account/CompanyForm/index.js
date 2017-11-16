@@ -19,6 +19,7 @@ class CompanyForm extends React.Component {
                 url: '',
                 founded: '',
                 email: '',
+                contactUsUrl: '',
                 employeeSize: 0,
                 active: false,
                 city: '',
@@ -90,6 +91,7 @@ class CompanyForm extends React.Component {
                     url: company.url || '',
                     founded: company.founded || '',
                     email: company.email || '',
+                    contactUsUrl: company.contactUsUrl || '',
                     employeeSize: company.employeeSize || 0,
                     active: company.active || false,
                     city: company.city || '',
@@ -242,6 +244,14 @@ class CompanyForm extends React.Component {
                                         {this.renderDropdownOptions(sizes, 'employeeSize')}
                                     </ul>
                                 </div>
+                            </div>
+                        </div>
+                        <div className="acc_form_fields">
+                            <div className={this.getGroupClass('contactUsUrl')}>
+                                <label className="control-label" htmlFor="url">Contact Us URL</label>
+                                <input id="contactUsUrl" className="form-control" type="text" value={form.contactUsUrl}
+                                       onChange={this.setField}/>
+                                <span className="help-block">{errors.contactUsUrl}</span>
                             </div>
                         </div>
                     </div>
