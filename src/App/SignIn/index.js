@@ -13,6 +13,7 @@ class SignIn extends React.Component {
             password: '',
             errors: false,
             redirect: false,
+            resetSent: false,
         }
     }
 
@@ -40,6 +41,22 @@ class SignIn extends React.Component {
         }
     }
 
+    forgotPassword = (event) => {
+        event.preventDefault();
+        const {passwordReset} = this.props.actions.user;
+        const {email} = this.state;
+
+        passwordReset(email)
+            .then(() => {
+                this.setState({resetSent: true}, () => {
+                   setTimeout(() => {
+                       this.setState({resetSent: false});
+                   }, 3000);
+                });
+            })
+            .catch(null);
+    };
+
     setField = (event) => {
         const {id, value} = event.target;
         this.setState({ [id]: value, errors: false });
@@ -58,6 +75,18 @@ class SignIn extends React.Component {
         const { errors } = this.state;
 
         return errors[field] ? 'network_fields form-group has-error' : 'network_fields form-group';
+    };
+
+    renderForgotPassword = () => {
+        const {resetSent} = this.state;
+
+        if (resetSent) {
+            return <label className="pull-left">Reset Email Sent</label>;
+        }
+
+        return (
+            <label className="pull-left"><a href="forgot-password.html" onClick={this.forgotPassword}>Forgot Password?</a></label>
+        );
     };
 
     render() {
@@ -103,6 +132,7 @@ class SignIn extends React.Component {
                                         <button className="network_submit_btn">
                                             Sign In
                                         </button>
+                                        {this.renderForgotPassword()}
                                     </div>
                                 </form>
                             </div>
