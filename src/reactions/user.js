@@ -27,6 +27,14 @@ class User {
                     .catch((error) => this.store.dispatch(this.setError(error)));
             });
         },
+        passwordReset: (email) => {
+            return new Promise((resolve) => {
+                firebase.auth()
+                    .sendPasswordResetEmail(email)
+                    .then(resolve)
+                    .catch((error) => this.store.dispatch(this.setError(error)));
+            });
+        }
     };
 
     initialState = {
