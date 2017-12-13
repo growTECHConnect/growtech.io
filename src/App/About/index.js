@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux'
-//import Instafeed from 'instafeed.js';
+import Gallery from 'react-photo-gallery';
 import Header from '../Components/Header';
 import Footer from '../Components/Footer';
 import Network from '../Components/Network';
@@ -15,24 +15,35 @@ class About extends React.Component {
         this.state = {};
     }
 
-    componentDidMount() {
-        // const feed = new Instafeed({
-        //     get: 'tagged',
-        //     tagName: 'chicoca',
-        //     userId: '',
-        //     clientId: '6bdb72b86cc745f2bc2a1b519fff4db6',
-        //     accessToken: '',
-        // });
-        //
-        // feed.run();
-    }
-
-    componentWillReceiveProps(nextProps) {
-
-    }
-
     renderMarkup = (html) => {
         return {__html: html};
+    };
+
+    renderImages = () => {
+        const {images} = this.props;
+
+        return ['growtechchico', 'chicoca'].map((key, index) => {
+            const photos = images[key].map((image) => {
+                const width = Math.floor(Math.random() * 4) + 1;
+                const height = Math.floor(Math.random() * 4) + 1;
+
+                return {
+                    src: image.src,
+                    width: 1,
+                    height: 1,
+                };
+            });
+
+            return (
+                <div
+                    className="insta_feed"
+                    key={index}
+                >
+                    <h3>#{key}</h3>
+                    <Gallery photos={photos} />
+                </div>
+            );
+        });
     };
 
     render() {
@@ -93,11 +104,10 @@ class About extends React.Component {
                             </div>
                             <div className="insta_text">
                                 <h2>Photos From our community</h2>
-                                <h3>Are you on instagram? Tag your photos with <a href="#">#chicoca</a> and <a href="#">#growchico</a> to be featured!</h3>
+                                <h3>Are you on instagram? Tag your photos with <a href="https://www.instagram.com/explore/tags/growtechchico/" target="_blank">#growtechchico</a> and <a href="https://www.instagram.com/explore/tags/chicoca/" target="_blank">#chicoca</a> to be featured!</h3>
                             </div>
                         </div>
-                        <div className="instafeed">
-                        </div>
+                        {this.renderImages()}
                     </div>
                 </section>
                 <Network/>
@@ -110,6 +120,7 @@ class About extends React.Component {
 const mapStateToProps = (state) => {
     return {
         page: state.pages.data.about || {},
+        images: state.config.data.images.data,
     }
 };
 

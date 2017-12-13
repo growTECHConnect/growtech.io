@@ -1439,6 +1439,12 @@ footer .foot_menu h2 {
 .insta_feed {
     text-align:center;
 }
+
+.insta_feed h3 {
+    color:#76BF44;
+    margin:15px;
+}
+
 .full_page_wrap {
     background:#fafafa;
     height:100%;
