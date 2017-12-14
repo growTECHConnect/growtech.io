@@ -2404,11 +2404,15 @@ font-family: 'Montserrat', sans-serif;
     border: 1px solid #6f6f6f;
 }
 
+
 /* base page */
+.base_page {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
 .base_page_content {
     background:#fff;
-    padding-top: 30px;
-    padding-bottom: 40px;
 }
 .base_page_content h2 {
     font-size:24px;
