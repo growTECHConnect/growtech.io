@@ -20,9 +20,9 @@ class About extends React.Component {
     };
 
     renderImages = () => {
-        const {images} = this.props;
+        const {images, tags} = this.props;
 
-        return ['growtechchico', 'chicoca'].map((key, index) => {
+        return tags.map((key, index) => {
             const photos = images[key].map((image) => {
                 const width = Math.floor(Math.random() * 4) + 1;
                 const height = Math.floor(Math.random() * 4) + 1;
@@ -104,7 +104,7 @@ class About extends React.Component {
                             </div>
                             <div className="insta_text">
                                 <h2>Photos From our community</h2>
-                                <h3>Are you on instagram? Tag your photos with <a href="https://www.instagram.com/explore/tags/growtechchico/" target="_blank">#growtechchico</a> and <a href="https://www.instagram.com/explore/tags/chicoca/" target="_blank">#chicoca</a> to be featured!</h3>
+                                <h3>Are you on instagram? Tag your photos with <a href="https://www.instagram.com/explore/tags/growtechchico/" target="_blank">#growtechchico</a> to be featured!</h3>
                             </div>
                         </div>
                         {this.renderImages()}
@@ -121,6 +121,7 @@ const mapStateToProps = (state) => {
     return {
         page: state.pages.data.about || {},
         images: state.config.data.images.data,
+        tags: state.config.data.images.tags,
     }
 };
 
