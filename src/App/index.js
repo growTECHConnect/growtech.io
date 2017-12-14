@@ -15,6 +15,7 @@ import SignUp from './SignUp';
 import Account from './Account';
 import NoMatch from './NoMatch';
 import About from './About';
+import Partnership from './Partnership';
 
 const { reactions, store } = configStore();
 
@@ -27,6 +28,7 @@ const App = ({reactions, store}) => {
                         <Route exact path="/" component={Home}/>
                         <Route path="/directory" component={Directory}/>
                         <Route path="/company/:key" component={Company}/>
+                        <Route path="/partnership" component={Partnership}/>
                         <Route path="/about" component={About}/>
                         <Route path="/sign-in" component={(props) => <SignIn {...props} reactions={reactions}/>}/>
                         <Route path="/sign-up" component={(props) => <SignUp {...props} reactions={reactions}/>}/>

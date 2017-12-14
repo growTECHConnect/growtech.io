@@ -41,6 +41,7 @@ class Header extends React.Component {
                         <li><Link to="" className={homeClass}>Home</Link></li>
                         <li><NavLink to="/directory">Directory</NavLink></li>
                         <li><NavLink to="/news">News</NavLink></li>
+                        <li><NavLink to="/partnership">Partnership</NavLink></li>
                         <li><NavLink to="/about">About</NavLink></li>
                         <li><a href="/" onClick={this.signOut}>Sign Out</a></li>
                         <li className="register"><NavLink to="/account">Account</NavLink></li>
@@ -55,6 +56,7 @@ class Header extends React.Component {
                     <li><Link to="" className={homeClass}>Home</Link></li>
                     <li><NavLink to="/directory">Directory</NavLink></li>
                     <li><NavLink to="/news">News</NavLink></li>
+                    <li><NavLink to="/partnership">Partnership</NavLink></li>
                     <li><NavLink to="/about">About</NavLink></li>
                     <li><NavLink to="/sign-in">Sign In</NavLink></li>
                     <li className="register"><NavLink to="/sign-up">Register</NavLink></li>
