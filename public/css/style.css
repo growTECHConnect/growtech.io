@@ -2404,12 +2404,55 @@ font-family: 'Montserrat', sans-serif;
     border: 1px solid #6f6f6f;
 }
 
+/* base page */
+.base_page_content {
+    background:#fff;
+    padding-top: 30px;
+    padding-bottom: 40px;
+}
+.base_page_content h2 {
+    font-size:24px;
+    line-height:25px;
+    font-weight:800;
+    color:#76BF44;
+    letter-spacing:2px;
+    margin-bottom:15px;
+}
+.base_page_content p {
+    font-weight:normal;
+    font-size:18px;
+    color:#6F6F6F;
+    line-height:27px;
+    margin-bottom:25px;
+}
 
+.base_page_content p a {
+    color:#FA824D;
+    text-decoration: none;
+}
 
+.base_page_content p a:hover {
+    color:#76BF44;
+}
 
+.base_page_centered_img {
+    display: block;
+    margin: 20px auto 20px auto;
+    width: 100%;
+}
 
+.base_page_numbered_list {
+    list-style-type: decimal;
+    padding-left: 20px;
+}
 
-
+.base_page_numbered_list li {
+    list-style-type: decimal;
+    font-weight:normal;
+    font-size:18px;
+    color:#6F6F6F;
+    line-height:27px;
+}
 
 
 
