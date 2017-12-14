@@ -2458,8 +2458,59 @@ font-family: 'Montserrat', sans-serif;
     line-height:27px;
 }
 
+/* base form */
+.base_page form input {
+    border: 1px solid #6F6F6F;
+    border-radius: 0;
+    height: 44px;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    color: #6F6F6F;
+    padding: 0 15px;
+}
 
+.base_page form textarea {
+    border: 1px solid #6F6F6F;
+    border-radius: 0;
+    min-height: 88px;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    color: #6F6F6F;
+    padding: 10px 15px;
+}
 
+.base_page form label {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(111, 111, 111, 0.5);
+}
+
+.base_page form button {
+    border-radius: 0;
+    background: #FFF;
+    border: 2px solid #6F6F6F;
+    color: #6F6F6F;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.base_page form button:hover {
+    background:#EF864C;
+    border-color:#EF864C;
+    color:#fff;
+}
+
+.base_page form h2 {
+    font-size: 24px;
+    text-transform: uppercase;
+    text-align: left;
+    color: #6FBE47;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
 
 
 

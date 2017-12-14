@@ -16,6 +16,7 @@ import Account from './Account';
 import NoMatch from './NoMatch';
 import About from './About';
 import Partnership from './Partnership';
+import ContactUs from './ContactUs';
 
 const { reactions, store } = configStore();
 
@@ -33,6 +34,7 @@ const App = ({reactions, store}) => {
                         <Route path="/sign-in" component={(props) => <SignIn {...props} reactions={reactions}/>}/>
                         <Route path="/sign-up" component={(props) => <SignUp {...props} reactions={reactions}/>}/>
                         <Route path="/account" component={(props) => <Account {...props} reactions={reactions}/>}/>
+                        <Route path="/contact-us" component={ContactUs}/>
                         <Route component={NoMatch}/>
                     </Switch>
                 </div>

@@ -100,7 +100,7 @@ class Home extends React.Component {
                         <div className="row">
                             <div className="col-sm-12 featured_top">
                                 <h2>FEATURED COMPANIES</h2>
-                                <p>{page.featuredText} <Link to="#">Get featured.</Link></p>
+                                <p>{page.featuredText} <Link to="/contact-us">Get featured.</Link></p>
                             </div>
                         </div>
                         <div className="row">
