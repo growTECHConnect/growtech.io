@@ -24,8 +24,12 @@ class Partnership extends React.Component {
         return (
             <div>
                 <Header/>
-                <section className="partnership">
-                    <div dangerouslySetInnerHTML={this.renderMarkup(page.content)}></div>
+                <section className="base_page">
+                    <div className="row">
+                        <div className="col-sm-12">
+                            <div dangerouslySetInnerHTML={this.renderMarkup(page.content)}></div>
+                        </div>
+                    </div>
                 </section>
                 <Network/>
                 <Footer/>
