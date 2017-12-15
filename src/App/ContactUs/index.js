@@ -57,7 +57,7 @@ class ContactUs extends React.Component {
         event.preventDefault();
         const {adminEmail} = this.props;
         const {form} = this.state;
-        const url = `http://formspree.io/${adminEmail}`;
+        const url = `https://formspree.io/${adminEmail}`;
 
         axios.post(url, form)
             .then((response) => {
