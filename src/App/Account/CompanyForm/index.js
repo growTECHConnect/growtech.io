@@ -1,19 +1,14 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {EditorState, convertToRaw, ContentState} from 'draft-js';
-import {Editor} from 'react-draft-wysiwyg';
-import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
-import '../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import ReactMde, { ReactMdeCommands } from 'react-mde';
+import striptags from 'striptags';
+import 'react-mde/lib/styles/css/react-mde-all.css';
 
 class CompanyForm extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            benefitsEditorState: EditorState.createEmpty(),
-            cultureEditorState: EditorState.createEmpty(),
-            whyEditorState: EditorState.createEmpty(),
             form: {
                 name: '',
                 url: '',
@@ -29,6 +24,9 @@ class CompanyForm extends React.Component {
                 culture: '',
                 benefits: '',
             },
+            benefits: {text: '', selection: null},
+            culture: {text: '', selection: null},
+            why: {text: '', selection: null},
             errors: false,
             dropdown: {
                 employees: null,
@@ -38,18 +36,24 @@ class CompanyForm extends React.Component {
     }
 
     componentDidMount() {
+        const state = {
+            benefits: {text: '', selection: null},
+            culture: {text: '', selection: null},
+            why: {text: '', selection: null},
+        };
+
         this.setData(this.props);
 
-        if (this.props.company && this.props.company.benefits) {
-            this.setEditorContent('benefits', this.props.company.benefits);
-        }
+        if (this.props.company) {
+            state.benefits.text = this.props.company.benefits;
+            state.culture.text = this.props.company.culture;
+            state.why.text = this.props.company.why;
 
-        if (this.props.company && this.props.company.culture) {
-            this.setEditorContent('culture', this.props.company.culture);
-        }
-
-        if (this.props.company && this.props.company.why) {
-            this.setEditorContent('why', this.props.company.why);
+            this.setState({
+                benefits: state.benefits,
+                culture: state.culture,
+                why: state.why,
+            });
         }
     }
 
@@ -58,30 +62,8 @@ class CompanyForm extends React.Component {
             if (nextProps.company && nextProps.company !== this.props.company) {
                 this.setData(nextProps);
             }
-
-            if (nextProps.company.benefits) {
-                this.setEditorContent('benefits', nextProps.company.benefits);
-            }
-
-            if (nextProps.company.culture) {
-                this.setEditorContent('culture', nextProps.company.culture);
-            }
-
-            if (nextProps.company.why) {
-                this.setEditorContent('why', nextProps.company.why);
-            }
         }
     }
-
-    setEditorContent = (id, content) => {
-        const { contentBlocks, entityMap } = htmlToDraft(content);
-        const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
-        const editorState = EditorState.createWithContent(contentState);
-
-        id = `${id}EditorState`;
-
-        this.setState({[id]: editorState});
-    };
 
     setData = ({company}) => {
         if (company) {
@@ -117,8 +99,8 @@ class CompanyForm extends React.Component {
         }
     };
 
-    setField = (event) => {
-        const {id, value} = event.target;
+    setField = ({target}) => {
+        const {id, value} = target;
         this.setState({form: {...this.state.form, [id]: value}, errors: false}, () => {
             if (this.updateTimeout) {
                 clearTimeout(this.updateTimeout);
@@ -147,15 +129,11 @@ class CompanyForm extends React.Component {
         })
     };
 
-    onEditorChange = (id, editorState) => {
-        const html = draftToHtml(convertToRaw(editorState.getCurrentContent()));
-        this.setField({target: {id, value: html}});
+    onEditorChange = (value, id) => {
+        value.text = striptags(value.text);
 
-        id = `${id}EditorState`;
-
-        this.setState({[id]: editorState}, () => {
-            const html = draftToHtml(convertToRaw(editorState.getCurrentContent()));
-            this.setField({target: {id, value: html}});
+        this.setState({[id]: value}, () => {
+            this.setField({target: {id, value: value.text}});
         });
     };
 
@@ -178,6 +156,20 @@ class CompanyForm extends React.Component {
     render() {
         const {config: {sizes, states}} = this.props;
         const {dropdown, errors, form, saveMsg} = this.state;
+        const commands = [
+            [
+                ReactMdeCommands.makeHeaderCommand,
+                ReactMdeCommands.makeBoldCommand,
+                ReactMdeCommands.makeItalicCommand,
+            ],
+            [   ReactMdeCommands.makeLinkCommand,
+                ReactMdeCommands.makeQuoteCommand,
+            ],
+            [
+                ReactMdeCommands.makeOrderedListCommand,
+                ReactMdeCommands.makeUnorderedListCommand,
+            ],
+        ];
 
         return (
             <div className="acc_form_section">
@@ -297,11 +289,12 @@ class CompanyForm extends React.Component {
                         <div className="acc_form_fields full">
                             <div className={this.getGroupClass('why')}>
                                 <label className="control-label" htmlFor="why">Why Work With Us</label>
-                                <Editor
-                                    wrapperClassName="wrapper-control"
-                                    editorClassName="editor-control"
-                                    editorState={this.state.whyEditorState}
-                                    onEditorStateChange={(editorState) => this.onEditorChange('why', editorState)}
+                                <ReactMde
+                                    textAreaProps={{id: 'why_mde'}}
+                                    value={this.state.why}
+                                    onChange={(value) => this.onEditorChange(value, 'why')}
+                                    commands={commands}
+                                    visibility={{previewHelp:false}}
                                 />
                             </div>
                         </div>
@@ -310,11 +303,12 @@ class CompanyForm extends React.Component {
                         <div className="acc_form_fields full">
                             <div className={this.getGroupClass('culture')}>
                                 <label className="control-label" htmlFor="culture">Culture</label>
-                                <Editor
-                                    wrapperClassName="wrapper-control"
-                                    editorClassName="editor-control"
-                                    editorState={this.state.cultureEditorState}
-                                    onEditorStateChange={(editorState) => this.onEditorChange('culture', editorState)}
+                                <ReactMde
+                                    textAreaProps={{id: 'culture_mde'}}
+                                    value={this.state.culture}
+                                    onChange={(value) => this.onEditorChange(value, 'culture')}
+                                    commands={commands}
+                                    visibility={{previewHelp:false}}
                                 />
                             </div>
                         </div>
@@ -323,11 +317,12 @@ class CompanyForm extends React.Component {
                         <div className="acc_form_fields full">
                             <div className={this.getGroupClass('benefits')}>
                                 <label className="control-label" htmlFor="benefits">Perks &amp; Benefits</label>
-                                <Editor
-                                    wrapperClassName="wrapper-control"
-                                    editorClassName="editor-control"
-                                    editorState={this.state.benefitsEditorState}
-                                    onEditorStateChange={(editorState) => this.onEditorChange('benefits', editorState)}
+                                <ReactMde
+                                    textAreaProps={{id: 'benefits_mde'}}
+                                    value={this.state.benefits}
+                                    onChange={(value) => this.onEditorChange(value, 'benefits')}
+                                    commands={commands}
+                                    visibility={{previewHelp:false}}
                                 />
                             </div>
                         </div>

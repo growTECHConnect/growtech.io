@@ -2,18 +2,22 @@ import React from 'react';
 import {Link, Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import moment from 'moment';
+import * as showdown from 'showdown';
+import striptags from 'striptags';
 import Header from '../Components/Header';
 import Footer from '../Components/Footer';
 import Network from '../Components/Network';
 
+const converter = new showdown.Converter();
 
 class Company extends React.Component {
     constructor(props) {
         super(props);
     }
 
-    renderMarkup = (html) => {
-        return {__html: html};
+    renderMarkup = (markdown) => {
+        markdown = striptags(markdown);
+        return {__html: converter.makeHtml(markdown)};
     };
 
     renderSocialLinks = (company) => {
