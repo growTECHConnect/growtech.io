@@ -16,32 +16,72 @@ import ConfigForm from './ConfigForm';
 class Account extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            scrollOffsetStyle: null,
+            //saveNow: false,
+        };
     }
 
+    componentDidMount() {
+        window.addEventListener('scroll', this.onScroll);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.onScroll);
+    }
+
+    onScroll = (event) => {
+        if ( window.pageYOffset > 138) {
+            if (!this.state.scrollOffsetStyle) {
+                this.setState({ scrollOffsetStyle: { position: 'fixed', top: 0}});
+            }
+        } else {
+            if (this.state.scrollOffsetStyle) {
+                this.setState({ scrollOffsetStyle: null});
+            }
+        }
+    };
+
+    saveNow = () => {
+        const {actions} = this.props;
+        const account = this.accountForm.getFormData();
+        const company = {
+            ...this.companyForm.getFormData(),
+            ...this.socialForm.getFormData(),
+            ...this.listingForm.getFormData(),
+            ...this.configForm.getFormData(),
+        };
+
+        Promise.all([actions.account.update(account), actions.company.update(company)]);
+    };
+    
     render() {
-        const { company, user } = this.props;
+        const {status, user} = this.props;
 
         if (!user) {
             return  <Redirect to="/"/>;
         }
 
-        if (!company) {
-            return <div/>;
-        }
-
         return (
             <div>
                 <Header/>
+                <div className="account_save" style={this.state.scrollOffsetStyle}>
+                    <div className="custom_container container">
+                        <span>{status}</span>
+                        <button className="gt_small_button" onClick={this.saveNow}>Save</button>
+                    </div>
+                </div>
                 <section className="my_company">
                     <div className="container-fluid my_company_container">
-                        <AccountForm/>
-                        <CompanyForm/>
+                        <AccountForm onRef={(ref) => (this.accountForm = ref)}/>
+                        <CompanyForm onRef={(ref) => (this.companyForm = ref)}/>
                         <MediaForm/>
-                        <SocialForm/>
+                        <SocialForm onRef={(ref) => (this.socialForm = ref)}/>
                         <NewsForm/>
                         <EventsForm/>
-                        <ListingForm/>
-                        <ConfigForm/>
+                        <ListingForm onRef={(ref) => (this.listingForm = ref)}/>
+                        <ConfigForm onRef={(ref) => (this.configForm = ref)}/>
                     </div>
                 </section>
                 <Network/>
@@ -53,7 +93,12 @@ class Account extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
+        actions: {
+            account: state.account.actions,
+            company: state.company.actions,
+        },
         company: state.company,
+        status: state.messages.status,
         user: state.user.data,
     }
 };

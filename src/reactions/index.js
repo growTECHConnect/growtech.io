@@ -5,6 +5,7 @@ import Companies from './companies';
 import Company from './company';
 import Config from './config';
 import Events from './events';
+import Messages from './messages';
 import Pages from './pages';
 import User from './user';
 
@@ -16,6 +17,7 @@ export default class Reactions {
         this.companies = new Companies();
         this.company = new Company();
         this.events = new Events();
+        this.messages = new Messages();
         this.pages = new Pages();
         this.user = new User();
     }
@@ -27,6 +29,7 @@ export default class Reactions {
         companies: this.companies.reducer,
         company: this.company.reducer,
         events: this.events.reducer,
+        messages: this.messages.reducer,
         pages: this.pages.reducer,
         user: this.user.reducer,
     });
@@ -38,6 +41,7 @@ export default class Reactions {
         this.companies.setStore(store);
         this.company.setStore(store);
         this.events.setStore(store);
+        this.messages.setStore(store);
         this.pages.setStore(store);
         this.user.setStore(store);
     };

@@ -5,12 +5,16 @@ class Company {
     actions = {
         init: (cid) => this.init(cid),
         update: (company) => {
+            const {setStatus, setStatusSaved} = this.store.getState().messages.actions;
             const cid = this.store.getState().access.data.company;
 
+            setStatus('Saving...');
             company.updatedAt = new Date().toISOString();
-            return firebase.database().ref(`/companies/${cid}`).update(company);
+
+            return firebase.database().ref(`/companies/${cid}`).update(company).then(() => setStatusSaved());
         },
         updateMediaFiles: (files) => {
+            const {setStatus, setStatusSaved} = this.store.getState().messages.actions;
             const cid = this.store.getState().access.data.company;
             const uploads = Object.keys(files).map((key) => {
                 const {data_url, filename} = files[key];
@@ -28,6 +32,8 @@ class Company {
                     })
             });
 
+            setStatus('Saving...');
+
             return Promise.all(uploads)
                 .then((results) => {
                     const mediaFiles = {};
@@ -39,7 +45,8 @@ class Company {
                     });
 
                     return firebase.database().ref(`/companies/${cid}/mediaFiles`).update(mediaFiles);
-                });
+                })
+                .then(() => setStatusSaved());
         },
     };
 

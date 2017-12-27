@@ -36,25 +36,8 @@ class CompanyForm extends React.Component {
     }
 
     componentDidMount() {
-        const state = {
-            benefits: {text: '', selection: null},
-            culture: {text: '', selection: null},
-            why: {text: '', selection: null},
-        };
-
+        this.props.onRef(this);
         this.setData(this.props);
-
-        if (this.props.company) {
-            state.benefits.text = this.props.company.benefits;
-            state.culture.text = this.props.company.culture;
-            state.why.text = this.props.company.why;
-
-            this.setState({
-                benefits: state.benefits,
-                culture: state.culture,
-                why: state.why,
-            });
-        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -64,6 +47,15 @@ class CompanyForm extends React.Component {
             }
         }
     }
+
+    getFormData = () => {
+        return {
+            ...this.state.form,
+            benefits: this.state.benefits.text,
+            culture: this.state.culture.text,
+            why: this.state.why.text,
+        };
+    };
 
     setData = ({company}) => {
         if (company) {
@@ -79,6 +71,18 @@ class CompanyForm extends React.Component {
                     city: company.city || '',
                     state: company.state || '',
                     description: company.description || '',
+                },
+                benefits: {
+                    ...this.state.benefits,
+                    text: company.benefits,
+                },
+                culture: {
+                    ...this.state.culture,
+                    text: company.culture,
+                },
+                why: {
+                    ...this.state.why,
+                    text: company.why,
                 },
             });
         }

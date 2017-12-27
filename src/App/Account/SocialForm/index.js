@@ -19,6 +19,7 @@ class SocialForm extends React.Component {
     }
 
     componentDidMount() {
+        this.props.onRef(this);
         this.setData(this.props);
     }
 
@@ -27,6 +28,10 @@ class SocialForm extends React.Component {
             this.setData(nextProps);
         }
     }
+
+    getFormData = () => {
+        return this.state.form;
+    };
 
     setData = ({company}) => {
         if (company) {

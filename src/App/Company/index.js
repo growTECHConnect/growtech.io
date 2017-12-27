@@ -31,9 +31,9 @@ class Company extends React.Component {
 
         return Object.keys(social)
             .filter((key) => social[key].url && social[key].url.length > 0)
-            .map((key) => {
+            .map((key, index) => {
                 return (
-                    <a href={social[key].url} target="_blank"><img src={`/images/${key}-company.png`} className="img-responsive"/></a>
+                    <a key={index} href={social[key].url} target="_blank"><img src={`/images/${key}-company.png`} className="img-responsive"/></a>
                 );
             });
     };

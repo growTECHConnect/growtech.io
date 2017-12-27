@@ -23,7 +23,8 @@ class AccountForm extends React.Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
+        this.props.onRef(this);
         this.setData(this.props);
     }
 
@@ -32,6 +33,10 @@ class AccountForm extends React.Component {
             this.setData(nextProps);
         }
     }
+
+    getFormData = () => {
+        return this.state.form;
+    };
 
     setData = ({account}) => {
         if (account) {
