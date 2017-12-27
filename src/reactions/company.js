@@ -76,7 +76,7 @@ class Company {
             firebase.database().ref(`/companies/${cid}`).off();
 
             firebase.database().ref(`/companies/${cid}`).on('value', (snapshot) => {
-                this.store.dispatch(this.setCompany(snapshot.val()));
+                this.store.dispatch(this.setCompany({...snapshot.val(), id: cid}));
                 resolve(snapshot.val());
             });
         });

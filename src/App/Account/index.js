@@ -1,5 +1,6 @@
 import React from 'react';
-import {Link, Redirect} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
+import {Navigation} from 'react-router';
 import {connect} from 'react-redux'
 import Header from '../Components/Header';
 import Footer from '../Components/Footer';
@@ -19,7 +20,7 @@ class Account extends React.Component {
 
         this.state = {
             scrollOffsetStyle: null,
-            //saveNow: false,
+            redirectCompany: false,
         };
     }
 
@@ -56,11 +57,20 @@ class Account extends React.Component {
         Promise.all([actions.account.update(account), actions.company.update(company)]);
     };
 
+    viewNow = () => {
+        this.setState({redirectCompany: true});
+    };
+
     render() {
-        const {status, user} = this.props;
+        const {redirectCompany} = this.state;
+        const {company, status, user} = this.props;
 
         if (!user) {
             return  <Redirect to="/"/>;
+        }
+
+        if (redirectCompany) {
+            return <Redirect to={`/company/${company.id}`}/>;
         }
 
         return (
@@ -70,6 +80,7 @@ class Account extends React.Component {
                     <div className="custom_container container">
                         <span>{status}</span>
                         <button className="gt_small_button" onClick={this.saveNow}>Save</button>
+                        <button className="gt_small_button" onClick={this.viewNow}>View</button>
                     </div>
                 </div>
                 <section className="my_company">
@@ -97,7 +108,7 @@ const mapStateToProps = (state) => {
             account: state.account.actions,
             company: state.company.actions,
         },
-        company: state.company,
+        company: state.company.data,
         status: state.messages.status,
         user: state.user.data,
     }
