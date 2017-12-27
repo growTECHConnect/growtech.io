@@ -14,11 +14,11 @@ class SocialForm extends React.Component {
                 youtubeUrl: '',
             },
             errors: false,
-            saveMsg: null,
         };
     }
 
     componentDidMount() {
+        this.props.onRef(this);
         this.setData(this.props);
     }
 
@@ -27,6 +27,10 @@ class SocialForm extends React.Component {
             this.setData(nextProps);
         }
     }
+
+    getFormData = () => {
+        return this.state.form;
+    };
 
     setData = ({company}) => {
         if (company) {
@@ -47,13 +51,7 @@ class SocialForm extends React.Component {
         const {id, value} = field;
 
         if (value !== company[id]) {
-            this.setState({saveMsg: 'saving...'}, () => {
-                actions.company.update(this.state.form).then(() => {
-                    this.setState({saveMsg: 'saved'}, () => {
-                        setTimeout(() => this.setState({saveMsg: null}), 1000);
-                    })
-                });
-            });
+            actions.company.update(this.state.form);
         }
     };
 
@@ -74,11 +72,11 @@ class SocialForm extends React.Component {
     };
 
     render() {
-        const {errors, form, saveMsg} = this.state;
+        const {errors, form} = this.state;
 
         return (
             <div className="acc_form_section">
-                <h2>Company Social <span className="gt_save_msg">{saveMsg}</span></h2>
+                <h2>Company Social</h2>
                 <form noValidate onSubmit={(event) => event.preventDefault()}>
                     <div className="acc_form_wrap acc_form_two_col">
                         <div className="acc_form_fields">

@@ -19,6 +19,7 @@ class ConfigForm extends React.Component {
     }
 
     componentDidMount() {
+        this.props.onRef(this);
         this.setData(this.props);
     }
 
@@ -27,6 +28,10 @@ class ConfigForm extends React.Component {
             this.setData(nextProps);
         }
     }
+
+    getFormData = () => {
+        return this.state.form;
+    };
 
     setData = ({company}) => {
         if (company) {
@@ -54,13 +59,7 @@ class ConfigForm extends React.Component {
         const {id, value} = field;
 
         if (value !== company[id]) {
-            this.setState({saveMsg: 'saving...'}, () => {
-                actions.company.update(this.state.form).then(() => {
-                    this.setState({saveMsg: 'saved'}, () => {
-                        setTimeout(() => this.setState({saveMsg: null}), 1000);
-                    })
-                });
-            });
+            actions.company.update(this.state.form);
         }
     };
 

@@ -31,30 +31,12 @@ class CompanyForm extends React.Component {
             dropdown: {
                 employees: null,
             },
-            saveMsg: null,
         };
     }
 
     componentDidMount() {
-        const state = {
-            benefits: {text: '', selection: null},
-            culture: {text: '', selection: null},
-            why: {text: '', selection: null},
-        };
-
+        this.props.onRef(this);
         this.setData(this.props);
-
-        if (this.props.company) {
-            state.benefits.text = this.props.company.benefits;
-            state.culture.text = this.props.company.culture;
-            state.why.text = this.props.company.why;
-
-            this.setState({
-                benefits: state.benefits,
-                culture: state.culture,
-                why: state.why,
-            });
-        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -64,6 +46,15 @@ class CompanyForm extends React.Component {
             }
         }
     }
+
+    getFormData = () => {
+        return {
+            ...this.state.form,
+            benefits: this.state.benefits.text,
+            culture: this.state.culture.text,
+            why: this.state.why.text,
+        };
+    };
 
     setData = ({company}) => {
         if (company) {
@@ -80,6 +71,18 @@ class CompanyForm extends React.Component {
                     state: company.state || '',
                     description: company.description || '',
                 },
+                benefits: {
+                    ...this.state.benefits,
+                    text: company.benefits,
+                },
+                culture: {
+                    ...this.state.culture,
+                    text: company.culture,
+                },
+                why: {
+                    ...this.state.why,
+                    text: company.why,
+                },
             });
         }
     };
@@ -89,13 +92,7 @@ class CompanyForm extends React.Component {
         const {id, value} = field;
 
         if (value !== company[id]) {
-            this.setState({saveMsg: 'saving...'}, () => {
-                actions.company.update(this.state.form).then(() => {
-                    this.setState({saveMsg: 'saved'}, () => {
-                        setTimeout(() => this.setState({saveMsg: null}), 1000);
-                    })
-                });
-            });
+            actions.company.update(this.state.form);
         }
     };
 
@@ -155,7 +152,7 @@ class CompanyForm extends React.Component {
 
     render() {
         const {config: {sizes, states}} = this.props;
-        const {dropdown, errors, form, saveMsg} = this.state;
+        const {dropdown, errors, form} = this.state;
         const commands = [
             [
                 ReactMdeCommands.makeHeaderCommand,
@@ -173,7 +170,7 @@ class CompanyForm extends React.Component {
 
         return (
             <div className="acc_form_section">
-                <h2>Company Info <span className="gt_save_msg">{saveMsg}</span></h2>
+                <h2>Company Info</h2>
                 <form noValidate onSubmit={(event) => event.preventDefault()}>
                     <div className="cmp_job_wrap">
                         <div className="switch_wrap">

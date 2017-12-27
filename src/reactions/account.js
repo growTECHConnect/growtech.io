@@ -6,9 +6,12 @@ export default class Account {
         init: (uid) => this.init(uid),
         update: (account = {}) => {
             const {uid} = this.store.getState().user.data;
+            const {setStatus, setStatusSaved} = this.store.getState().messages.actions;
 
+            setStatus('Saving...');
             account.updatedAt = new Date().toISOString();
-            return firebase.database().ref(`account/${uid}`).update(account);
+
+            return firebase.database().ref(`account/${uid}`).update(account).then(() => setStatusSaved());
         },
     };
 

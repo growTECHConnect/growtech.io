@@ -12,12 +12,12 @@ class ListingForm extends React.Component {
                 internship: false,
                 jobsiteUrl: '',
             },
-            saveMsg: null,
             errors: false,
         };
     }
 
     componentDidMount() {
+        this.props.onRef(this);
         this.setData(this.props);
     }
 
@@ -26,6 +26,10 @@ class ListingForm extends React.Component {
             this.setData(nextProps);
         }
     }
+
+    getFormData = () => {
+        return this.state.form;
+    };
 
     setData = ({company}) => {
         if (company) {
@@ -59,13 +63,7 @@ class ListingForm extends React.Component {
         const {id, value} = field;
 
         if (value !== company[id]) {
-            this.setState({saveMsg: 'saving...'}, () => {
-                actions.company.update(this.state.form).then(() => {
-                    this.setState({saveMsg: 'saved'}, () => {
-                        setTimeout(() => this.setState({saveMsg: null}), 1000);
-                    })
-                });
-            });
+            actions.company.update(this.state.form);
         }
     };
 
@@ -76,11 +74,11 @@ class ListingForm extends React.Component {
     };
 
     render() {
-        const {form, saveMsg} = this.state;
+        const {form} = this.state;
 
         return (
             <div className="acc_form_section">
-                <h2>Company Job Listings <span className="gt_save_msg">{saveMsg}</span></h2>
+                <h2>Company Job Listings</h2>
                 <form noValidate onSubmit={(event) => event.preventDefault()}>
                     <div className="acc_form_wrap">
                         <div className="acc_form_fields">

@@ -2525,3 +2525,25 @@ font-family: 'Montserrat', sans-serif;
 .react-mde {
     text-align: left;
 }
+
+.account_save {
+    height: 50px;
+    width: 100%;
+    z-index: 100;
+    top: 138px;
+    border-bottom:1px solid #6F6F6F;
+    text-align: center;
+    padding-top: 10px;
+    background: #fafafa;
+    -webkit-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.2);
+}
+
+.account_save span {
+    color: #76BF44;
+    float: left;
+    font-size: 18px;
+    font-weight: bold;
+    padding-top: 4px;
+}
