@@ -59,13 +59,7 @@ class ConfigForm extends React.Component {
         const {id, value} = field;
 
         if (value !== company[id]) {
-            this.setState({saveMsg: 'saving...'}, () => {
-                actions.company.update(this.state.form).then(() => {
-                    this.setState({saveMsg: 'saved'}, () => {
-                        setTimeout(() => this.setState({saveMsg: null}), 1000);
-                    })
-                });
-            });
+            actions.company.update(this.state.form);
         }
     };
 

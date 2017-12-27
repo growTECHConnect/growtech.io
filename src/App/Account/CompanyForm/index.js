@@ -31,7 +31,6 @@ class CompanyForm extends React.Component {
             dropdown: {
                 employees: null,
             },
-            saveMsg: null,
         };
     }
 
@@ -93,13 +92,7 @@ class CompanyForm extends React.Component {
         const {id, value} = field;
 
         if (value !== company[id]) {
-            this.setState({saveMsg: 'saving...'}, () => {
-                actions.company.update(this.state.form).then(() => {
-                    this.setState({saveMsg: 'saved'}, () => {
-                        setTimeout(() => this.setState({saveMsg: null}), 1000);
-                    })
-                });
-            });
+            actions.company.update(this.state.form);
         }
     };
 
@@ -159,7 +152,7 @@ class CompanyForm extends React.Component {
 
     render() {
         const {config: {sizes, states}} = this.props;
-        const {dropdown, errors, form, saveMsg} = this.state;
+        const {dropdown, errors, form} = this.state;
         const commands = [
             [
                 ReactMdeCommands.makeHeaderCommand,
@@ -177,7 +170,7 @@ class CompanyForm extends React.Component {
 
         return (
             <div className="acc_form_section">
-                <h2>Company Info <span className="gt_save_msg">{saveMsg}</span></h2>
+                <h2>Company Info</h2>
                 <form noValidate onSubmit={(event) => event.preventDefault()}>
                     <div className="cmp_job_wrap">
                         <div className="switch_wrap">

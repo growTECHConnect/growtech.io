@@ -19,7 +19,6 @@ class AccountForm extends React.Component {
                 phone: '',
             },
             errors: false,
-            saveMsg: null,
         };
     }
 
@@ -56,13 +55,7 @@ class AccountForm extends React.Component {
         const {id, value} = field;
 
         if (value !== account[id]) {
-            this.setState({saveMsg: 'saving...'}, () => {
-                actions.account.update(this.state.form).then(() => {
-                    this.setState({saveMsg: 'saved'}, () => {
-                        setTimeout(() => this.setState({saveMsg: null}), 1000);
-                    })
-                });
-            });
+            actions.account.update(this.state.form);
         }
     };
 
@@ -83,11 +76,11 @@ class AccountForm extends React.Component {
     };
 
     render() {
-        const {errors, saveMsg} = this.state;
+        const {errors} = this.state;
 
         return (
             <div className="acc_form_section">
-                <h2>Account Info <span className="gt_save_msg">{saveMsg}</span></h2>
+                <h2>Account Info</h2>
                 <form noValidate onSubmit={(event) => event.preventDefault()}>
                     <div className="acc_form_wrap">
                         <div className="acc_form_fields">

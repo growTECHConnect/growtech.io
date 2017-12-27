@@ -55,7 +55,7 @@ class Account extends React.Component {
 
         Promise.all([actions.account.update(account), actions.company.update(company)]);
     };
-    
+
     render() {
         const {status, user} = this.props;
 
