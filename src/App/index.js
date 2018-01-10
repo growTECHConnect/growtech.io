@@ -17,6 +17,7 @@ import NoMatch from './NoMatch';
 import About from './About';
 import Partnership from './Partnership';
 import ContactUs from './ContactUs';
+import News from './News';
 
 const { reactions, store } = configStore();
 
@@ -31,6 +32,8 @@ const App = ({reactions, store}) => {
                         <Route path="/company/:key" component={Company}/>
                         <Route path="/partnership" component={Partnership}/>
                         <Route path="/about" component={About}/>
+                        <Route path="/news/:index" component={News}/>
+                        <Route path="/news" component={News}/>
                         <Route path="/sign-in" component={(props) => <SignIn {...props} reactions={reactions}/>}/>
                         <Route path="/sign-up" component={(props) => <SignUp {...props} reactions={reactions}/>}/>
                         <Route path="/account" component={(props) => <Account {...props} reactions={reactions}/>}/>
