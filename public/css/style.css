@@ -2547,3 +2547,69 @@ font-family: 'Montserrat', sans-serif;
     font-weight: bold;
     padding-top: 4px;
 }
+
+.news_content h2 {
+    font-size: 24px;
+    text-align: left;
+    color: #6FBE47;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+}
+
+.news_content h3 {
+    font-size: 22px;
+    text-align: left;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.news_content a {
+    text-decoration: none;
+    color: #6f6f6f;
+}
+
+.news_content .item:hover h3 {
+    color: orange;
+}
+
+.news_content p {
+    font-size: 16px;
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.news_content span {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.news_content .item {
+    padding-bottom: 8px;
+    border-top: 1px solid #6F6F6F;
+}
+
+.news_content .item .parent {
+    position: relative;
+    margin-right: 20px;
+}
+.news_content .item .child {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+}
+
+.news_content .breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    font-weight: 800;
+    font-size: 16px;
+    color: #6F6F6F;
+    text-transform: uppercase;
+    margin-bottom: 39px;
+}

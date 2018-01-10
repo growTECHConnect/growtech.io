@@ -1,11 +1,16 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
+import moment from 'moment';
 
 class Footer extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            year: moment().format('YYYY'),
+        };
     }
 
     renderSocialLinks = () => {
@@ -32,7 +37,7 @@ class Footer extends React.Component {
                         <div className="col-sm-12">
                             <div className="foot_logo">
                                 <Link to="/"><img src="images/foot_logo.png" className="img-responsive"/></Link>
-                                <p>&copy; 2017 Chicostart - All rights reserved.</p>
+                                <p>&copy; {this.state.year} Chicostart - All rights reserved.</p>
                             </div>
                         </div>
                     </div>
