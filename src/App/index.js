@@ -5,7 +5,7 @@ import {
     Route,
     Switch,
 } from 'react-router-dom';
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 import configStore from '../store';
 import Home from './Home/index';
 import Directory from './Directory';
@@ -18,8 +18,13 @@ import About from './About';
 import Partnership from './Partnership';
 import ContactUs from './ContactUs';
 import News from './News';
+import Admin from './Admin';
+import Configuration from './Admin/Configuration';
+import Accounts from './Admin/Accounts';
+import GlobalContent from './Admin/GlobalContent';
+import PageContent from './Admin/PageContent';
 
-const { reactions, store } = configStore();
+const {reactions, store} = configStore();
 
 const App = ({reactions, store}) => {
     return (
@@ -38,6 +43,26 @@ const App = ({reactions, store}) => {
                         <Route path="/sign-up" component={(props) => <SignUp {...props} reactions={reactions}/>}/>
                         <Route path="/account" component={(props) => <Account {...props} reactions={reactions}/>}/>
                         <Route path="/contact-us" component={ContactUs}/>
+                        <Route
+                            path="/admin"
+                            render={() => {
+                                const access = store.getState().access.data;
+
+                                if (access && access.role === 'admin') {
+                                    return (
+                                        <Admin>
+                                            <Route exact path="/admin" component={Accounts}/>
+                                            <Route path="/admin/configuration" component={Configuration}/>
+                                            <Route path="/admin/global-content" component={GlobalContent}/>
+                                            <Route path="/admin/page-content" component={PageContent}/>
+                                        </Admin>
+                                    );
+                                }
+
+                                return <Route component={NoMatch}/>;
+                            }}
+                        >
+                        </Route>
                         <Route component={NoMatch}/>
                     </Switch>
                 </div>
@@ -53,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
         reactions.init().then(() => {
             ReactDOM.render(
                 <App reactions={reactions} store={store}/>,
-                document.getElementById("root")
+                document.getElementById('root'),
             );
         });
     } catch (e) {

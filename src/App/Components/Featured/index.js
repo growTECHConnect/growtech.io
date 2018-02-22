@@ -25,4 +25,3 @@ const Featured = ({ company, id, type }) => {
 };
 
 export default Featured;
-

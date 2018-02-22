@@ -148,6 +148,9 @@ header.inner_header {
     display:block;
     max-width:100px;
 }
+.logo .img-responsive {
+    min-width: 100px;
+}
 .main_menu .navbar-nav {
     padding-top:22px;
 }

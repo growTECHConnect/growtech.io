@@ -1,4 +1,5 @@
 import {createAction, handleActions} from 'redux-actions';
+import axios from 'axios';
 
 class User {
 
@@ -7,6 +8,16 @@ class User {
             return new Promise((resolve) => {
                 firebase.auth()
                     .createUserWithEmailAndPassword(email, password)
+                    .then(({email, uid}) => {
+                        return axios({
+                            headers: {
+                                Accept: 'application/json',
+                            },
+                            method: 'post',
+                            url: `/api/signup`,
+                            data: {email, uid},
+                        });
+                    })
                     .then(resolve)
                     .catch((error) => this.store.dispatch(this.setError(error)));
             });
@@ -34,6 +45,9 @@ class User {
                     .then(resolve)
                     .catch((error) => this.store.dispatch(this.setError(error)));
             });
+        },
+        getToken: () => {
+            return Promise.resolve(firebase.auth().currentUser.getIdToken());
         }
     };
 
@@ -43,11 +57,11 @@ class User {
         error: null,
     };
 
-    setError = createAction('SET_ERROR');
+    setError = createAction('SET_USER_ERROR');
     setUser = createAction('SET_USER');
 
     reducer = handleActions({
-        SET_ERROR: (state, action) => {
+        SET_USER_ERROR: (state, action) => {
             return {
                 ...state,
                 error: action.payload,
@@ -74,7 +88,7 @@ class User {
                 if (user && user.uid) {
                     return Promise.all([
                         this.store.getState().access.actions.init(user.uid),
-                        this.store.getState().account.actions.init(user.uid),
+                        this.store.getState().account.actions.init(user.uid)
                     ])
                         .then((results) => {
                             const cid = results[0].company || null;
@@ -83,7 +97,11 @@ class User {
                                 return this.store.getState().company.actions.init(cid);
                             }
                         })
-                        .then(() => resolve(user))
+                        .then(() => firebase.auth().currentUser.getIdToken())
+                        .then((token) => {
+                            user.token = token;
+                            resolve(user);
+                        })
                         .catch((error) => console.log(error));
                 }
 
