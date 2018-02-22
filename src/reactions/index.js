@@ -1,9 +1,11 @@
 import {combineReducers} from 'redux';
 import Access from './access';
 import Account from './account';
+import Admin from './admin';
 import Companies from './companies';
 import Company from './company';
 import Config from './config';
+import Errors from './errors';
 import Messages from './messages';
 import News from './news';
 import Pages from './pages';
@@ -13,9 +15,11 @@ export default class Reactions {
     constructor() {
         this.access = new Access();
         this.account = new Account();
+        this.admin = new Admin();
         this.config = new Config();
         this.companies = new Companies();
         this.company = new Company();
+        this.errors = new Errors();
         this.messages = new Messages();
         this.news = new News();
         this.pages = new Pages();
@@ -25,9 +29,11 @@ export default class Reactions {
     getReducers = () => combineReducers({
         access: this.access.reducer,
         account: this.account.reducer,
+        admin: this.admin.reducer,
         config: this.config.reducer,
         companies: this.companies.reducer,
         company: this.company.reducer,
+        errors: this.errors.reducer,
         messages: this.messages.reducer,
         news: this.news.reducer,
         pages: this.pages.reducer,
@@ -37,9 +43,11 @@ export default class Reactions {
     setStore = (store) => {
         this.access.setStore(store);
         this.account.setStore(store);
+        this.admin.setStore(store);
         this.config.setStore(store);
         this.companies.setStore(store);
         this.company.setStore(store);
+        this.errors.setStore(store);
         this.messages.setStore(store);
         this.news.setStore(store);
         this.pages.setStore(store);

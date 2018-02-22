@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Link, Redirect } from 'react-router-dom';
+import {
+    NavLink,
+    Redirect,
+} from 'react-router-dom';
 import { connect } from 'react-redux'
+import './styles.css';
 import Header from '../Components/Header';
-import Footer from '../Components/Footer';
-import Network from '../Components/Network';
 
 class Admin extends React.Component {
 
@@ -14,29 +16,33 @@ class Admin extends React.Component {
         this.state = {};
     }
 
-    componentWillMount() {
-
-    }
-
-    componentWillReceiveProps(nextProps) {
-
-    }
-
     render() {
-        const { user } = this.props;
-
-        if (!user) {
-            return  <Redirect to="/"/>;
-        }
+        const {children} = this.props;
 
         return (
-            <div>
+            <div className="admin base">
                 <Header/>
-                <section className="admin">
-                    <h1>Admin</h1>
-                </section>
-                <Network/>
-                <Footer/>
+                <div className="page">
+                    <nav className="sidebar">
+                        <ul>
+                            <li>
+                                <NavLink exact to="/admin">Accounts</NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/admin/configuration">Configuration</NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/admin/global-content">Global Content</NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/admin/page-content">Page Content</NavLink>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div className="content">
+                        {children}
+                    </div>
+                </div>
             </div>
         );
     }
@@ -44,11 +50,7 @@ class Admin extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        actions: {
-            account: state.account.actions,
-        },
-        account: state.account.data,
-        company: state.company.data,
+        access: state.access.data,
         user: state.user.data,
     }
 };

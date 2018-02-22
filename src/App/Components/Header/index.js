@@ -29,16 +29,28 @@ class Header extends React.Component {
         this.setState({buttonOpen: !this.state.buttonOpen});
     };
 
+    renderAdminLink() {
+        const {access} = this.props;
+
+        if (access && access.role === 'admin') {
+            return (
+                <ul className="nav navbar-nav navbar-left">
+                    <li><NavLink to="/admin">Admin</NavLink></li>
+                </ul>
+            );
+        }
+    }
+
     renderLinks() {
         const { user } = this.props;
-        const homeClass = document.location.pathname === '/' ? 'active' : '';
         const menuClass = `navbar-collapse full_page_menu collapse ${this.state.buttonOpen ? 'in' : ''}`;
 
         if (user) {
             return (
                 <div id="navbar" className={menuClass}>
+                    {this.renderAdminLink()}
                     <ul className="nav navbar-nav navbar-right">
-                        <li><Link to="" className={homeClass}>Home</Link></li>
+                        <li><NavLink exact to="/">Home</NavLink></li>
                         <li><NavLink to="/directory">Directory</NavLink></li>
                         <li><NavLink to="/news">News</NavLink></li>
                         <li><NavLink to="/contact-us">Contact Us</NavLink></li>
@@ -53,7 +65,7 @@ class Header extends React.Component {
         return (
             <div id="navbar" className={menuClass}>
                 <ul className="nav navbar-nav navbar-right">
-                    <li><Link to="" className={homeClass}>Home</Link></li>
+                    <li><NavLink exact to="/">Home</NavLink></li>
                     <li><NavLink to="/directory">Directory</NavLink></li>
                     <li><NavLink to="/news">News</NavLink></li>
                     <li><NavLink to="/contact-us">Contact Us</NavLink></li>
@@ -74,14 +86,14 @@ class Header extends React.Component {
             <header className={headerClass}>
                 <div className="container custom_container">
                     <div className="row">
-                        <div className="col-sm-2 col-xs-12">
+                        <div className="col-sm-1 col-xs-12">
                             <div className="logo">
                                 <Link to="/">
                                     <img src="/images/logo.png" className="img-responsive"/>
                                 </Link>
                             </div>
                         </div>
-                        <div className="col-sm-10 col-xs-12 main_menu">
+                        <div className="col-sm-11 col-xs-12 main_menu">
                             <div className="navbar-header">
                                 <button
                                     type="button"
@@ -112,6 +124,7 @@ const mapStateToProps = (state) => {
             user: state.user.actions,
         },
         user: state.user.data,
+        access: state.access.data,
     }
 };
 
