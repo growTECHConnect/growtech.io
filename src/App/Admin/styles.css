@@ -1,0 +1,193 @@
+.admin.base {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+.admin .page {
+    display: flex;
+    flex: 1;
+}
+.admin .sidebar {
+    display: flex;
+    justify-content: flex-start;
+    width: 160px;
+    background-color: #445568;
+    border-top: 1px solid #000000;
+}
+.admin .sidebar ul {
+    width: 100%;
+}
+.admin .sidebar li a {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 16px;
+    color: #FFFFFF;
+    height: 40px;
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    border: 1px solid #445568;
+    border-right: 1px solid #000000;
+}
+.admin .sidebar li a:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: #FFFFFF;
+}
+.admin .sidebar li a.active {
+    background-color: #F9F9F9;
+    color: #445568;
+    border: 1px solid #000000;
+    border-right: 1px solid #F9F9F9;
+}
+.admin .content {
+    display: flex;
+    flex: 1;
+    padding: 20px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: #F9F9F9;
+}
+
+.admin .section {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    border: 1px solid #DDDDDD;
+    background-color: #FFFFFF;
+    padding: 20px;
+}
+
+.admin .section h2 {
+    font-size: 18px;
+    text-transform: uppercase;
+    text-align: center;
+    color: #6FBE47;
+    margin-bottom: 17px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.admin .btn-xs {
+    min-width: 75px;
+}
+
+.admin .btn:focus {
+    background-color: #FFFFFF;
+    outline: none;
+}
+
+.admin .btn:active {
+    box-shadow: none;
+}
+
+.admin .btn-default {
+    border:2px solid #6F6F6F;
+    border-radius: 0;
+    color:#6F6F6F;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.admin .btn-default:hover {
+    background:#EF864C;
+    border-color:#EF864C;
+    color:#FFFFFF;
+    text-decoration:none;
+}
+
+.admin .btn-danger {
+    background-color: #FFFFFF;
+    color: #d43f3a;
+    border-width: 2px;
+    border-radius: 0;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.admin .btn-danger:hover {
+    background: #d9534f;
+    border-color: #d9534f;
+    color: #FFFFFF;
+    text-decoration:none;
+}
+
+.admin .btn-danger:focus {
+    border-color: #d9534f;
+}
+
+.admin .btn-sort {
+    border: none;
+    font-weight: bold;
+    padding: 0;
+    font-size: 12px;
+}
+
+.admin .btn-spacer {
+    margin-left: 4px;
+}
+
+.admin .table>tbody>tr>td {
+    vertical-align: middle;
+}
+
+.admin .table>tbody+tbody {
+    border-top: none;
+}
+
+.admin .account-row.edit {
+    background-color: #DDDDDD;
+}
+
+.admin .edit-row {
+    display: none;
+}
+
+.admin .edit-row.edit {
+    display: table-row;
+    background-color: #F9F9F9;
+    border: 1px solid #DDDDDD;
+}
+
+.admin .dropdown-menu.clicked {
+    display: block;
+    border-radius: 0;
+    border: 1px solid #6F6F6F;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.admin .dropdown-toggle.clicked {
+    background: #EF864C;
+    border-color: #EF864C;
+    box-shadow: none;
+}
+
+.admin .new {
+    width: 100%;
+}
+
+.admin .new form {
+    display: none;
+    margin: 10px 0 10px;
+    padding: 8px;
+    background-color: #F9F9F9;
+    border: 1px solid #DDDDDD;
+}
+
+.admin .new form.show {
+    display: inline-block;
+}
+
+.form-control {
+    border-radius: 0;
+    border: 1px solid #6F6F6F;
+}
+
+.has-error .btn-default {
+    border-color: #a94442;
+}

@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "growtech-production",
+  "private_key_id": "d4eaf292695829665c684d2b77b772692c26d9f9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC5r+fC4ePeqgjm\nxczkVuKDvSxyncUUTDqoxHlLUQugRAwVRCqS8uenBjvk+WW8s7c3ctiboain9yiP\nKOwdvz0aQgr/a4T76WXeOfL8dec72y4rfeqT0WS+g0AWLEGVtEEt7sZiAAE6Pi49\nCEgD9HzCbZvcOrOPgo1uLPFHeS7rdIuIxt6nBiwwgpHGuUDrCXTHtanz0Rl4s+H/\nRzaIhLtRhUHacnOLJY6PTVoCwwvk1kHU3OpT75v9yFtX5zmqB6nEk62ZlM9R3xjA\nKz+cdwiHmU09chKBrgwVteAWjZGWrD7Aq4uFcBABLHXauEja5OxK8WB5dgumi11M\n5Ef0Y2MFAgMBAAECggEAAS44dP67/3sT72kBMnpy7497rDGLQo5xg7KBaunVqcEv\nqnryd64KVv+Ce07dR2PacwR3PWtmXRsEgP8rm8zOy09G2Uo1Cuei+X9jfMNrIvBJ\nIjGnaiUsqiFqKOSYeNEv5juHELHF+uQmUHEFtDC7vP4MEvcJ6Tb/8Ia3Sf21P1NN\nle3SMEDw1na788WW6ambu5L5HcF+4oN5X935FJ9aGShLi9MlWfUA75tsxSw+Mhkd\nEpEyOhqa76SoIMru3ZhISTPf8YfschaDgSSPc3diHsgxdQN27Dc3UEaVw4PELNh9\nOXwNsIRVNULBVYdm5en+Q3s7qC1v4PNYJVzSLZfpiQKBgQDolnBPqy3dmlz2wxDC\n6l81VHh9XYmHskvE3LKsFUGzMkOqEz0H2KBgR1sQA1NiDXFpm9vZBkrMtv9pKvxh\nUlkLTDP9faSZ9a3ogST6xr+plegv8y91I1H60BDR9ZIh7cIqE0TGZHoOabLSK0QQ\nTez648/q+WnsVP3OC2zxBs5TOwKBgQDMYOKRzhhaa8++Vq3OVYqrrWDLeTtMIypV\nPtV+nZgx/3mvdhedz2I5yL+tKdJa/ReHukXNVIFazCe0QSetAplkn5i8wyMDYb8p\nFZ10vdtClIUj6+VD3Nc8l6CGfW5QkFb9wYF96uFJHJ4jTlYOyDj10lh3F1Y5tFWX\nA26cTjE+vwKBgCRtKznO/WfvfQ/IjR95xV9800IPHDL8YZF7XyBEU/3UqXRBfxVz\nf+qUQlbHro90u4Zmuo/KxHw7TNUTvmMfmoKCdMIGo3jZWVtInpoH9oyAxdR8qboW\nxggZ/ghkBXb63aXpTqQjqFoJg9AWpppHGg5RD4cleMlipj1W3MEC591xAoGBAMv3\ngQZcdYeAAxMFNG4whrUw0eIfOiOREMWEcNLs+qAjQ9DtfUI8Xt4mT8zEaS/vWBVX\nvCPgSzxPdOx6/dq3NljqwibYZFAStBGPhdWlSHYY/QrNeMASXSgWdtjhwz9Z3cdf\n4BjHWVB65AN+QXp9LgN+ilVIEACEzcppXXFWw+THAoGAR27GAqK3cXGzUumFQew+\nfOFaOZADBIogM0tkhetTooanoZs2mMSLK3B6ME9l/TMpLqNLrpkAdm8vrQQYXqSh\ndyd38ez9CeTs/Fgvl7AjRKJVRQVhtnxldNIKc+YyAlOlW0G7+/voemEogsR45M2Z\nFtpSBfiOFdo4iVitMTNdNSg=\n-----END PRIVATE KEY-----\n",
+  "client_email": "growtech-production@growtech-production.iam.gserviceaccount.com",
+  "client_id": "117825282190930694609",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/growtech-production%40growtech-production.iam.gserviceaccount.com"
+}
