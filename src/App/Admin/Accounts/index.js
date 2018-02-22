@@ -158,7 +158,7 @@ class Accounts extends React.Component {
             const status = `${account.disabled ? 'disabled' : 'enabled'}`;
             const roleState = this.state.dropdowns[`role${uid}`] ? 'clicked' : '';
             const companyState = this.state.dropdowns[`company${uid}`] ? 'clicked' : '';
-            const companyName = account.company ? companies[account.company].name : '';
+            const companyName = account.company && companies[account.company] ? companies[account.company].name : '';
             const form = {
                 firstName: this.state.form[uid] ? this.state.form[uid].firstName : account.firstName || '',
                 lastName: this.state.form[uid] ? this.state.form[uid].lastName : account.lastName || '',
@@ -189,7 +189,7 @@ class Accounts extends React.Component {
                                     <label htmlFor="firstName" className="col-sm-1 control-label">Company</label>
                                     <div className="col-sm-5">
                                         <div className="btn-group">
-                                            <button type="button" className="btn btn-default">{form.company ? companies[form.company].name : '[not defined]'}</button>
+                                            <button type="button" className="btn btn-default">{form.company && companies[form.company] ? companies[form.company].name : '[not defined]'}</button>
                                             <button onClick={() => this.toggleDropDown(`company${uid}`)} type="button" className={`btn btn-default dropdown-toggle ${companyState}`} data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <span className="caret"></span>
                                                 <span className="sr-only">Toggle Dropdown</span>

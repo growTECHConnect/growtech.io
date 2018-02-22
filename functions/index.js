@@ -121,8 +121,11 @@ app.post('/signup', (req, res) => {
     const company = ref.child(`/companies/${companyKey}`).update({
         createdAt: new Date(),
         active: false,
-        hiring: false,
+        companyType: 'EDUCATIONAL',
+        employeeSize: '0',
         employmentType: 'FULL_TIME',
+        hiring: false,
+        industryType: 'ACCOUNTING',
     });
     const account = ref.child(`/account/${uid}`).update({
         createdAt: new Date(),

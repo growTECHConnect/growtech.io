@@ -35,6 +35,7 @@ class ListingForm extends React.Component {
         if (company) {
             this.setState({
                 form: {
+                    hiring: company.hiring || false,
                     fulltime: company.fulltime || false,
                     parttime: company.parttime || false,
                     internship: company.internship || false,
@@ -46,7 +47,20 @@ class ListingForm extends React.Component {
 
     setField = (event) => {
         const {id, value} = event.target;
-        this.setState({form: {...this.state.form, [id]: value}, errors: false}, () => {
+        const form = {
+            ...this.state.form,
+            [id]: value,
+        };
+
+        if (id === 'hiring' && !value) {
+            form['fulltime'] = false;
+            form['parttime'] = false;
+            form['internship'] = false;
+        } else if ((id === 'fulltime' || id === 'parttime' || id === 'internship') && value) {
+            form['hiring'] = true;
+        }
+
+        this.setState({form, errors: false}, () => {
             if (this.updateTimeout) {
                 clearTimeout(this.updateTimeout);
             }
@@ -83,7 +97,7 @@ class ListingForm extends React.Component {
                     <div className="acc_form_wrap">
                         <div className="acc_form_fields">
                             <div className="type_wrap">
-                                <h3 className="form_subtitle">Hiring For</h3>
+                                <h3 className="form_subtitle">Hiring Status</h3>
                                 <div className="gt_checkbox">
                                     <input id="fulltime"
                                            type="checkbox"
@@ -107,6 +121,14 @@ class ListingForm extends React.Component {
                                            onChange={this.setChecked}
                                     />
                                     <label htmlFor="internship">Internships</label>
+                                </div>
+                                <div className="gt_checkbox">
+                                    <input id="hiring"
+                                           type="checkbox"
+                                           checked={!form.hiring}
+                                           onChange={this.setChecked}
+                                    />
+                                    <label htmlFor="hiring">Not Hiring</label>
                                 </div>
                             </div>
                         </div>

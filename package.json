@@ -8,7 +8,7 @@
     "tsc": "node_modules/typescript/bin/tsc",
     "watch:functions": "node_modules/typescript/bin/tsc -w -p ./functions",
     "watch:webpack": "webpack -wd",
-    "deploy:production": "cross-env webpack --optimize-minimize --define process.env.NODE_ENV=\"'production'\" && firebase deploy -P default",
+    "deploy:production": "cross-env webpack && firebase deploy -P default",
     "deploy:staging": "cross-env webpack && firebase deploy -P staging",
     "serve:production": "cross-env webpack && firebase serve -P default --only hosting",
     "serve:staging": "cross-env webpack && firebase serve -P staging --only hosting",
