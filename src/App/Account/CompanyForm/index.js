@@ -16,7 +16,6 @@ class CompanyForm extends React.Component {
                 email: '',
                 contactUsUrl: '',
                 employeeSize: 0,
-                active: false,
                 city: '',
                 state: '',
                 description: '',
@@ -66,7 +65,6 @@ class CompanyForm extends React.Component {
                     email: company.email || '',
                     contactUsUrl: company.contactUsUrl || '',
                     employeeSize: company.employeeSize || 0,
-                    active: company.active || false,
                     city: company.city || '',
                     state: company.state || '',
                     description: company.description || '',
@@ -172,17 +170,6 @@ class CompanyForm extends React.Component {
             <div className="acc_form_section">
                 <h2>Company Info</h2>
                 <form noValidate onSubmit={(event) => event.preventDefault()}>
-                    <div className="cmp_job_wrap">
-                        <div className="switch_wrap">
-                            <span>Active</span>
-                            <label className="switch">
-                                <input id="active" type="checkbox" checked={form.active} value={form.active}
-                                       onChange={() => this.setChecked('active', !form.active)}/>
-                                <div className="slider round"></div>
-                            </label>
-                            <span>Inactive</span>
-                        </div>
-                    </div>
                     <div className="acc_form_wrap acc_form_three_col">
                         <div className="acc_form_fields">
                             <div className={this.getGroupClass('name')}>

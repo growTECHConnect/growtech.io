@@ -13,6 +13,7 @@ import NewsForm from './NewsForm';
 import ListingForm from './ListingForm';
 import EventsForm from './EventsForm';
 import ConfigForm from './ConfigForm';
+import StatusForm from './StatusForm'
 
 class Account extends React.Component {
     constructor(props) {
@@ -86,6 +87,7 @@ class Account extends React.Component {
                 <section className="my_company">
                     <div className="container-fluid my_company_container">
                         <AccountForm onRef={(ref) => (this.accountForm = ref)}/>
+                        <StatusForm onRef={(ref) => (this.statusForm = ref)}/>
                         <CompanyForm onRef={(ref) => (this.companyForm = ref)}/>
                         <MediaForm/>
                         <SocialForm onRef={(ref) => (this.socialForm = ref)}/>

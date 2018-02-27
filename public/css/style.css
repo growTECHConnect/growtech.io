@@ -520,16 +520,14 @@ header.inner_header {
     width:100%;
 }
 .hiring_logo {
-    width:100px;
     height:100px;
-    border-radius:50%;
-    overflow:hidden;
-    margin:0 auto;
-    display:block;
     margin-bottom:42px;
+    vertical-align: middle
 }
 .hiring_logo img {
-    border-radius:50%;
+    width: 90%;
+    margin: 0 auto;
+    display: block;
 }
 .hiring_wrap h2 {
     font-weight:500;
@@ -545,7 +543,7 @@ header.inner_header {
     color:#FF945A;
     font-size:20px;
     text-align:center;
-    word-break:break-all;
+    word-wrap: normal;
 }
 .hiring_wrap:hover, .hiring_wrap:focus {
     text-decoration:none;
