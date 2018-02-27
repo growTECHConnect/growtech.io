@@ -8,10 +8,10 @@ class MediaForm extends React.Component {
         this.state = {
             files: [],
             mediaFiles: {
-                heroImg: {name: '[Click To Upload]'},
-                listingsImg: {name: '[Click To Upload]'},
-                featuredImg: {name: '[Click To Upload]'},
-                companyImg: {name: '[Click To Upload]'},
+                heroImg: {name: '[Click To Upload]', className: 'text-error'},
+                listingsImg: {name: '[Click To Upload]', className: 'text-error'},
+                featuredImg: {name: '[Click To Upload]', className: 'text-error'},
+                companyImg: {name: '[Click To Upload]', className: 'text-error'},
             },
             errors: false,
         };
@@ -75,7 +75,7 @@ class MediaForm extends React.Component {
         if (img && img.state === 'success') {
             return {
                 className: 'text-success',
-                message: 'Successfully Uploaded',
+                message: 'Click to change',
             }
         }
 
@@ -104,7 +104,7 @@ class MediaForm extends React.Component {
 
         return (
             <div className="acc_form_section">
-                <h2>Company Media</h2>
+                <h2 id="media">Company Media</h2>
                 <form noValidate onSubmit={(event) => event.preventDefault()}>
                     <div className="acc_form_wrap">
                         <div className="acc_form_fields">

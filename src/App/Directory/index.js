@@ -308,7 +308,7 @@ class Directory extends React.Component {
                                     </button>
                                 </div>
                                 <div className="filters">
-                                    <h3>Now Hiring</h3>
+                                    <h3>Hiring Status</h3>
                                     <ul>
                                         <li>
                                             <div className="gt_checkbox">
