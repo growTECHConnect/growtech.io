@@ -401,13 +401,24 @@ header.inner_header {
 .featured_three .feat_img {
     height:200px;
 }
+
 .feat_img {
-    height:260px;
-    width:100%;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: 50% 50%;
+    height:190px;
+    position: relative;
 }
+.feat_img img {
+    max-height: 95%;
+    max-width: 95%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
 .featured_three .feat_info {
     bottom:-200px;
     padding:29px;
@@ -513,21 +524,26 @@ header.inner_header {
     overflow:hidden;
     background:#fff;
     display:block;
-    padding-top:40px;
     margin-bottom:19px;
 }
 .matches_wrap .hiring_wrap {
     width:100%;
 }
 .hiring_logo {
-    height:100px;
-    margin-bottom:42px;
-    vertical-align: middle
+    height:190px;
+    position: relative;
 }
 .hiring_logo img {
-    width: 90%;
-    margin: 0 auto;
-    display: block;
+    max-height: 95%;
+    max-width: 95%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
 }
 .hiring_wrap h2 {
     font-weight:500;
@@ -794,6 +810,7 @@ footer .foot_menu h2 {
 }
 .company_logo img {
     display:inline-block;
+    max-width: 600px;
 }
 .company_top_details p {
     font-size:18px;
