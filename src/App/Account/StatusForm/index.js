@@ -92,12 +92,12 @@ class StatusForm extends React.Component {
     };
 
     renderMessage = () => {
-        const {company, company: {mediaFiles = {}}} = this.props;
+        const {company} = this.props;
         const {status} = this.state;
-        const heroLink = mediaFiles.heroImg ? '' : <a href="/account#media" className="alert-link"><p>Hero Graphic</p></a>;
-        const listingsLink = mediaFiles.listingsImg ? '' : <a href="/account#media" className="alert-link"><p>Listings Graphic</p></a>;
-        const featuredLink = mediaFiles.featuredImg ? '' : <a href="/account#media" className="alert-link"><p>Featured Graphic</p></a>;
-        const companyLink = mediaFiles.companyImg ? '' : <a href="/account#media" className="alert-link"><p>Company Graphic</p></a>;
+        const heroLink = company && company.mediaFiles && company.mediaFiles.heroImg ? '' : <a href="/account#media" className="alert-link"><p>Hero Graphic</p></a>;
+        const listingsLink = company && company.mediaFiles && company.mediaFiles.listingsImg ? '' : <a href="/account#media" className="alert-link"><p>Listings Graphic</p></a>;
+        const featuredLink = company && company.mediaFiles && company.mediaFiles.featuredImg ? '' : <a href="/account#media" className="alert-link"><p>Featured Graphic</p></a>;
+        const companyLink = company && company.mediaFiles && company.mediaFiles.companyImg ? '' : <a href="/account#media" className="alert-link"><p>Company Graphic</p></a>;
 
         if (status.warning) {
             return (
@@ -126,7 +126,7 @@ class StatusForm extends React.Component {
     };
 
     render() {
-        const {form, status} = this.state;
+        const {form} = this.state;
 
         return (
             <div className="acc_form_section">
@@ -145,7 +145,6 @@ class StatusForm extends React.Component {
                         </div>
                     </div>
                 </form>
-
             </div>
         );
     }

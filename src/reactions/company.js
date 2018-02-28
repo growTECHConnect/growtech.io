@@ -1,4 +1,5 @@
 import { createAction, handleActions } from 'redux-actions';
+import uuidv1 from 'uuid/v1';
 
 class Company {
 
@@ -18,18 +19,18 @@ class Company {
             const cid = this.store.getState().access.data.company;
             const uploads = Object.keys(files).map((key) => {
                 const {data_url, filename} = files[key];
-                const fileRef = firebase.storage().ref(`/companies/${cid}/${filename}`);
+                const fileRef = firebase.storage().ref(`/companies/${cid}/${uuidv1()}-${filename}`);
 
                 return fileRef.putString(data_url, 'data_url')
                     .then((snapshot) => {
                         return {
                             url: snapshot.metadata.downloadURLs[0],
-                            name: snapshot.metadata.name,
+                            name: filename,
                             size: snapshot.metadata.size,
                             state: snapshot.state,
                             key,
                         };
-                    })
+                    });
             });
 
             setStatus('Saving...');
