@@ -7,7 +7,7 @@ import Reactions from './reactions';
 
 const configureStore = () => {
     const reactions = new Reactions();
-    const store = createStore(reactions.getReducers(), applyMiddleware(logger));
+    const store = createStore(reactions.getReducers()); //, applyMiddleware(logger));
 
     reactions.setStore(store);
 

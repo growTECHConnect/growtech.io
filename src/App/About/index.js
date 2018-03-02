@@ -22,28 +22,30 @@ class About extends React.Component {
     renderImages = () => {
         const {images, tags} = this.props;
 
-        return tags.map((key, index) => {
-            const photos = images[key].map((image) => {
-                const width = Math.floor(Math.random() * 4) + 1;
-                const height = Math.floor(Math.random() * 4) + 1;
+        if (images && tags) {
+            return tags.map((key, index) => {
+                const photos = images[key].map((image) => {
+                    const width = Math.floor(Math.random() * 4) + 1;
+                    const height = Math.floor(Math.random() * 4) + 1;
 
-                return {
-                    src: image.src,
-                    width: 1,
-                    height: 1,
-                };
+                    return {
+                        src: image.src,
+                        width: 1,
+                        height: 1,
+                    };
+                });
+
+                return (
+                    <div
+                        className="insta_feed"
+                        key={index}
+                    >
+                        <h3>#{key}</h3>
+                        <Gallery photos={photos}/>
+                    </div>
+                );
             });
-
-            return (
-                <div
-                    className="insta_feed"
-                    key={index}
-                >
-                    <h3>#{key}</h3>
-                    <Gallery photos={photos} />
-                </div>
-            );
-        });
+        }
     };
 
     render() {
@@ -120,8 +122,8 @@ class About extends React.Component {
 const mapStateToProps = (state) => {
     return {
         page: state.pages.data.about || {},
-        images: state.config.data.images.data,
-        tags: state.config.data.images.tags,
+        images: state.config.data.images.data || [],
+        tags: state.config.data.images.tags || [],
     }
 };
 
