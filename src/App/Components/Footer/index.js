@@ -23,6 +23,8 @@ class Footer extends React.Component {
         });
     };
 
+
+
     render() {
         return (
             <footer>
@@ -32,11 +34,22 @@ class Footer extends React.Component {
                             <h2>FOLLOW GROWTECH</h2>
                             {this.renderSocialLinks()}
                         </div>
+                        <ul className="col-md-5 foot_menu">
+                            <li>
+                                <Link to="/contact-us">Contact Us</Link><br/>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/pg/growTECH.io/events">Events</a><br/>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/pg/growTECH.io/events">Newsletter</a><br/>
+                            </li>
+                        </ul>
                     </div>
                     <div className="row">
                         <div className="col-sm-12">
                             <div className="foot_logo">
-                                <Link to="/"><img src="images/foot_logo.png" className="img-responsive"/></Link>
+                                <Link to="/"><img src="images/foot_logo.png" className="img-responsive" /></Link>
                                 <p>&copy; {this.state.year} Chicostart - All rights reserved.</p>
                             </div>
                         </div>
