@@ -25,8 +25,6 @@ class About extends React.Component {
         if (images && tags) {
             return tags.map((key, index) => {
                 const photos = images[key].map((image) => {
-                    const width = Math.floor(Math.random() * 4) + 1;
-                    const height = Math.floor(Math.random() * 4) + 1;
 
                     return {
                         src: image.src,
