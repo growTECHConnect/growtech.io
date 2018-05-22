@@ -618,16 +618,24 @@ footer .foot_menu h2 {
 .social_links a:hover {
     opacity:1;
 }
-.foot_menu ul li a {
+.foot_menu {
+    color:#fff;
+    float:right;
+    font-size:18px;
+    text-align: right;
+    text-transform: uppercase;
+
+}
+.foot_menu li a {
     display:inline-block;
     color:#76BF44;
     font-size:15px;
     font-weight:normal;
-    text-decoration:underline;
     margin-top:5px;
 }
 .foot_menu ul li a:hover {
     color:#fff;
+    text-decoration:underline;
 }
 .foot_logo {
     text-align:center;
