@@ -18,11 +18,13 @@ import About from './About';
 import Partnership from './Partnership';
 import ContactUs from './ContactUs';
 import News from './News';
+import Community from './Community';
 import Admin from './Admin';
 import Configuration from './Admin/Configuration';
 import Accounts from './Admin/Accounts';
 import GlobalContent from './Admin/GlobalContent';
 import PageContent from './Admin/PageContent';
+
 
 const {reactions, store} = configStore();
 
@@ -43,6 +45,7 @@ const App = ({reactions, store}) => {
                         <Route path="/sign-up" component={(props) => <SignUp {...props} reactions={reactions}/>}/>
                         <Route path="/account" component={(props) => <Account {...props} reactions={reactions}/>}/>
                         <Route path="/contact-us" component={ContactUs}/>
+                        <Route path="/community" component={Community}/>
                         <Route
                             path="/admin"
                             render={() => {

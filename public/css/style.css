@@ -1305,6 +1305,31 @@ footer .foot_menu h2 {
 }
 
 
+/*----------- Community ---------*/
+
+.community_content h4 {
+    margin: 1rem 0;
+}
+
+.community_content h4 a {
+    color: #76BF44;
+    font-weight: 600;
+
+}
+
+.community_free-tools {
+    font-size: 1.5rem;
+}
+
+.community_free-tools ul {
+    margin: 1rem 0 1rem 2rem;
+}
+
+.community_free-tools ul li {
+    margin: 0.25rem auto;
+    list-style: square;
+}
+
 /*-----------About Us---------*/
 .about_section.abt_us_section {
     padding:30px 0;
@@ -1312,10 +1337,14 @@ footer .foot_menu h2 {
 .about_section.abt_us_section p {
     margin-bottom:0;
 }
+
+.community_content,
 .about_content {
     background:#fff;
     padding:88px 0 75px 0;
+    
 }
+
 .about_content_left {
     max-width:592px;
     width:100%;
