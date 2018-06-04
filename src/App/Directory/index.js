@@ -201,7 +201,7 @@ class Directory extends React.Component {
         const filteredKeys = Object.keys(companies)
             .filter((key) => {
                 const company = companies[key];
-                return company.active;
+                return company.active && company.isApproved;
             })
             .filter((key) => {
                 const company = companies[key];
