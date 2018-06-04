@@ -98,10 +98,29 @@ class StatusForm extends React.Component {
         const listingsLink = company && company.mediaFiles && company.mediaFiles.listingsImg ? '' : <a href="/account#media" className="alert-link"><p>Listings Graphic</p></a>;
         const featuredLink = company && company.mediaFiles && company.mediaFiles.featuredImg ? '' : <a href="/account#media" className="alert-link"><p>Featured Graphic</p></a>;
         const companyLink = company && company.mediaFiles && company.mediaFiles.companyImg ? '' : <a href="/account#media" className="alert-link"><p>Company Graphic</p></a>;
-
+        const isApproved = () => {
+            if (company && company.isApproved) {
+                return (
+                    <div className="alert alert-success"  role="alert">
+                        <strong>Your company has been approved.</strong>
+                    </div>
+                );
+            }
+            else {
+                return (
+                    <div className="alert alert-info" role="alert">
+                        <strong>Your company has not been approved.</strong>
+                        <p>You need approval from a growTECH administrator for your company to be displayed on the site. Please wait a few days after signup for approval.</p>
+                    </div>
+                );
+            }
+        }
+        
+        
         if (status.warning) {
             return (
                 <div className="acc_form_fields">
+                    {isApproved()}
                     <div className="alert alert-warning" role="alert">
                         <strong>The company profile can not be set to active until the following fields are updated:</strong>
                         <p>&nbsp;</p>
@@ -120,6 +139,7 @@ class StatusForm extends React.Component {
                     <div className="alert alert-success" role="alert">
                         <strong>All required fields are updated, you can now activate your account.</strong>
                     </div>
+                    {isApproved()}
                 </div>
             );
         }
