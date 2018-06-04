@@ -276,8 +276,9 @@ class Directory extends React.Component {
     };
 
     render() {
-        const {page} = this.props;
-
+        const {page, user } = this.props;
+        const isLoggedIn = !!user;
+        
         return (
             <div>
                 <Header/>
@@ -285,7 +286,7 @@ class Directory extends React.Component {
                     <div className="container">
                         <div className="row">
                             <div className="col-sm-12 add_company">
-                                <a href="#">Add Your Company</a>
+                                { isLoggedIn ?  null : <a href="/">Add Your Company</a> }
                             </div>
                         </div>
                         <div className="row featured_three">
