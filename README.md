@@ -19,6 +19,7 @@ Commands to Run Prior to Starting the Application
     ```
 
 3.  Authenticate with Firebase
+
     This step will require another user to give you permissions to the growTECH firebase console.
     Then:
     ```
