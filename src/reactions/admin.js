@@ -4,6 +4,7 @@ import axios from 'axios';
 export default class Access {
 
     actions = {
+        
         getAccounts: () => {
             const {token} = this.store.getState().user.data;
 
@@ -19,6 +20,7 @@ export default class Access {
                     this.store.dispatch(this.setAccounts(data));
                 });
         },
+        
         updateAccount: (uid, data) => {
             const {token} = this.store.getState().user.data;
 
@@ -35,6 +37,7 @@ export default class Access {
                     this.store.dispatch(this.updateAccount(data));
                 });
         },
+        
         addAccount: (data) => {
             const {token} = this.store.getState().user.data;
 
@@ -55,7 +58,30 @@ export default class Access {
                     const {error} = response.data;
                     throw error;
                 });
-        }
+        },
+        
+        updateCompanyApproval: (uid, value) => {
+
+            const {token} = this.store.getState().user.data;
+
+            return axios({
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/json',
+                },
+                method: 'put',
+                url: `/api/admin/companies/${uid}`,
+                data: {
+                    company: {
+                        isApproved: !!value,
+                    }
+                },
+            })
+            .catch(({response}) => {
+                const {error} = response.data;
+                throw error;
+            });
+        },
     };
 
     initialState = {
