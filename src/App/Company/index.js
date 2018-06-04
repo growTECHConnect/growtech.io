@@ -81,7 +81,7 @@ class Company extends React.Component {
         const companyType = types[company.companyType] ? types[company.companyType].text : null;
         const industryType = industries[company.industryType] ? industries[company.industryType].text : null;
 
-        if (!company) {
+        if (!company || (company && !company.isApproved)) {
             return <Redirect to="/no-match"/>;
         }
 
