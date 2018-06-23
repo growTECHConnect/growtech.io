@@ -98,6 +98,16 @@ class StatusForm extends React.Component {
         const listingsLink = company && company.mediaFiles && company.mediaFiles.listingsImg ? '' : <a href="/account#media" className="alert-link"><p>Listings Graphic</p></a>;
         const featuredLink = company && company.mediaFiles && company.mediaFiles.featuredImg ? '' : <a href="/account#media" className="alert-link"><p>Featured Graphic</p></a>;
         const companyLink = company && company.mediaFiles && company.mediaFiles.companyImg ? '' : <a href="/account#media" className="alert-link"><p>Company Graphic</p></a>;
+        const finalApprovalMessage = () => {
+            if (company && company.isApproved) {
+                return (<strong>All required fields are updated, you can now activate your account.</strong>)
+            }
+            else {
+                return (<strong>All required fields are updated, please wait for your account to be approved.</strong>)
+            }
+            
+        };
+        
         const isApproved = () => {
             if (company && company.isApproved) {
                 return (
@@ -109,12 +119,12 @@ class StatusForm extends React.Component {
             else {
                 return (
                     <div className="alert alert-info" role="alert">
-                        <strong>Your company has not been approved.</strong>
-                        <p>You need approval from a growTECH administrator for your company to be displayed on the site. Please wait a few days after signup for approval.</p>
+                        <strong>Your company has been submitted for approval.</strong>
+                        <p>A growTECH administrator will contact you within 2 days to confirm your approval. <br /> If you have questions please contact <a href="mailto:wendy@chicostart.com" target="_blank">wendy@chicostart.com</a>.</p>
                     </div>
                 );
             }
-        }
+        };
         
         
         if (status.warning) {
@@ -137,7 +147,7 @@ class StatusForm extends React.Component {
             return (
                 <div className="acc_form_fields">
                     <div className="alert alert-success" role="alert">
-                        <strong>All required fields are updated, you can now activate your account.</strong>
+                        {finalApprovalMessage()}
                     </div>
                     {isApproved()}
                 </div>
