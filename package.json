@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "node_modules/typescript/bin/tsc",
-    "watch:functions": "node_modules/typescript/bin/tsc -w -p ./functions",
+    "watch:functions": "npm run tsc -- -w -p ./functions",
     "watch:webpack": "webpack -wd",
     "deploy:production": "cross-env webpack && firebase deploy -P default",
     "deploy:staging": "cross-env webpack && firebase deploy -P staging",

@@ -177,6 +177,17 @@ app.post('/signup', (req, res) => {
         .catch((error) => res.status(500).json({ error }));
 });
 
+app.put('/admin/companies/:uid', (req, res) => {
+    const { company } = req.body;
+    const { uid } = req.params;
+    const ref = fbAdmin.database().ref();
+    
+    return ref.child(`/companies/${uid}`).update(Object.assign({}, company, { updatedAt: new Date() }))
+        .then( snapshot => res.json({ success: true }))
+        .catch((error) => res.status(500).json({ error }));
+});
+
+
 api.use('/api', app);
 
 exports.api = functions.https.onRequest(api);

@@ -96,7 +96,20 @@ class Accounts extends React.Component {
             },
         });
     };
-
+    
+    updateApproval = (uid) => {
+        const { updateCompanyApproval } = this.props.actions.admin;
+        const { companies } = this.props;
+        const account = this.state.accounts[uid];
+        
+        if (account.company) {
+            const companyID = account.company
+            const company = companies[companyID];
+            
+            updateCompanyApproval(companyID, !company.isApproved);
+        }
+    };
+    
     updateStatus = (uid) => {
         const {updateAccount} = this.props.actions.admin;
 
@@ -158,7 +171,9 @@ class Accounts extends React.Component {
             const status = `${account.disabled ? 'disabled' : 'enabled'}`;
             const roleState = this.state.dropdowns[`role${uid}`] ? 'clicked' : '';
             const companyState = this.state.dropdowns[`company${uid}`] ? 'clicked' : '';
-            const companyName = account.company && companies[account.company] ? companies[account.company].name : '';
+            const company = account.company ? companies[account.company] : null;
+            const companyName = company ? company.name : '';
+            const isApproved = company ? company.isApproved : false;
             const form = {
                 firstName: this.state.form[uid] ? this.state.form[uid].firstName : account.firstName || '',
                 lastName: this.state.form[uid] ? this.state.form[uid].lastName : account.lastName || '',
@@ -180,6 +195,7 @@ class Accounts extends React.Component {
                                 onClick={() => this.onEdit(uid)}
                             >{this.state.edit[uid] ? 'Cancel' : 'Edit'}</button>
                             <button onClick={() => this.updateStatus(uid)} className={`btn ${account.disabled ? 'btn-default' : 'btn-danger'} btn-xs btn-spacer`}>{account.disabled ? 'enable' : 'disable'}</button>
+                            <button onClick={() => this.updateApproval(uid)} className={`btn ${isApproved ? 'btn-danger' : 'btn-default'} btn-xs btn-spacer`}>{isApproved ? 'unapprove' : 'approve'}</button>
                         </td>
                     </tr>
                     <tr className={editClass}>
@@ -325,14 +341,12 @@ class Accounts extends React.Component {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th>company</th>
-                            <th>
-                                <button className="btn btn-sort">email</button>
-                            </th>
-                            <th>name</th>
-                            <th>role</th>
-                            <th>status</th>
-                            <th></th>
+                            <th>Company</th>
+                            <th>Email</th>
+                            <th>User</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     {this.renderAccounts()}
