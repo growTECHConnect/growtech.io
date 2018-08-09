@@ -42,7 +42,7 @@ class Footer extends React.Component {
                                 <a href="https://www.facebook.com/pg/growTECH.io/events">Events</a><br/>
                             </li>
                             <li>
-                                <a href="https://www.facebook.com/pg/growTECH.io/events">Newsletter</a><br/>
+                                <a href="/contact-us">Newsletter</a><br/>
                             </li>
                         </ul>
                     </div>
