@@ -21,7 +21,7 @@ export default class Access {
                     Accept: 'application/json',
                 },
                 method: 'get',
-                url: '/api/admin/accounts',
+                url: `${process.env.REACT_APP_API_HOST}/admin/accounts`,
             }).then(({ data }) => {
                 this.store.dispatch(this.setAccounts(data));
             });
@@ -36,7 +36,7 @@ export default class Access {
                     Accept: 'application/json',
                 },
                 method: 'put',
-                url: `/api/admin/accounts/${uid}`,
+                url: `${process.env.REACT_APP_API_HOST}/admin/accounts/${uid}`,
                 data,
             }).then(({ data }) => {
                 this.store.dispatch(this.updateAccount(data));
@@ -52,7 +52,7 @@ export default class Access {
                     Accept: 'application/json',
                 },
                 method: 'post',
-                url: `/api/admin/accounts`,
+                url: `${process.env.REACT_APP_API_HOST}/admin/accounts`,
                 data,
             })
                 .then(({ data }) => {
@@ -74,7 +74,7 @@ export default class Access {
                     Accept: 'application/json',
                 },
                 method: 'put',
-                url: `/api/admin/companies/${uid}`,
+                url: `${process.env.REACT_APP_API_HOST}/admin/companies/${uid}`,
                 data: {
                     company: {
                         isApproved: !!value,
