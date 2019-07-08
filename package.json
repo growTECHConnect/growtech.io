@@ -6,8 +6,8 @@
         "functions"
     ],
     "scripts": {
-        "start": "sh -ac '. ./.env.local; react-scripts start'",
-        "build": "sh -ac '. ./.env.local; react-scripts build' && yarn workspace functions build",
+        "start": "yarn workspace functions watch & firebase serve --only functions --port 3030 & sh -ac '. ./.env.local; react-scripts start'",
+        "build": "sh -ac '. ./.env.prod; react-scripts build' && yarn workspace functions build",
         "serve": "firebase serve --only functions,hosting",
         "deploy": "firebase deploy --only functions,hosting",
         "test": "react-scripts test",

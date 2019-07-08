@@ -1,5 +1,14 @@
 {
   "projects": {
     "prod": "growtech-production"
+  },
+  "targets": {
+    "growtech-production": {
+      "hosting": {
+        "prod": [
+          "growtech-production"
+        ]
+      }
+    }
   }
 }

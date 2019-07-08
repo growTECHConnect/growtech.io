@@ -24,7 +24,7 @@ class User {
                                 Accept: 'application/json',
                             },
                             method: 'post',
-                            url: `/api/signup`,
+                            url: `${process.env.REACT_APP_API_HOST}/signup`,
                             data: { email, uid },
                         });
                     })
