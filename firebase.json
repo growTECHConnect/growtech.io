@@ -13,6 +13,23 @@
                     "destination": "/index.html"
                 }
             ]
+        },
+        {
+            "target": "staging",
+            "public": "build",
+            "rewrites": [
+                {
+                    "source": "/api/**",
+                    "function": "api"
+                },
+                {
+                    "source": "**",
+                    "destination": "/index.html"
+                }
+            ]
         }
-    ]
+    ],
+    "functions": {
+        "source": "functions"
+    }
 }

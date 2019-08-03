@@ -1,38 +1,60 @@
-const functions = require('firebase-functions');
-const fbAdmin = require('firebase-admin');
-const express = require('express');
-const validate = require('validate.js');
-const { validateAdminAuthorization } = require('./utils');
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
+import express from 'express';
+import cors from 'cors';
+import yup from 'yup';
+import { validateAdminAuthorization } from './utils';
+
+const projectId = process.env.REACT_APP_FIREBASE_PROJECTID ? process.env.REACT_APP_FIREBASE_PROJECTID : undefined;
+const serviceAccount = projectId ? require(`../../${projectId}.json`) : undefined;
+
+if (projectId) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        databaseURL: `https://${projectId}.firebaseio.com`,
+    });
+} else {
+    admin.initializeApp();
+}
+
 const app = express();
-const api = express();
+const router = express.Router();
+const whitelist = ['http://localhost:3000', 'http://localhost:5000'];
 
-fbAdmin.initializeApp(functions.config().firebase);
+app.use(
+    cors({
+        origin: function(origin, callback) {
+            if (!origin) {
+                return callback(null, true);
+            }
 
-// const serviceAccount = require('../growTech-staging.json');
-//
-// fbAdmin.initializeApp({
-//     credential: fbAdmin.credential.cert(serviceAccount),
-//     databaseURL: "https://growtech-staging.firebaseio.com"
-// });
-//app.use(cors({ origin: true }));
+            if (origin && whitelist.indexOf(origin) !== -1) {
+                return callback(null, true);
+            }
+
+            return callback(new Error('Not allowed by CORS'));
+        },
+        credentials: true,
+    })
+);
 
 const getAccounts = () => {
     return Promise.all([
-        fbAdmin
+        admin
             .database()
             .ref(`/account`)
             .once('value')
-            .then((snapshot) => snapshot.val()),
-        fbAdmin
+            .then((snapshot: any) => snapshot.val()),
+        admin
             .database()
             .ref(`/access`)
             .once('value')
             .then((snapshot) => snapshot.val()),
-        fbAdmin.auth().listUsers(),
+        admin.auth().listUsers(),
     ]).then((results) => {
         const account = results[0];
         const access = results[1];
-        const users = {};
+        const users: any = {};
 
         results[2].users.forEach((user) => {
             const role = access[user.uid] ? access[user.uid].role : null;
@@ -55,124 +77,114 @@ const getAccounts = () => {
     });
 };
 
-app.use('/admin', validateAdminAuthorization);
+router.use('/admin', validateAdminAuthorization);
 
-app.get('/admin/accounts', (req, res) => {
+router.get('/admin/accounts', (req, res) => {
     getAccounts()
         .then((users) => res.json(users))
         .catch((error) => res.status(500).json({ error }));
 });
 
-app.post('/admin/accounts', (req, res) => {
-    const { company, email, firstName, lastName, role = 'edit' } = req.body;
-    const constraints = {
-        company: {
-            presence: { allowEmpty: false },
-        },
-        email: {
-            email: true,
-            presence: true,
-        },
-        firstName: {
-            presence: { allowEmpty: false },
-        },
-        lastName: {
-            presence: { allowEmpty: false },
-        },
-        role: {
-            inclusion: ['admin', 'edit'],
-        },
-    };
-    const error = validate(req.body, constraints);
+router.post('/admin/accounts', (req, res) => {
+    const schema = yup.object().shape({
+        company: yup.string().required(),
+        email: yup
+            .string()
+            .email()
+            .required(),
+        firstName: yup.string().required(),
+        lastName: yup.string().required(),
+        role: yup.string().oneOf(['admin', 'edit']),
+    });
 
-    if (error) {
-        Object.keys(error).forEach((key) => {
-            error[key] = error[key][0];
-        });
-        return res.status(500).json({ error });
-    }
+    return schema
+        .validate(req.body)
+        .then((body: any) => {
+            const { company, email, firstName, lastName, role = 'edit' } = body;
 
-    fbAdmin
-        .auth()
-        .createUser({ email })
-        .then((user) => {
-            const { uid } = user;
-            const account = fbAdmin
-                .database()
-                .ref(`/account/${uid}`)
-                .update({
-                    createdAt: new Date(),
-                    email,
-                    firstName,
-                    lastName,
+            return admin
+                .auth()
+                .createUser({ email })
+                .then((user) => {
+                    const { uid } = user;
+                    const account = admin
+                        .database()
+                        .ref(`/account/${uid}`)
+                        .update({
+                            createdAt: new Date(),
+                            email,
+                            firstName,
+                            lastName,
+                        });
+                    const access = admin
+                        .database()
+                        .ref(`/access/${uid}`)
+                        .update({
+                            createdAt: new Date(),
+                            company,
+                            role,
+                        });
+
+                    return Promise.all([account, access]);
+                })
+                .then(() => getAccounts())
+                .then((users) => res.json(users))
+                .catch((error) => {
+                    const response: any = {};
+
+                    if (error && error.code) {
+                        if (
+                            error.code === 'auth/email-already-exists' ||
+                            error.code === 'auth/email-already-in-use' ||
+                            error.code === 'auth/invalid-email'
+                        ) {
+                            response['email'] = error.message;
+                        }
+                        if (error.code === 'auth/weak-password') {
+                            response['password'] = error.message;
+                        }
+                        if (error.code === 'auth/operation-not-allowed') {
+                            response['global'] = error.message;
+                        }
+                    }
+
+                    res.status(500).json({ error: response, errors: error });
                 });
-            const access = fbAdmin
-                .database()
-                .ref(`/access/${uid}`)
-                .update({
-                    createdAt: new Date(),
-                    company,
-                    role,
-                });
-
-            return Promise.all([account, access]);
         })
-        .then(() => getAccounts())
-        .then((users) => res.json(users))
         .catch((error) => {
-            const response = {};
-
-            if (error && error.code) {
-                if (
-                    error.code === 'auth/email-already-exists' ||
-                    error.code === 'auth/email-already-in-use' ||
-                    error.code === 'auth/invalid-email'
-                ) {
-                    response['email'] = error.message;
-                }
-                if (error.code === 'auth/weak-password') {
-                    response['password'] = error.message;
-                }
-                if (error.code === 'auth/operation-not-allowed') {
-                    response['global'] = error.message;
-                }
-            }
-
-            res.status(500).json({ error: response, errors: error });
+            return res.status(500).json({ error });
         });
 });
 
-app.put('/admin/accounts/:uid', (req, res) => {
+router.put('/admin/accounts/:uid', (req, res) => {
     const { uid } = req.params;
     const { access = {}, account = {}, user = {} } = req.body;
 
-    console.log('here');
-
     Promise.all([
-        fbAdmin
+        admin
             .database()
             .ref(`/access/${uid}`)
             .update({
                 ...access,
                 updatedAt: new Date(),
             }),
-        fbAdmin
+        admin
             .database()
             .ref(`/account/${uid}`)
             .update({
                 ...account,
                 updatedAt: new Date(),
             }),
-        fbAdmin.auth().updateUser(uid, user),
+        admin.auth().updateUser(uid, user),
     ])
         .then(() => getAccounts())
         .then((users) => res.json(users[uid]))
         .catch((error) => res.status(500).json({ error }));
 });
 
-app.post('/signup', (req, res) => {
+router.post('/signup', (req, res) => {
     const { email, uid } = req.body;
-    const ref = fbAdmin.database().ref();
+    const ref = admin.database().ref();
     const companyRef = ref.child('/companies');
     const companyKey = companyRef.push().key;
 
@@ -204,18 +216,31 @@ app.post('/signup', (req, res) => {
         .catch((error) => res.status(500).json({ error }));
 });
 
-app.put('/admin/companies/:uid', (req, res) => {
+router.put('/admin/companies/:uid', (req, res) => {
     const { company } = req.body;
     const { uid } = req.params;
-    const ref = fbAdmin.database().ref();
+    const ref = admin.database().ref();
 
     return ref
         .child(`/companies/${uid}`)
         .update(Object.assign({}, company, { updatedAt: new Date() }))
-        .then((snapshot) => res.json({ success: true }))
+        .then(() => res.json({ success: true }))
         .catch((error) => res.status(500).json({ error }));
 });
 
-api.use('/api', app);
+router.get('/', (req, res) => {
+    return admin
+        .database()
+        .ref('/config')
+        .once('value')
+        .then((snapshot) => {
+            const { database } = snapshot.val();
 
-exports.api = functions.https.onRequest(api);
+            res.json({ status: 'okay', database, projectId });
+        })
+        .catch((error) => res.status(500).json({ error }));
+});
+
+app.use('/api', router);
+
+export const api = functions.https.onRequest(app);

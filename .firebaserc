@@ -1,12 +1,21 @@
 {
   "projects": {
-    "prod": "growtech-production"
+    "prod": "growtech-production",
+    "staging": "growtech-staging",
+    "default": "growtech-production"
   },
   "targets": {
     "growtech-production": {
       "hosting": {
         "prod": [
           "growtech-production"
+        ]
+      }
+    },
+    "growtech-staging": {
+      "hosting": {
+        "staging": [
+          "growtech-staging"
         ]
       }
     }
