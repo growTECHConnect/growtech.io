@@ -22,6 +22,7 @@ export default class Access {
                 },
                 method: 'get',
                 url: `${process.env.REACT_APP_API_HOST}/admin/accounts`,
+                withCredentials: true,
             }).then(({ data }) => {
                 this.store.dispatch(this.setAccounts(data));
             });
