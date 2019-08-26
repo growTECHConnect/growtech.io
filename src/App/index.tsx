@@ -17,7 +17,7 @@ import Admin from './Admin';
 import Configuration from './Admin/Configuration';
 import Accounts from './Admin/Accounts';
 import GlobalContent from './Admin/GlobalContent';
-import NewsContent from './Admin/NewsContent';
+import NewsData from './Admin/NewsData';
 import PageContent from './Admin/PageContent';
 import configStore from '../store';
 
@@ -90,7 +90,7 @@ export default class App extends React.Component<any, IState> {
                                                 <Route exact path="/admin" component={Accounts} />
                                                 <Route path="/admin/configuration" component={Configuration} />
                                                 <Route path="/admin/global-content" component={GlobalContent} />
-                                                <Route path="/admin/news-content" component={NewsContent} />
+                                                <Route path="/admin/news-data" component={NewsData} />
                                                 <Route path="/admin/page-content" component={PageContent} />
                                             </Admin>
                                         );

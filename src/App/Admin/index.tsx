@@ -36,7 +36,7 @@ class Admin extends React.Component<IProps> {
                                 <NavLink to="/admin/global-content">Global Content</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/admin/news-content">News Content</NavLink>
+                                <NavLink to="/admin/news-data">News Data</NavLink>
                             </li>
                             <li>
                                 <NavLink to="/admin/page-content">Page Content</NavLink>
