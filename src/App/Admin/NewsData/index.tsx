@@ -6,7 +6,15 @@ interface IProps {
     match: any;
 }
 
-interface IState {}
+interface IState {
+    news: any;
+    form: {
+        [index: number]: any;
+        body?: string;
+        title?: string;
+        date?: Date;
+    };
+}
 
 class NewsData extends React.Component<IProps, IState> {
     render() {
