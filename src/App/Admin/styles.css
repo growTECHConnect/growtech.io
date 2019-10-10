@@ -1,3 +1,7 @@
+html {
+    font-size: 16px;
+}
+
 .admin.base {
     display: flex;
     flex-direction: column;
@@ -23,7 +27,7 @@
     font-size: 15px;
     font-weight: bold;
     line-height: 16px;
-    color: #FFFFFF;
+    color: #ffffff;
     height: 40px;
     width: 100%;
     text-align: center;
@@ -33,13 +37,13 @@
 }
 .admin .sidebar li a:hover {
     background-color: rgba(0, 0, 0, 0.3);
-    color: #FFFFFF;
+    color: #ffffff;
 }
 .admin .sidebar li a.active {
-    background-color: #F9F9F9;
+    background-color: #f9f9f9;
     color: #445568;
     border: 1px solid #000000;
-    border-right: 1px solid #F9F9F9;
+    border-right: 1px solid #f9f9f9;
 }
 .admin .content {
     display: flex;
@@ -48,7 +52,7 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
-    background-color: #F9F9F9;
+    background-color: #f9f9f9;
 }
 
 .admin .section {
@@ -57,8 +61,8 @@
     justify-content: flex-start;
     align-items: flex-start;
     flex-direction: column;
-    border: 1px solid #DDDDDD;
-    background-color: #FFFFFF;
+    border: 1px solid #dddddd;
+    background-color: #ffffff;
     padding: 20px;
 }
 
@@ -66,7 +70,7 @@
     font-size: 18px;
     text-transform: uppercase;
     text-align: center;
-    color: #6FBE47;
+    color: #6fbe47;
     margin-bottom: 17px;
     font-weight: 800;
     letter-spacing: 2px;
@@ -77,7 +81,7 @@
 }
 
 .admin .btn:focus {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     outline: none;
 }
 
@@ -86,34 +90,34 @@
 }
 
 .admin .btn-default {
-    border:2px solid #6F6F6F;
+    border: 2px solid #6f6f6f;
     border-radius: 0;
-    color:#6F6F6F;
-    font-weight:800;
-    text-transform:uppercase;
+    color: #6f6f6f;
+    font-weight: 800;
+    text-transform: uppercase;
 }
 
 .admin .btn-default:hover {
-    background:#EF864C;
-    border-color:#EF864C;
-    color:#FFFFFF;
-    text-decoration:none;
+    background: #ef864c;
+    border-color: #ef864c;
+    color: #ffffff;
+    text-decoration: none;
 }
 
 .admin .btn-danger {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     color: #d43f3a;
     border-width: 2px;
     border-radius: 0;
-    font-weight:800;
-    text-transform:uppercase;
+    font-weight: 800;
+    text-transform: uppercase;
 }
 
 .admin .btn-danger:hover {
     background: #d9534f;
     border-color: #d9534f;
-    color: #FFFFFF;
-    text-decoration:none;
+    color: #ffffff;
+    text-decoration: none;
 }
 
 .admin .btn-danger:focus {
@@ -131,16 +135,16 @@
     margin-left: 4px;
 }
 
-.admin .table>tbody>tr>td {
+.admin .table > tbody > tr > td {
     vertical-align: middle;
 }
 
-.admin .table>tbody+tbody {
+.admin .table > tbody + tbody {
     border-top: none;
 }
 
 .admin .account-row.edit {
-    background-color: #DDDDDD;
+    background-color: #dddddd;
 }
 
 .admin .edit-row {
@@ -149,21 +153,21 @@
 
 .admin .edit-row.edit {
     display: table-row;
-    background-color: #F9F9F9;
-    border: 1px solid #DDDDDD;
+    background-color: #f9f9f9;
+    border: 1px solid #dddddd;
 }
 
 .admin .dropdown-menu.clicked {
     display: block;
     border-radius: 0;
-    border: 1px solid #6F6F6F;
+    border: 1px solid #6f6f6f;
     margin: 0;
     text-transform: uppercase;
 }
 
 .admin .dropdown-toggle.clicked {
-    background: #EF864C;
-    border-color: #EF864C;
+    background: #ef864c;
+    border-color: #ef864c;
     box-shadow: none;
 }
 
@@ -175,8 +179,8 @@
     display: none;
     margin: 10px 0 10px;
     padding: 8px;
-    background-color: #F9F9F9;
-    border: 1px solid #DDDDDD;
+    background-color: #f9f9f9;
+    border: 1px solid #dddddd;
 }
 
 .admin .new form.show {
@@ -185,7 +189,7 @@
 
 .form-control {
     border-radius: 0;
-    border: 1px solid #6F6F6F;
+    border: 1px solid #6f6f6f;
 }
 
 .has-error .btn-default {
