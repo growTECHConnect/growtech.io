@@ -63,7 +63,6 @@ class NewsData extends React.Component<IProps, IState> {
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <button onClick={this.addNew}>test</button>
                     {this.renderNewsItems()}
                 </table>
             </div>
@@ -75,7 +74,21 @@ class NewsData extends React.Component<IProps, IState> {
         console.log(news);
 
         return news.map((newsItem: any, index: number) => {
-            return <div key={index}>{newsItem.title}</div>;
+            return (
+                <tbody key={index}>
+                    <tr>
+                        <td>{index}</td>
+                        <td>{newsItem.date}</td>
+                        <td>{newsItem.title}</td>
+                        <td>{newsItem.body}</td>
+                        <td>
+                            <button type="button" className="btn btn-default" onClick={this.addNew}>
+                                test
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            );
         });
     };
 
