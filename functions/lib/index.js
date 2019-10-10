@@ -153,11 +153,11 @@ router.put('/admin/accounts/:uid', (req, res) => {
         admin
             .database()
             .ref(`/access/${uid}`)
-            .update(Object.assign({}, access, { updatedAt: new Date() })),
+            .update(Object.assign(Object.assign({}, access), { updatedAt: new Date() })),
         admin
             .database()
             .ref(`/account/${uid}`)
-            .update(Object.assign({}, account, { updatedAt: new Date() })),
+            .update(Object.assign(Object.assign({}, account), { updatedAt: new Date() })),
         admin.auth().updateUser(uid, user),
     ])
         .then(() => getAccounts())

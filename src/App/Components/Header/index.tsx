@@ -3,9 +3,9 @@ import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 interface IProps {
-    access: any;
-    actions: any;
-    user: any;
+    access?: any;
+    actions?: any;
+    user?: any;
     withSpace?: boolean;
 }
 
