@@ -28,18 +28,24 @@ class Accounts extends React.Component<IProps> {
 
     render() {
         const { accounts, companies } = this.props;
-        const data = Object.keys(accounts).map((accountId: any) => {
-            const account = accounts[accountId];
+        const data = Object.keys(accounts)
+            .filter((accountId: any) => {
+                const account = accounts[accountId];
 
-            return {
-                ...account,
-                companyName: companies[account.company].name,
-                companyId: account.company,
-                isApproved: companies[account.company].isApproved,
-                name: `${account.firstName} ${account.lastName}`,
-                status: account.diabled ? 'disabled' : 'enabled',
-            };
-        });
+                return !!companies[account.company];
+            })
+            .map((accountId: any) => {
+                const account = accounts[accountId];
+
+                return {
+                    ...account,
+                    companyName: companies[account.company].name,
+                    companyId: account.company,
+                    isApproved: companies[account.company].isApproved,
+                    name: `${account.firstName} ${account.lastName}`,
+                    status: account.diabled ? 'disabled' : 'enabled',
+                };
+            });
 
         return (
             <div className="section">
