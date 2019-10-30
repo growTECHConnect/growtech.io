@@ -33,9 +33,26 @@ class News {
                         .update(data);
                 });
         },
-        // update: (gid, news) => {
-        //     news.updatedAt = new Date();
-        //     firebase.database().ref(`/news/${gid}/${news.key}`).update(news);
+        // delete: (index: number) => {
+        //     return this.firebase
+        //         .database()
+        //         .ref('/news' + index)
+        //         .remove();
+        // },
+        // update: (index: number, news: News) => {
+        //     return this.firebase
+        //         .database()
+        //         .ref(`/news/${index}`)
+        //         .once('value', (snapshot: any) => {
+        //             const data = snapshot.val();
+
+        //             data.push(news);
+
+        //             return this.firebase
+        //                 .database()
+        //                 .ref(`/news/${index}`)
+        //                 .update(data);
+        //         });
         // },
     };
 
