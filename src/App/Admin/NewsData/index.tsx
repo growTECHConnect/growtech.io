@@ -135,6 +135,7 @@ class NewsData extends React.Component<IProps, IState> {
                         />
                         <TextField
                             margin="normal"
+                            fullWidth={true}
                             label="Title"
                             name="title"
                             value={values.title}
@@ -148,6 +149,8 @@ class NewsData extends React.Component<IProps, IState> {
                         />
                         <TextField
                             margin="normal"
+                            fullWidth={true}
+                            multiline={true}
                             label="Body"
                             name="body"
                             value={values.body}
