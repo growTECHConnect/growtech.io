@@ -18,11 +18,11 @@ const yup = __importStar(require("yup"));
 const v1_1 = __importDefault(require("uuid/v1"));
 const utils_1 = require("./utils");
 const env_1 = __importDefault(require("./env"));
-const projectId = process.env.REACT_APP_FIREBASE_projectId ? process.env.REACT_APP_FIREBASE_projectId : 'growtech-staging';
-const { serviceAccount } = env_1.default[projectId];
+const adminConfig = process.env.FIREBASE_CONFIG ? JSON.parse(process.env.FIREBASE_CONFIG) : { projectId: 'growtech-staging' };
+const { serviceAccount } = env_1.default[adminConfig.projectId];
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: `https://${projectId}.firebaseio.com`,
+    databaseURL: `https://${adminConfig.projectId}.firebaseio.com`,
 });
 const app = express_1.default();
 const router = express_1.default.Router();
@@ -207,7 +207,7 @@ router.get('/', (req, res) => {
         .once('value')
         .then((snapshot) => {
         const { database } = snapshot.val();
-        res.json({ status: 'okay', database, projectId });
+        res.json({ status: 'okay', database, projectId: adminConfig.projectId });
     })
         .catch((error) => res.status(500).json({ error }));
 });

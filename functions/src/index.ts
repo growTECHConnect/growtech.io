@@ -7,12 +7,12 @@ import uuid from 'uuid/v1';
 import { validateAdminAuthorization } from './utils';
 import env from './env';
 
-const projectId = process.env.REACT_APP_FIREBASE_projectId ? process.env.REACT_APP_FIREBASE_projectId : 'growtech-staging';
-const { serviceAccount } = env[projectId];
+const adminConfig: any = process.env.FIREBASE_CONFIG ? JSON.parse(process.env.FIREBASE_CONFIG) : { projectId: 'growtech-staging' };
+const { serviceAccount } = env[adminConfig.projectId];
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: `https://${projectId}.firebaseio.com`,
+    databaseURL: `https://${adminConfig.projectId}.firebaseio.com`,
 });
 
 const app = Express();
@@ -234,7 +234,7 @@ router.get('/', (req: any, res: any) => {
         .then((snapshot) => {
             const { database } = snapshot.val();
 
-            res.json({ status: 'okay', database, projectId });
+            res.json({ status: 'okay', database, projectId: adminConfig.projectId });
         })
         .catch((error) => res.status(500).json({ error }));
 });
