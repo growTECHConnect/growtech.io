@@ -14,19 +14,16 @@ const functions = __importStar(require("firebase-functions"));
 const admin = __importStar(require("firebase-admin"));
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const yup_1 = __importDefault(require("yup"));
+const yup = __importStar(require("yup"));
+const v1_1 = __importDefault(require("uuid/v1"));
 const utils_1 = require("./utils");
-const projectId = process.env.REACT_APP_FIREBASE_PROJECTID ? process.env.REACT_APP_FIREBASE_PROJECTID : undefined;
-const serviceAccount = projectId ? require(`../../${projectId}.json`) : undefined;
-if (projectId) {
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        databaseURL: `https://${projectId}.firebaseio.com`,
-    });
-}
-else {
-    admin.initializeApp();
-}
+const env_1 = __importDefault(require("./env"));
+const projectId = process.env.REACT_APP_FIREBASE_projectId ? process.env.REACT_APP_FIREBASE_projectId : 'growtech-staging';
+const { serviceAccount } = env_1.default[projectId];
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: `https://${projectId}.firebaseio.com`,
+});
 const app = express_1.default();
 const router = express_1.default.Router();
 const whitelist = ['http://localhost:3000', 'http://localhost:5000'];
@@ -84,15 +81,15 @@ router.get('/admin/accounts', (req, res) => {
         .catch((error) => res.status(500).json({ error }));
 });
 router.post('/admin/accounts', (req, res) => {
-    const schema = yup_1.default.object().shape({
-        company: yup_1.default.string().required(),
-        email: yup_1.default
+    const schema = yup.object().shape({
+        company: yup.string().required(),
+        email: yup
             .string()
             .email()
             .required(),
-        firstName: yup_1.default.string().required(),
-        lastName: yup_1.default.string().required(),
-        role: yup_1.default.string().oneOf(['admin', 'edit']),
+        firstName: yup.string().required(),
+        lastName: yup.string().required(),
+        role: yup.string().oneOf(['admin', 'edit']),
     });
     return schema
         .validate(req.body)
@@ -216,4 +213,43 @@ router.get('/', (req, res) => {
 });
 app.use('/api', router);
 exports.api = functions.https.onRequest(app);
+exports.createRequest = functions.https.onCall((data) => {
+    const schema = yup.object().shape({
+        name: yup.string().required(),
+        email: yup
+            .string()
+            .email()
+            .required(),
+        companyName: yup.string().required(),
+    });
+    return new Promise((resolve, reject) => {
+        return schema
+            .validate(data, { stripUnknown: true })
+            .then((values) => {
+            const { email } = values;
+            return admin
+                .auth()
+                .getUserByEmail(email)
+                .then(() => {
+                reject({ name: 'already-exists', message: 'Sorry, this email is already in use.' });
+            })
+                .catch(() => {
+                resolve(values);
+            });
+        })
+            .catch(() => {
+            reject({ name: 'invalid-argument', message: 'invalid data object' });
+        });
+    })
+        .then((values) => {
+        return admin
+            .database()
+            .ref(`/requests/${v1_1.default()}`)
+            .set(values);
+    })
+        .catch((error) => {
+        console.error(error);
+        throw new functions.https.HttpsError(error.name, error.message);
+    });
+});
 //# sourceMappingURL=index.js.map

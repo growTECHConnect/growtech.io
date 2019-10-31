@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Chip, Popper, Paper, Grid, MenuItem, TextField } from '@material-ui/core';
-import { Formik, Form, FormikActions } from 'formik';
-import Downshift from 'downshift';
+import { Button, Grid, MenuItem, TextField } from '@material-ui/core';
+import { Formik, Form,  } from 'formik';
 import * as yup from 'yup';
 import '../styles.css';
 

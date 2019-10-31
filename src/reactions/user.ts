@@ -1,5 +1,5 @@
 import { createAction, handleActions } from 'redux-actions';
-import axios from 'axios';
+import { ISignUp } from '../App/SignUp';
 
 interface IState {
     actions: any;
@@ -13,24 +13,28 @@ class User {
     constructor(private firebase: any) {}
 
     actions = {
-        signUp: ({ email, password }: any) => {
-            return new Promise((resolve) => {
-                this.firebase
-                    .auth()
-                    .createUserWithEmailAndPassword(email, password)
-                    .then(({ email, uid }: any) => {
-                        return axios({
-                            headers: {
-                                Accept: 'application/json',
-                            },
-                            method: 'post',
-                            url: `${process.env.REACT_APP_API_HOST}/signup`,
-                            data: { email, uid },
-                        });
-                    })
-                    .then(resolve)
-                    .catch((error: any) => this.store.dispatch(this.setError(error)));
-            });
+        signUp: (data: ISignUp) => {
+            const createRequest = this.firebase.functions().httpsCallable('createRequest');
+
+            return createRequest(data);
+
+            // return new Promise((resolve) => {
+            //     this.firebase
+            //         .auth()
+            //         .createUserWithEmailAndPassword(email, password)
+            //         .then(({ email, uid }: any) => {
+            //             return axios({
+            //                 headers: {
+            //                     Accept: 'application/json',
+            //                 },
+            //                 method: 'post',
+            //                 url: `${process.env.REACT_APP_API_HOST}/signup`,
+            //                 data: { email, uid },
+            //             });
+            //         })
+            //         .then(resolve)
+            //         .catch((error: any) => this.store.dispatch(this.setError(error)));
+            // });
         },
         signIn: ({ email, password }: any) => {
             return new Promise((resolve) => {
