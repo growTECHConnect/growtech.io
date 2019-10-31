@@ -32,7 +32,7 @@ exports.validateAdminAuthorization = (req, res, next) => {
             });
         })
             .catch((error) => {
-            console.info(error);
+            console.error(error);
             res.status(403).json({ status: 'unauthorized: no access' });
         });
     }

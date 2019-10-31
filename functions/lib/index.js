@@ -26,7 +26,7 @@ admin.initializeApp({
 });
 const app = express_1.default();
 const router = express_1.default.Router();
-const whitelist = ['http://localhost:3000', 'http://localhost:5000'];
+const whitelist = ['http://localhost:3000', 'http://localhost:5000', 'https://growtech.io'];
 app.use(cors_1.default({
     origin: function (origin, callback) {
         if (!origin) {
@@ -35,7 +35,7 @@ app.use(cors_1.default({
         if (origin && whitelist.indexOf(origin) !== -1) {
             return callback(null, true);
         }
-        return callback(new Error('Not allowed by CORS'));
+        return callback(new Error(`Not allowed by CORS ${origin}`));
     },
     credentials: true,
 }));
@@ -78,7 +78,10 @@ router.use('/admin', utils_1.validateAdminAuthorization);
 router.get('/admin/accounts', (req, res) => {
     getAccounts()
         .then((users) => res.json(users))
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error });
+    });
 });
 router.post('/admin/accounts', (req, res) => {
     const schema = yup.object().shape({
@@ -159,7 +162,10 @@ router.put('/admin/accounts/:uid', (req, res) => {
     ])
         .then(() => getAccounts())
         .then((users) => res.json(users[uid]))
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error });
+    });
 });
 router.post('/signup', (req, res) => {
     const { email, uid } = req.body;
@@ -198,7 +204,10 @@ router.put('/admin/companies/:uid', (req, res) => {
         .child(`/companies/${uid}`)
         .update(Object.assign({}, company, { updatedAt: new Date() }))
         .then(() => res.json({ success: true }))
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error });
+    });
 });
 router.get('/', (req, res) => {
     return admin
@@ -209,7 +218,10 @@ router.get('/', (req, res) => {
         const { database } = snapshot.val();
         res.json({ status: 'okay', database, projectId: adminConfig.projectId });
     })
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error });
+    });
 });
 app.use('/api', router);
 exports.api = functions.https.onRequest(app);

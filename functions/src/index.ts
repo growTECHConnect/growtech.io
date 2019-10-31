@@ -17,7 +17,7 @@ admin.initializeApp({
 
 const app = Express();
 const router = Express.Router();
-const whitelist = ['http://localhost:3000', 'http://localhost:5000'];
+const whitelist = ['http://localhost:3000', 'http://localhost:5000', 'https://growtech.io'];
 
 app.use(
     Cors({
@@ -30,7 +30,7 @@ app.use(
                 return callback(null, true);
             }
 
-            return callback(new Error('Not allowed by CORS'));
+            return callback(new Error(`Not allowed by CORS ${origin}`));
         },
         credentials: true,
     })
@@ -80,7 +80,10 @@ router.use('/admin', validateAdminAuthorization);
 router.get('/admin/accounts', (req: any, res: any) => {
     getAccounts()
         .then((users) => res.json(users))
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error });
+        });
 });
 
 router.post('/admin/accounts', (req: any, res: any) => {
@@ -177,7 +180,10 @@ router.put('/admin/accounts/:uid', (req: any, res: any) => {
     ])
         .then(() => getAccounts())
         .then((users) => res.json(users[uid]))
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error });
+        });
 });
 
 router.post('/signup', (req: any, res: any) => {
@@ -223,7 +229,10 @@ router.put('/admin/companies/:uid', (req: any, res: any) => {
         .child(`/companies/${uid}`)
         .update(Object.assign({}, company, { updatedAt: new Date() }))
         .then(() => res.json({ success: true }))
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error });
+        });
 });
 
 router.get('/', (req: any, res: any) => {
@@ -236,7 +245,10 @@ router.get('/', (req: any, res: any) => {
 
             res.json({ status: 'okay', database, projectId: adminConfig.projectId });
         })
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error });
+        });
 });
 
 app.use('/api', router);

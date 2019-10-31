@@ -96,7 +96,7 @@ class Accounts extends React.Component<IProps, IState> {
                             { title: 'Company', field: 'companyName' },
                             { title: 'Role', field: 'role' },
                             { title: 'Status', field: 'status' },
-                            { render: this.renderRowActions, cellStyle: { width: 280 } },
+                            { render: this.renderRowActions, cellStyle: { whiteSpace: 'nowrap' } },
                         ]}
                         data={data}
                         detailPanel={this.renderDetailPanel}
