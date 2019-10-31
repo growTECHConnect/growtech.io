@@ -74,7 +74,7 @@ class Accounts extends React.Component<IProps, IState> {
                             left: 0,
                             display: 'flex',
                             justifyContent: 'center',
-                            alignItems: 'center',
+                            paddingTop: 150,
                         }}
                     >
                         <CircularProgress />

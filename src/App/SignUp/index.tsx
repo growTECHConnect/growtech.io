@@ -92,7 +92,7 @@ class SignUp extends React.Component<IProps> {
                                     setStatus,
                                 }) => (
                                     <Form noValidate={true} style={{ padding: 24 }}>
-                                        <Typography variant="h6" color="primary">
+                                        <Typography variant="h6" color="primary" >
                                             JOIN OUR NETWORK
                                         </Typography>
                                         <TextField
@@ -137,14 +137,20 @@ class SignUp extends React.Component<IProps> {
                                             verifyCallback={() => this.onRecaptchaVerify(setFieldValue)}
                                         />
                                         <Grid container={true} item={true} xs={12} justify="flex-end" style={{ paddingTop: 24 }}>
-                                            <Button type="submit" disabled={!isValid} variant="outlined" size="large" color="secondary">
+                                            <Button
+                                                type="submit"
+                                                disabled={!isValid}
+                                                variant="outlined"
+                                                size="large"
+                                                color={isValid ? 'secondary' : undefined}
+                                            >
                                                 SIGN UP
                                                 {isSubmitting && (
                                                     <CircularProgress color="primary" style={{ position: 'absolute', padding: 4 }} />
                                                 )}
                                             </Button>
                                         </Grid>
-                                        <Dialog open={status}>
+                                        <Dialog open={!!status}>
                                             <DialogContent>
                                                 <DialogContentText id="alert-dialog-description">{status}</DialogContentText>
                                             </DialogContent>
@@ -206,5 +212,3 @@ export default connect(
     mapStateToProps,
     null
 )(SignUp);
-
-

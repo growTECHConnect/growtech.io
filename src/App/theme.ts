@@ -27,9 +27,12 @@ const theme = createMuiTheme({
         MuiOutlinedInput: {
             notchedOutline: { borderRadius: 0 },
         },
+        MuiTypography: {
+            h6: { color: '#6fbe47 !important', textTransform: 'uppercase', fontWeight: 800 },
+        },
     },
     palette: {
-        primary: { main: '#bbd537', dark: '#bbd537' },
+        primary: { main: '#bbd537', dark: '#bbd537' }, // 6fbe47
         secondary: { main: '#ef864c' },
     },
 });
