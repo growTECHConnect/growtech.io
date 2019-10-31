@@ -10,7 +10,6 @@ import '../styles.css';
 interface IProps {
     actions: any;
     news: any;
-    match: any;
 }
 
 class NewsData extends React.Component<IProps> {
