@@ -36,8 +36,8 @@ class NewsData extends React.Component<IProps, IState> {
 
     render() {
         const { news } = this.props;
-        const data = Object.keys(news).map((newsItem: any, index: number) => {
-            const newsData = news[index];
+        const data = Object.keys(news).map((newsItem: any) => {
+            const newsData = news[newsItem];
 
             return {
                 ...newsData,
