@@ -38,9 +38,6 @@ class Admin extends React.Component<IProps> {
                             <li>
                                 <NavLink to="/admin/news-data">News Data</NavLink>
                             </li>
-                            <li>
-                                <NavLink to="/admin/news-items">News Items</NavLink>
-                            </li>
                         </ul>
                     </nav>
                     <div className="content">{children}</div>

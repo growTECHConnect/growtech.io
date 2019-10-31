@@ -30,30 +30,23 @@ class News {
                     return this.firebase
                         .database()
                         .ref('/news')
-                        .update(data);
+                        .set(data);
                 });
         },
-        // delete: (index: number) => {
-        //     return this.firebase
-        //         .database()
-        //         .ref('/news' + index)
-        //         .remove();
-        // },
-        // update: (index: number, news: News) => {
-        //     return this.firebase
-        //         .database()
-        //         .ref(`/news/${index}`)
-        //         .once('value', (snapshot: any) => {
-        //             const data = snapshot.val();
-
-        //             data.push(news);
-
-        //             return this.firebase
-        //                 .database()
-        //                 .ref(`/news/${index}`)
-        //                 .update(data);
-        //         });
-        // },
+        delete: (index: number) => {
+            return this.firebase
+                .database()
+                .ref('/news')
+                .child(index)
+                .remove();
+        },
+        update: (index: number, news: News) => {
+            return this.firebase
+                .database()
+                .ref('/news')
+                .child(index)
+                .update(news);
+        },
     };
 
     initialState: IState = {

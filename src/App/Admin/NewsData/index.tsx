@@ -13,22 +13,9 @@ interface IProps {
     match: any;
 }
 
-interface IState {
-    news: any;
-    dropdowns: any;
-    edit: any;
-    form: {
-        [index: number]: any;
-        body?: string;
-        title?: string;
-        date?: Date;
-    };
-    errors: any;
-    new: boolean;
-}
-
-class NewsData extends React.Component<IProps, IState> {
+class NewsData extends React.Component<IProps> {
     private validationSchema = yup.object().shape({
+        index: yup.number().required(),
         date: yup.string().required(),
         title: yup.string().required(),
         body: yup.string().required(),
@@ -41,6 +28,7 @@ class NewsData extends React.Component<IProps, IState> {
 
             return {
                 ...newsData,
+                index: newsItem,
                 date: newsData.date,
                 title: newsData.title,
                 body: newsData.body,
@@ -71,18 +59,6 @@ class NewsData extends React.Component<IProps, IState> {
                 <button type="button" className="btn btn-default" onClick={this.addNew}>
                     Add New
                 </button>
-
-                {/* <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Title</th>
-                            <th>Body</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    {this.renderNewsItems()}
-                </table> */}
             </div>
         );
     }
@@ -92,7 +68,7 @@ class NewsData extends React.Component<IProps, IState> {
 
         return (
             <React.Fragment>
-                <Button variant="outlined" className={'btn btn-danger'} onClick={() => this.handleDelete(index)}>
+                <Button variant="outlined" className={'btn btn-danger'} onClick={() => this.handleDelete(rowData.index)}>
                     Delete
                 </Button>
             </React.Fragment>
@@ -191,34 +167,12 @@ class NewsData extends React.Component<IProps, IState> {
             });
     };
 
-    // private renderNewsItems = () => {
-    //     const { news } = this.props;
-    //     console.log(news);
-
-    //     return news.map((newsItem: any, index: number) => {
-    //         return (
-    //             <tbody key={index}>
-    //                 <tr>
-    //                     <td>{newsItem.date}</td>
-    //                     <td>{newsItem.title}</td>
-    //                     <td>{newsItem.body}</td>
-    //                     <td>
-    //                         <button type="button" className="btn btn-default" onClick={this.addNew}>
-    //                             test
-    //                         </button>
-    //                     </td>
-    //                 </tr>
-    //             </tbody>
-    //         );
-    //     });
-    // };
-
     private addNew = () => {
         const { actions } = this.props;
 
         actions.news.create({
-            title: 'NEW TITLE',
-            body: 'NEW BODY',
+            title: 'NEW_TITLE',
+            body: 'NEW_BODY',
             date: moment().format('YYYY-MM-DD'),
         });
     };
