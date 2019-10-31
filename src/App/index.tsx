@@ -18,7 +18,7 @@ import Admin from './Admin';
 import Configuration from './Admin/Configuration';
 import Accounts from './Admin/Accounts';
 import GlobalContent from './Admin/GlobalContent';
-import NewsContent from './Admin/NewsContent';
+import NewsData from './Admin/NewsData';
 import PageContent from './Admin/PageContent';
 import configStore from '../store';
 import theme from './theme';
@@ -87,17 +87,17 @@ export default class App extends React.Component<any, IState> {
                                     render={() => {
                                         const access: any = this.store.getState().access.data;
 
-                                        if (access && access.role === 'admin') {
-                                            return (
-                                                <Admin>
-                                                    <Route exact path="/admin" component={Accounts} />
-                                                    <Route path="/admin/configuration" component={Configuration} />
-                                                    <Route path="/admin/global-content" component={GlobalContent} />
-                                                    <Route path="/admin/news-items" component={NewsContent} />
-                                                    <Route path="/admin/page-content" component={PageContent} />
-                                                </Admin>
-                                            );
-                                        }
+                                    if (access && access.role === 'admin') {
+                                        return (
+                                            <Admin>
+                                                <Route exact path="/admin" component={Accounts} />
+                                                <Route path="/admin/configuration" component={Configuration} />
+                                                <Route path="/admin/global-content" component={GlobalContent} />
+                                                <Route path="/admin/news-data" component={NewsData} />
+                                                <Route path="/admin/page-content" component={PageContent} />
+                                            </Admin>
+                                        );
+                                    }
 
                                         return <Route component={NoMatch} />;
                                     }}
