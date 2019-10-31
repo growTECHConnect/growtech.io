@@ -22,12 +22,12 @@ class NewsData extends React.Component<IProps> {
 
     render() {
         const { news } = this.props;
-        const data = Object.keys(news).map((newsItem: any) => {
-            const newsData = news[newsItem];
+        const data = Object.keys(news).map((newsKey: any) => {
+            const newsData = news[newsKey];
 
             return {
                 ...newsData,
-                index: newsItem,
+                index: newsKey,
                 date: newsData.date,
                 title: newsData.title,
                 body: newsData.body,
@@ -38,10 +38,15 @@ class NewsData extends React.Component<IProps> {
             <div className="section">
                 <h2>News Data</h2>
                 <MaterialTable
+                    title={
+                        <button type="button" className="btn btn-default" onClick={this.addNew}>
+                            Add New
+                        </button>
+                    }
                     options={{
                         actionsColumnIndex: -1,
                         paging: false,
-                        showTitle: false,
+                        showTitle: true,
                     }}
                     components={{
                         Container: (props) => <Paper {...props} elevation={0} style={{ width: '100%' }} />,
@@ -55,16 +60,11 @@ class NewsData extends React.Component<IProps> {
                     data={data}
                     detailPanel={this.renderDetailPanel}
                 />
-                <button type="button" className="btn btn-default" onClick={this.addNew}>
-                    Add New
-                </button>
             </div>
         );
     }
 
     renderRowActions = (rowData: any) => {
-        const { index } = rowData;
-
         return (
             <React.Fragment>
                 <Button variant="outlined" className={'btn btn-danger'} onClick={() => this.handleDelete(rowData.index)}>
