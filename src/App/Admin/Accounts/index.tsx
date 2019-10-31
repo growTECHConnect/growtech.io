@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Grid, MenuItem, TextField, Paper } from '@material-ui/core';
+import { CircularProgress, Button, Grid, MenuItem, TextField, Paper } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { Formik, Form, FormikActions } from 'formik';
 import * as yup from 'yup';
@@ -12,7 +12,11 @@ interface IProps {
     companies: any;
 }
 
-class Accounts extends React.Component<IProps> {
+interface IState {
+    loaded: boolean;
+}
+
+class Accounts extends React.Component<IProps, IState> {
     private validationSchema = yup.object().shape({
         firstName: yup.string().required(),
         lastName: yup.string().required(),
@@ -20,14 +24,25 @@ class Accounts extends React.Component<IProps> {
         companyId: yup.string().required(),
     });
 
-    componentWillMount() {
+    constructor(props: IProps) {
+        super(props);
+
+        this.state = {
+            loaded: false,
+        };
+    }
+
+    componentDidMount() {
         const { getAccounts } = this.props.actions.admin;
 
-        getAccounts();
+        getAccounts().then(() => {
+            this.setState({ loaded: true });
+        });
     }
 
     render() {
         const { accounts, companies } = this.props;
+        const { loaded } = this.state;
         const data = Object.keys(accounts)
             .filter((accountId: any) => {
                 const account = accounts[accountId];
@@ -48,28 +63,45 @@ class Accounts extends React.Component<IProps> {
             });
 
         return (
-            <div className="section">
-                <h2>Accounts</h2>
-                <MaterialTable
-                    options={{
-                        actionsColumnIndex: -1,
-                        paging: false,
-                        showTitle: false,
-                    }}
-                    components={{
-                        Container: (props) => <Paper {...props} elevation={0} style={{ width: '100%' }} />,
-                    }}
-                    columns={[
-                        { title: 'Email', field: 'email' },
-                        { title: 'Name', field: 'name' },
-                        { title: 'Company', field: 'companyName' },
-                        { title: 'Role', field: 'role' },
-                        { title: 'Status', field: 'status' },
-                        { render: this.renderRowActions, cellStyle: { width: 280 } },
-                    ]}
-                    data={data}
-                    detailPanel={this.renderDetailPanel}
-                />
+            <div className="section" style={{ height: '100%', width: '100%', position: 'relative' }}>
+                {!loaded && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            bottom: 0,
+                            left: 0,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <CircularProgress />
+                    </div>
+                )}
+                <div style={{ opacity: loaded ? 1 : 0.3, width: '100%' }}>
+                    <MaterialTable
+                        options={{
+                            actionsColumnIndex: -1,
+                            paging: false,
+                            showTitle: false,
+                        }}
+                        components={{
+                            Container: (props) => <Paper {...props} elevation={0} style={{ width: '100%' }} />,
+                        }}
+                        columns={[
+                            { title: 'Email', field: 'email' },
+                            { title: 'Name', field: 'name' },
+                            { title: 'Company', field: 'companyName' },
+                            { title: 'Role', field: 'role' },
+                            { title: 'Status', field: 'status' },
+                            { render: this.renderRowActions, cellStyle: { width: 280 } },
+                        ]}
+                        data={data}
+                        detailPanel={this.renderDetailPanel}
+                    />
+                </div>
             </div>
         );
     }
@@ -109,7 +141,7 @@ class Accounts extends React.Component<IProps> {
 
         return (
             <Formik initialValues={rowData} onSubmit={this.handleSubmit} validationSchema={this.validationSchema}>
-                {({ errors, handleChange, touched, values }) => (
+                {({ errors, handleBlur, handleChange, touched, values, isSubmitting }) => (
                     <Form noValidate={true} style={{ padding: 24 }}>
                         <TextField
                             margin="normal"
@@ -117,6 +149,7 @@ class Accounts extends React.Component<IProps> {
                             name="firstName"
                             value={values.firstName}
                             onChange={handleChange}
+                            onBlur={handleBlur}
                             required={true}
                             error={!!errors.firstName && !!touched.firstName}
                             InputLabelProps={{
@@ -130,6 +163,7 @@ class Accounts extends React.Component<IProps> {
                             name="lastName"
                             value={values.lastName}
                             onChange={handleChange}
+                            onBlur={handleBlur}
                             required={true}
                             error={!!errors.lastName && !!touched.lastName}
                             InputLabelProps={{
@@ -143,6 +177,7 @@ class Accounts extends React.Component<IProps> {
                             label="Company"
                             value={values.companyId}
                             onChange={handleChange}
+                            onBlur={handleBlur}
                             margin="normal"
                             style={{ marginRight: 16 }}
                         >
@@ -165,8 +200,9 @@ class Accounts extends React.Component<IProps> {
                             })}
                         </TextField>
                         <Grid container={true} item={true} xs={12} style={{ paddingTop: 24 }}>
-                            <Button type="submit" className="btn btn-default">
+                            <Button disabled={isSubmitting} type="submit" className="btn btn-default">
                                 Save
+                                {isSubmitting && <CircularProgress style={{ width: 20, height: 20, position: 'absolute' }} />}
                             </Button>
                         </Grid>
                     </Form>

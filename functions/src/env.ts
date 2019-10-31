@@ -1,0 +1,26 @@
+interface Env {
+    [index: string]: {
+        serviceAccount: any;
+    };
+}
+
+const env: Env = {
+    'growtech-staging': {
+        serviceAccount: {
+            type: 'service_account',
+            project_id: 'growtech-staging',
+            private_key_id: 'e37eefd45c4659c2211288e89bd880f2ad272013',
+            private_key:
+                '-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDSqq3YIWzs4m8m\n6oSwvzjSP0QfSrUcfeoyYXHfg3mPYuyLBV6oHGfPeiCl0NGw9S+L+dvrE5Pcw6AW\nuEcyeC94iiShLbCFetAAUAHfQHDMI3LlHI5lXX7m+pMXV6Qktk4yYkA76++yqrFD\nhblFHmfeXhYnfPqJV3VCgIffnvH2g6MpmWzqdlv/tXzhWLa3MclOxaDpQufyBCoA\no/cCleYeRZfdG3z8mcA3Fjz8SEam0QztCpw2RJCG3loWeFiDf+5Eh9ekk1n86wYA\n5nzoeObOwo5tAfJgn7igmECNWua9QBMnm+2gs0H6xkBWy+/6VNvalu4g165MslSI\nD+JmW3qpAgMBAAECggEAP9orxw6ajVI0jn8WqNvMxS0X4MQsEO65RXvzn+OhvKwn\nNhvyjNHPRTunGZspc5FdT/fziFTuxEMnCrvgGJQFD2wPnirTDiIjWXTmnFxT1AwK\njxcQsfictjXMz45o2hfHq83L2l2w0V6bS/QEK8cDhIrP/DgNWAOCLx32EPmELUs7\nvzOq7+3FiN+XpFkJ/3gJytrPlJ2pd9yrHzdx5caM+/hj5Yz7cHA+9vPzw47t8lwb\nxEWD53MF28k41XiST7sPFKuazc9OVi/YL7ljrDZhpEcFMuM2TNmVTi9aJ4oh3ABo\n3Ef9CoKpKxTNFEsYL4fzXSXY5AFdSbu24AbFfSXd4QKBgQD6zyIx26h9MUWI+UZ3\n5jd00zvtphvsfTMN4zpZSUMXy315++0vxD4Rmwzv+Cw3KyKikXJNy6dGz9M6Eage\nXn2NGWVNdxfFUIDZ0SmI+Os6EtvcdkIjHIFfnzr4ZzQ0FhB/sbjOu8MbUlXOomWj\nwKAj1eaarb2yIDVssB68mVdVFwKBgQDXBtu6CDJS0AVW75bAaGg4MhISVDMR3HUa\n7kMlIafuj7+PoGwL4yYuJ+grnhug8TCoAeFnGMQWsgDbyGDHFHGkFafAzZJQClz/\nIwlOl69QN9Hz7Il1xgcE4LlzKA4J5pBTRWsyc4feT2LVLuGm66gaagWDQ7/BQ10K\nIML9inkGPwKBgEqz5ztycXzYcB2cIaEUsO/a+r6N+0M1Bz/brkVpzNIJihYLM1pG\n2TXlOLVA9ep4rpg9Og5x2iD9RazGFYz2F+8u4T1xe2MJ11cJNZXWjjl95H6Fuq06\nkE4q3yWdl67r434lMSZiRnqcy3IAbMWZWhlSXJ01ooqrjT4SNxV1ls2BAoGAbvJr\n9z35cT9CMgwnNZnphG1ZY7msLCAbEE01uff2pSHojlwQw8VtUs1mfvLygIVSPK3T\ntpVRwAASb1Shkrbat/Ywe0vWnZPrTf2u9K1RWMukef5nIqyNvJeTOHbHX5Zmi4C7\nAeoYhb1iWmr5JV5ce1yPAZ64VyjB3dLvqVCEh5MCgYEAgq/AoYfX45xsCgoJ0GMw\nP1OmxNkROWtfXjrIbRqqG0IBFzLsgBGWjTwnVCpSruLb9G67roWmVa+Uo1ZetFyU\ndTK/H55cbO6h4A+78EEzGWZSsTh9FlXW7ykQU4la3aqL/utITuvRiqJmsJcfMpl3\nbxqDw19p3urzqwVFoKsx7xM=\n-----END PRIVATE KEY-----\n',
+            client_email: 'firebase-adminsdk-htb63@growtech-staging.iam.gserviceaccount.com',
+            client_id: '102624484379711498912',
+            auth_uri: 'https://accounts.google.com/o/oauth2/auth',
+            token_uri: 'https://oauth2.googleapis.com/token',
+            auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
+            client_x509_cert_url:
+                'https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-htb63%40growtech-staging.iam.gserviceaccount.com',
+        },
+    },
+};
+
+export default env;
