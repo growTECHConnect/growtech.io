@@ -1,7 +1,21 @@
 import React from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Recaptcha from 'react-recaptcha';
+import {
+    Button,
+    Grid,
+    CircularProgress,
+    TextField,
+    Paper,
+    Typography,
+    Dialog,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
+} from '@material-ui/core';
+import { Formik, Form, FormikActions } from 'formik';
+import * as yup from 'yup';
 
 interface IProps {
     actions: any;
@@ -10,94 +24,34 @@ interface IProps {
     page: any;
 }
 
-interface IState {
-    [index: string]: any;
+export interface ISignUp {
+    name: string;
     email: string;
-    password: string;
-    confirm: string;
-    errors: any;
-    redirect: boolean;
-    disabled: boolean;
+    companyName: string;
+    recaptcha: boolean;
 }
 
-class SignUp extends React.Component<IProps, IState> {
-    constructor(props: IProps) {
-        super(props);
-
-        this.state = {
-            companyName: '',
-            email: '',
-            password: '',
-            confirm: '',
-            errors: false,
-            redirect: false,
-            disabled: true,
-        };
-    }
-
-    componentWillMount() {
-        const { user } = this.props.actions;
-        user.signOut();
-    }
-
-    componentWillReceiveProps(nextProps: IProps) {
-        const { access, actions, error } = nextProps;
-
-        if (error && error !== this.props.error) {
-            if (error.code && error.code === 'auth/email-already-in-use') {
-                this.setState({ errors: { email: error.message } });
-            }
-            if (error.code && error.code === 'auth/invalid-email') {
-                this.setState({ errors: { email: error.message } });
-            }
-            if (error.code && error.code === 'auth/operation-not-allowed') {
-                this.setState({ errors: { global: error.message } });
-            }
-            if (error.code && error.code === 'auth/weak-password') {
-                this.setState({ errors: { password: error.message } });
-            }
-        }
-
-        if (access !== this.props.access && access && access.company) {
-            actions.company.update({ name: this.state.companyName }).then(() => this.setState({ redirect: true }));
-        }
-    }
-
-    setField = (event: any) => {
-        const { id, value } = event.target;
-        this.setState({ [id]: value, errors: false });
-    };
-
-    signUp = (event: any) => {
-        event.preventDefault();
-        const { user } = this.props.actions;
-        const { confirm, email, password } = this.state;
-
-        if (confirm !== password) {
-            this.setState({ errors: { confirm: 'Passwords must match.' } });
-            return;
-        }
-
-        user.signUp({ email, password });
-    };
-
-    onVerify = () => {
-        this.setState({ disabled: false });
-    };
-
-    getGroupClass = (field: string) => {
-        const { errors } = this.state;
-
-        return errors[field] ? 'network_fields form-group has-error' : 'network_fields form-group';
+class SignUp extends React.Component<IProps> {
+    private validationSchema = yup.object().shape({
+        name: yup.string().required(),
+        email: yup
+            .string()
+            .email()
+            .required(),
+        companyName: yup.string().required(),
+        recaptcha: yup.mixed().test({
+            test: (value: boolean) => !!value,
+        }),
+    });
+    private initialValues: ISignUp = {
+        name: '',
+        email: '',
+        companyName: '',
+        recaptcha: false,
     };
 
     render() {
         const { page } = this.props;
-        const { disabled, errors, redirect, waitForAccess } = this.state;
-
-        if (redirect && !waitForAccess) {
-            return <Redirect to="/account" />;
-        }
 
         return (
             <section className="full_page_wrap">
@@ -119,77 +73,119 @@ class SignUp extends React.Component<IProps, IState> {
                         <h3>
                             Already have an account? <Link to="/sign-in">Sign In</Link>
                         </h3>
-                        <div className="our_network">
-                            <div className="network_form">
-                                <h4>JOIN OUR NETWORK</h4>
-                                <form noValidate onSubmit={this.signUp}>
-                                    <div className={this.getGroupClass('companyName')}>
-                                        <label className="control-label" htmlFor="email">
-                                            Company Name
-                                        </label>
-                                        <input
-                                            id="companyName"
-                                            className="form-control"
-                                            type="text"
-                                            value={this.state.companyName}
-                                            onChange={this.setField}
+                        <Paper square={true}>
+                            <Formik
+                                initialValues={this.initialValues}
+                                onSubmit={this.handleSubmit}
+                                validationSchema={this.validationSchema}
+                            >
+                                {({
+                                    errors,
+                                    handleBlur,
+                                    handleChange,
+                                    touched,
+                                    values,
+                                    status,
+                                    setFieldValue,
+                                    isValid,
+                                    isSubmitting,
+                                    setStatus,
+                                }) => (
+                                    <Form noValidate={true} style={{ padding: 24 }}>
+                                        <Typography variant="h6" color="primary">
+                                            JOIN OUR NETWORK
+                                        </Typography>
+                                        <TextField
+                                            fullWidth={true}
+                                            variant="outlined"
+                                            margin="normal"
+                                            placeholder="Name *"
+                                            id="name"
+                                            value={values.name}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            required={true}
+                                            error={!!errors.name && touched.name}
                                         />
-                                        <span className="help-block">{errors.companyName}</span>
-                                    </div>
-                                    <div className={this.getGroupClass('email')}>
-                                        <label className="control-label" htmlFor="email">
-                                            Email Address
-                                        </label>
-                                        <input
+                                        <TextField
+                                            fullWidth={true}
+                                            variant="outlined"
+                                            margin="normal"
+                                            placeholder="Email *"
                                             id="email"
-                                            className="form-control"
-                                            type="email"
-                                            value={this.state.email}
-                                            onChange={this.setField}
+                                            value={values.email}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            required={true}
+                                            error={!!errors.email && touched.email}
                                         />
-                                        <span className="help-block">{errors.email}</span>
-                                    </div>
-                                    <div className={this.getGroupClass('password')}>
-                                        <label className="control-label" htmlFor="password">
-                                            Password
-                                        </label>
-                                        <input
-                                            id="password"
-                                            className="form-control"
-                                            type="password"
-                                            value={this.state.password}
-                                            onChange={this.setField}
+                                        <TextField
+                                            fullWidth={true}
+                                            variant="outlined"
+                                            margin="normal"
+                                            placeholder="Company Name *"
+                                            id="companyName"
+                                            value={values.companyName}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            required={true}
+                                            error={!!errors.companyName && touched.companyName}
+                                            style={{ marginBottom: 24 }}
                                         />
-                                        <span className="help-block">{errors.password}</span>
-                                    </div>
-                                    <div className={this.getGroupClass('confirm')}>
-                                        <label className="control-label" htmlFor="confirm">
-                                            Password Again
-                                        </label>
-                                        <input
-                                            id="confirm"
-                                            className="form-control"
-                                            type="password"
-                                            value={this.state.confirm}
-                                            onChange={this.setField}
+                                        <Recaptcha
+                                            sitekey="6LeSlCYUAAAAAOvleAOIrHGXNDgcWsKezRIU-5vJ"
+                                            verifyCallback={() => this.onRecaptchaVerify(setFieldValue)}
                                         />
-                                        <span className="help-block">{errors.confirm}</span>
-                                    </div>
-                                    <Recaptcha sitekey="6LeSlCYUAAAAAOvleAOIrHGXNDgcWsKezRIU-5vJ" verifyCallback={this.onVerify} />
-                                    <div className="clearfix" />
-                                    <div className="network_fields">
-                                        <button className="network_submit_btn submit_disabled" disabled={disabled}>
-                                            Sign Up
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                                        <Grid container={true} item={true} xs={12} justify="flex-end" style={{ paddingTop: 24 }}>
+                                            <Button type="submit" disabled={!isValid} variant="outlined" size="large" color="secondary">
+                                                SIGN UP
+                                                {isSubmitting && (
+                                                    <CircularProgress color="primary" style={{ position: 'absolute', padding: 4 }} />
+                                                )}
+                                            </Button>
+                                        </Grid>
+                                        <Dialog open={status}>
+                                            <DialogContent>
+                                                <DialogContentText id="alert-dialog-description">{status}</DialogContentText>
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Button onClick={() => setStatus(undefined)} color="primary" autoFocus>
+                                                    Ok
+                                                </Button>
+                                            </DialogActions>
+                                        </Dialog>
+                                    </Form>
+                                )}
+                            </Formik>
+                        </Paper>
                     </div>
                 </div>
             </section>
         );
     }
+
+    handleSubmit = (values: ISignUp, { setSubmitting, setStatus }: FormikActions<ISignUp>) => {
+        const { user } = this.props.actions;
+
+        user.signUp(values)
+            .then(() => {
+                setStatus(`Thank you for your interest, we'll be in contact within 3 business days.`);
+                setSubmitting(false);
+            })
+            .catch((error: any) => {
+                const status =
+                    error && error.code === 'already-exists'
+                        ? error.message
+                        : 'Sorry, any unexpeced error occurred. Please try again later.';
+
+                setStatus(status);
+                setSubmitting(false);
+            });
+    };
+
+    onRecaptchaVerify = (setFieldValue: any) => {
+        setFieldValue('recaptcha', true);
+    };
 }
 
 const mapStateToProps = (state: any) => {
@@ -210,3 +206,5 @@ export default connect(
     mapStateToProps,
     null
 )(SignUp);
+
+

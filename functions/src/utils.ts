@@ -25,6 +25,7 @@ export const validateAdminAuthorization = (req: any, res: any, next: any) => {
                     });
             })
             .catch((error) => {
+                console.error(error);
                 res.status(403).json({ status: 'unauthorized: no access' });
             });
     } else {

@@ -1,29 +1,27 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import express from 'express';
-import cors from 'cors';
-import yup from 'yup';
+import Express from 'express';
+import Cors from 'cors';
+import * as yup from 'yup';
+import uuid from 'uuid/v1';
 import { validateAdminAuthorization } from './utils';
+import env from './env';
 
-const projectId = process.env.REACT_APP_FIREBASE_PROJECTID ? process.env.REACT_APP_FIREBASE_PROJECTID : undefined;
-const serviceAccount = projectId ? require(`../../${projectId}.json`) : undefined;
+const adminConfig: any = process.env.FIREBASE_CONFIG ? JSON.parse(process.env.FIREBASE_CONFIG) : { projectId: 'growtech-staging' };
+const { serviceAccount } = env[adminConfig.projectId];
 
-if (projectId) {
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        databaseURL: `https://${projectId}.firebaseio.com`,
-    });
-} else {
-    admin.initializeApp();
-}
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: `https://${adminConfig.projectId}.firebaseio.com`,
+});
 
-const app = express();
-const router = express.Router();
-const whitelist = ['http://localhost:3000', 'http://localhost:5000'];
+const app = Express();
+const router = Express.Router();
+const whitelist = ['http://localhost:3000', 'http://localhost:5000', 'https://growtech.io'];
 
 app.use(
-    cors({
-        origin: function(origin, callback) {
+    Cors({
+        origin: function(origin: any, callback: any) {
             if (!origin) {
                 return callback(null, true);
             }
@@ -32,7 +30,7 @@ app.use(
                 return callback(null, true);
             }
 
-            return callback(new Error('Not allowed by CORS'));
+            return callback(new Error(`Not allowed by CORS ${origin}`));
         },
         credentials: true,
     })
@@ -79,13 +77,16 @@ const getAccounts = () => {
 
 router.use('/admin', validateAdminAuthorization);
 
-router.get('/admin/accounts', (req, res) => {
+router.get('/admin/accounts', (req: any, res: any) => {
     getAccounts()
         .then((users) => res.json(users))
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error });
+        });
 });
 
-router.post('/admin/accounts', (req, res) => {
+router.post('/admin/accounts', (req: any, res: any) => {
     const schema = yup.object().shape({
         company: yup.string().required(),
         email: yup
@@ -151,12 +152,12 @@ router.post('/admin/accounts', (req, res) => {
                     res.status(500).json({ error: response, errors: error });
                 });
         })
-        .catch((error) => {
+        .catch((error: Error) => {
             return res.status(500).json({ error });
         });
 });
 
-router.put('/admin/accounts/:uid', (req, res) => {
+router.put('/admin/accounts/:uid', (req: any, res: any) => {
     const { uid } = req.params;
     const { access = {}, account = {}, user = {} } = req.body;
 
@@ -179,10 +180,13 @@ router.put('/admin/accounts/:uid', (req, res) => {
     ])
         .then(() => getAccounts())
         .then((users) => res.json(users[uid]))
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error });
+        });
 });
 
-router.post('/signup', (req, res) => {
+router.post('/signup', (req: any, res: any) => {
     const { email, uid } = req.body;
     const ref = admin.database().ref();
     const companyRef = ref.child('/companies');
@@ -216,7 +220,7 @@ router.post('/signup', (req, res) => {
         .catch((error) => res.status(500).json({ error }));
 });
 
-router.put('/admin/companies/:uid', (req, res) => {
+router.put('/admin/companies/:uid', (req: any, res: any) => {
     const { company } = req.body;
     const { uid } = req.params;
     const ref = admin.database().ref();
@@ -225,10 +229,13 @@ router.put('/admin/companies/:uid', (req, res) => {
         .child(`/companies/${uid}`)
         .update(Object.assign({}, company, { updatedAt: new Date() }))
         .then(() => res.json({ success: true }))
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error });
+        });
 });
 
-router.get('/', (req, res) => {
+router.get('/', (req: any, res: any) => {
     return admin
         .database()
         .ref('/config')
@@ -236,11 +243,56 @@ router.get('/', (req, res) => {
         .then((snapshot) => {
             const { database } = snapshot.val();
 
-            res.json({ status: 'okay', database, projectId });
+            res.json({ status: 'okay', database, projectId: adminConfig.projectId });
         })
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error });
+        });
 });
 
 app.use('/api', router);
 
 export const api = functions.https.onRequest(app);
+
+exports.createRequest = functions.https.onCall((data) => {
+    const schema = yup.object().shape({
+        name: yup.string().required(),
+        email: yup
+            .string()
+            .email()
+            .required(),
+        companyName: yup.string().required(),
+    });
+
+    return new Promise((resolve, reject) => {
+        return schema
+            .validate(data, { stripUnknown: true })
+            .then((values: any) => {
+                const { email } = values;
+
+                return admin
+                    .auth()
+                    .getUserByEmail(email)
+                    .then(() => {
+                        reject({ name: 'already-exists', message: 'Sorry, this email is already in use.' });
+                    })
+                    .catch(() => {
+                        resolve(values);
+                    });
+            })
+            .catch(() => {
+                reject({ name: 'invalid-argument', message: 'invalid data object' });
+            });
+    })
+        .then((values) => {
+            return admin
+                .database()
+                .ref(`/requests/${uuid()}`)
+                .set(values);
+        })
+        .catch((error) => {
+            console.error(error);
+            throw new functions.https.HttpsError(error.name, error.message);
+        });
+});

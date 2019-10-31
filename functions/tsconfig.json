@@ -7,9 +7,12 @@
         "sourceMap": true,
         "strict": true,
         "target": "es2017",
+        "moduleResolution": "node",
+        "skipLibCheck": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true
     },
     "compileOnSave": true,
-    "include": ["src"]
+    "include": ["src"],
+    "exclude": ["node_modules"]
 }

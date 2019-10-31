@@ -102,11 +102,11 @@ button {
     transition: all 0.4s;
 }
 
-button[disabled] {
+/* button[disabled] {
     background: #f0f0f0 !important;
     border-color: #f0f0f0 !important;
     color: #ffffff !important;
-}
+} */
 
 input[type='text']:focus,
 input[type='email']:focus,
