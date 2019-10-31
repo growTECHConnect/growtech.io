@@ -34,12 +34,6 @@ class NewsData extends React.Component<IProps, IState> {
         body: yup.string().required(),
     });
 
-    // componentWillMount() {
-    //     const { getNews } = this.props.actions.news;
-
-    //     getNews();
-    // }
-
     render() {
         const { news } = this.props;
         const data = Object.keys(news).map((newsItem: any, index: number) => {
