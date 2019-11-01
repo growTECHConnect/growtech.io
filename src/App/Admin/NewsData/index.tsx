@@ -76,11 +76,11 @@ class NewsData extends React.Component<IProps> {
 
     renderDetailPanel = (rowData: any) => {
         const news = Object.keys(this.props.news)
-            .map((newsItem: any, index: number) => {
+            .map((newsKey: any) => {
                 return {
-                    date: newsItem.date,
-                    title: newsItem.title,
-                    body: newsItem.body,
+                    date: newsKey.date,
+                    title: newsKey.title,
+                    body: newsKey.body,
                 };
             })
             .sort((newsA: any, newsB: any) => (newsA.date > newsB.date ? 1 : -1));
