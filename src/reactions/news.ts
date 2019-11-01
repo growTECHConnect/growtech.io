@@ -6,23 +6,47 @@ interface IState {
     error: any;
 }
 
+interface News {
+    body: string;
+    date: string;
+    title: string;
+}
+
 class News {
     store: any;
 
     constructor(private firebase: any) {}
 
     actions = {
-        create: (gid: string, news: any) => {
-            const newsRef = this.firebase.database().ref(`/news/${gid}`);
-            const newsKey = newsRef.push().key;
+        create: (news: News) => {
+            return this.firebase
+                .database()
+                .ref('/news')
+                .once('value', (snapshot: any) => {
+                    const data = snapshot.val();
 
-            news.createdAt = new Date();
-            newsRef.update({ [newsKey]: news });
+                    data.push(news);
+
+                    return this.firebase
+                        .database()
+                        .ref('/news')
+                        .set(data);
+                });
         },
-        // update: (gid, news) => {
-        //     news.updatedAt = new Date();
-        //     firebase.database().ref(`/news/${gid}/${news.key}`).update(news);
-        // },
+        delete: (index: number) => {
+            return this.firebase
+                .database()
+                .ref('/news')
+                .child(index)
+                .remove();
+        },
+        update: (index: number, news: News) => {
+            return this.firebase
+                .database()
+                .ref('/news')
+                .child(index)
+                .update(news);
+        },
     };
 
     initialState: IState = {
