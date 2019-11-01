@@ -93,6 +93,7 @@ class NewsData extends React.Component<IProps> {
                             margin="normal"
                             label="Date"
                             name="date"
+                            type="date"
                             value={values.date}
                             onChange={handleChange}
                             required={true}
