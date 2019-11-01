@@ -52,7 +52,7 @@ class NewsData extends React.Component<IProps> {
                         Container: (props) => <Paper {...props} elevation={0} style={{ width: '100%' }} />,
                     }}
                     columns={[
-                        { title: 'Date', field: 'date' },
+                        { title: 'Date', field: 'date', defaultSort: 'desc' },
                         { title: 'Title', field: 'title' },
                         { title: 'Body', field: 'body' },
                         { render: this.renderRowActions, cellStyle: { width: 35 } },
