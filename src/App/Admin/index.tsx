@@ -25,7 +25,12 @@ class Admin extends React.Component<IProps> {
                     <nav className="sidebar">
                         <ul>
                             <li>
-                                <NavLink exact to="/admin">
+                                <NavLink exact to="/admin/requests">
+                                    Requests
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink exact to="/admin/accounts">
                                     Accounts
                                 </NavLink>
                             </li>

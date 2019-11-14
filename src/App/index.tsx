@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Home from './Home/index';
@@ -20,6 +20,7 @@ import Accounts from './Admin/Accounts';
 import GlobalContent from './Admin/GlobalContent';
 import NewsData from './Admin/NewsData';
 import PageContent from './Admin/PageContent';
+import Requests from './Admin/Requests';
 import configStore from '../store';
 import theme from './theme';
 
@@ -87,17 +88,19 @@ export default class App extends React.Component<any, IState> {
                                     render={() => {
                                         const access: any = this.store.getState().access.data;
 
-                                    if (access && access.role === 'admin') {
-                                        return (
-                                            <Admin>
-                                                <Route exact path="/admin" component={Accounts} />
-                                                <Route path="/admin/configuration" component={Configuration} />
-                                                <Route path="/admin/global-content" component={GlobalContent} />
-                                                <Route path="/admin/news-data" component={NewsData} />
-                                                <Route path="/admin/page-content" component={PageContent} />
-                                            </Admin>
-                                        );
-                                    }
+                                        if (access && access.role === 'admin') {
+                                            return (
+                                                <Admin>
+                                                    <Route exact path="/admin/requests" component={Requests} />
+                                                    <Route exact path="/admin/accounts" component={Accounts} />
+                                                    <Route path="/admin/configuration" component={Configuration} />
+                                                    <Route path="/admin/global-content" component={GlobalContent} />
+                                                    <Route path="/admin/news-data" component={NewsData} />
+                                                    <Route path="/admin/page-content" component={PageContent} />
+                                                    <Redirect to="/admin/requests" />
+                                                </Admin>
+                                            );
+                                        }
 
                                         return <Route component={NoMatch} />;
                                     }}

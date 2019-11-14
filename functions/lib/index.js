@@ -225,43 +225,119 @@ router.get('/', (req, res) => {
 });
 app.use('/api', router);
 exports.api = functions.https.onRequest(app);
-exports.createRequest = functions.https.onCall((data) => {
-    const schema = yup.object().shape({
-        name: yup.string().required(),
-        email: yup
-            .string()
-            .email()
-            .required(),
-        companyName: yup.string().required(),
-    });
-    return new Promise((resolve, reject) => {
-        return schema
-            .validate(data, { stripUnknown: true })
-            .then((values) => {
-            const { email } = values;
-            return admin
-                .auth()
-                .getUserByEmail(email)
-                .then(() => {
-                reject({ name: 'already-exists', message: 'Sorry, this email is already in use.' });
-            })
-                .catch(() => {
-                resolve(values);
-            });
-        })
-            .catch(() => {
-            reject({ name: 'invalid-argument', message: 'invalid data object' });
-        });
-    })
-        .then((values) => {
+const verifyAdmin = (context) => {
+    if (context && context.auth) {
         return admin
             .database()
-            .ref(`/requests/${v1_1.default()}`)
-            .set(values);
-    })
-        .catch((error) => {
-        console.error(error);
-        throw new functions.https.HttpsError(error.name, error.message);
-    });
-});
+            .ref(`/access/${context.auth.uid}`)
+            .once('value')
+            .then((snapshot) => snapshot.val())
+            .then(({ role }) => {
+            if (role !== 'admin') {
+                throw new functions.https.HttpsError('permission-denied', 'unauthorized: no admin access');
+            }
+        });
+    }
+    else {
+        throw new functions.https.HttpsError('permission-denied', 'unauthorized: no admin access');
+    }
+};
+const catchError = (error) => {
+    console.error(error);
+    if (error.code && error.message) {
+        throw new functions.https.HttpsError(error.code, error.message);
+    }
+    throw new functions.https.HttpsError('unknown', 'unknown: check logs');
+};
+exports = {
+    createRequest: functions.https.onCall((data) => {
+        const schema = yup.object().shape({
+            name: yup.string().required(),
+            email: yup
+                .string()
+                .email()
+                .required(),
+            companyName: yup.string().required(),
+        });
+        return new Promise((resolve, reject) => {
+            return schema
+                .validate(data, { stripUnknown: true })
+                .then((values) => {
+                const { email } = values;
+                return admin
+                    .auth()
+                    .getUserByEmail(email)
+                    .then(() => {
+                    reject({ name: 'already-exists', message: 'Sorry, this email is already in use.' });
+                })
+                    .catch(() => {
+                    resolve(values);
+                });
+            })
+                .catch(() => {
+                reject({ name: 'invalid-argument', message: 'invalid data object' });
+            });
+        })
+            .then((values) => {
+            return admin
+                .database()
+                .ref(`/requests/${v1_1.default()}`)
+                .set(values);
+        })
+            .catch((error) => {
+            console.error(error);
+            throw new functions.https.HttpsError(error.name, error.message);
+        });
+    }),
+    admin: {
+        readRequests: functions.https.onCall((data, context) => {
+            return Promise.resolve()
+                .then(() => verifyAdmin(context))
+                .then(() => {
+                return admin
+                    .database()
+                    .ref(`/requests`)
+                    .once('value')
+                    .then((snapshot) => snapshot.val());
+            })
+                .catch((error) => catchError(error));
+        }),
+        deleteRequests: functions.https.onCall((data, context) => {
+            const schema = yup.object().shape({
+                requestId: yup.string().required(),
+            });
+            return schema
+                .validate(data, { stripUnknown: true })
+                .then(({ requestId }) => {
+                return Promise.resolve()
+                    .then(() => verifyAdmin(context))
+                    .then(() => {
+                    return admin
+                        .database()
+                        .ref(`/requests/${requestId}`)
+                        .remove();
+                });
+            })
+                .catch((error) => catchError(error));
+        }),
+        createAccount: functions.https.onCall((data, context) => {
+            const schema = yup.object().shape({
+                companyId: yup.string().required(),
+                requestId: yup.string().required(),
+            });
+            return schema
+                .validate(data, { stripUnknown: true })
+                .then(({ companyId, requestId }) => {
+                return Promise.resolve().then(() => verifyAdmin(context));
+                // .then(() => {
+                //     return admin
+                //         .database()
+                //         .ref(`/requests/${requestId}`)
+                //         .remove();
+                // });
+            })
+                .catch((error) => catchError(error));
+        }),
+    },
+};
 //# sourceMappingURL=index.js.map

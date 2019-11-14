@@ -75,16 +75,6 @@ class NewsData extends React.Component<IProps> {
     };
 
     renderDetailPanel = (rowData: any) => {
-        const news = Object.keys(this.props.news)
-            .map((newsKey: any) => {
-                return {
-                    date: newsKey.date,
-                    title: newsKey.title,
-                    body: newsKey.body,
-                };
-            })
-            .sort((newsA: any, newsB: any) => (newsA.date > newsB.date ? 1 : -1));
-
         return (
             <Formik initialValues={rowData} onSubmit={this.handleSubmit} validationSchema={this.validationSchema}>
                 {({ errors, handleChange, touched, values }) => (

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { CircularProgress, Button, Grid, MenuItem, TextField, Paper } from '@material-ui/core';
+import { CircularProgress, Button, Grid, MenuItem, TextField, Paper, Typography } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { Formik, Form, FormikActions } from 'formik';
 import * as yup from 'yup';
@@ -33,9 +33,9 @@ class Accounts extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-        const { getAccounts } = this.props.actions.admin;
+        const { readAccounts } = this.props.actions.admin;
 
-        getAccounts().then(() => {
+        readAccounts().then(() => {
             this.setState({ loaded: true });
         });
     }
@@ -74,13 +74,16 @@ class Accounts extends React.Component<IProps, IState> {
                             left: 0,
                             display: 'flex',
                             justifyContent: 'center',
-                            paddingTop: 150,
+                            alignItems: 'center',
                         }}
                     >
                         <CircularProgress />
                     </div>
                 )}
                 <div style={{ opacity: loaded ? 1 : 0.3, width: '100%' }}>
+                    <Typography variant="h6" color="primary">
+                        ACCOUNTS
+                    </Typography>
                     <MaterialTable
                         options={{
                             actionsColumnIndex: -1,
@@ -156,6 +159,7 @@ class Accounts extends React.Component<IProps, IState> {
                                 shrink: true,
                             }}
                             style={{ marginRight: 16 }}
+                            fullWidth={true}
                         />
                         <TextField
                             margin="normal"
@@ -170,6 +174,7 @@ class Accounts extends React.Component<IProps, IState> {
                                 shrink: true,
                             }}
                             style={{ marginRight: 16 }}
+                            fullWidth={true}
                         />
                         <TextField
                             name="companyId"
@@ -180,6 +185,7 @@ class Accounts extends React.Component<IProps, IState> {
                             onBlur={handleBlur}
                             margin="normal"
                             style={{ marginRight: 16 }}
+                            fullWidth={true}
                         >
                             {companies.map((company, index) => {
                                 const { companyId, name } = company;
@@ -190,7 +196,15 @@ class Accounts extends React.Component<IProps, IState> {
                                 );
                             })}
                         </TextField>
-                        <TextField name="role" select={true} label="Role" value={values.role} onChange={handleChange} margin="normal">
+                        <TextField
+                            name="role"
+                            select={true}
+                            label="Role"
+                            value={values.role}
+                            onChange={handleChange}
+                            margin="normal"
+                            fullWidth={true}
+                        >
                             {['admin', 'edit'].map((role, index) => {
                                 return (
                                     <MenuItem key={index} value={role}>

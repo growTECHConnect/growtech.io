@@ -4,6 +4,7 @@ import axios from 'axios';
 interface IState {
     actions: any;
     accounts: null | any;
+    requests: null | any;
 }
 
 export default class Access {
@@ -12,7 +13,7 @@ export default class Access {
     constructor(private firebase: any) {}
 
     actions = {
-        getAccounts: () => {
+        readAccounts: () => {
             const { token } = this.store.getState().user.data;
 
             return axios({
@@ -86,15 +87,25 @@ export default class Access {
                 throw error;
             });
         },
+
+        readRequests: () => {
+            const readRequests = this.firebase.functions().httpsCallable('admin-readRequests');
+
+            return readRequests().then(({ data }: any) => {
+                this.store.dispatch(this.setRequests(data));
+            });
+        },
     };
 
     initialState: IState = {
         actions: this.actions,
         accounts: null,
+        requests: null,
     };
 
     setError = createAction('SET_ERROR');
     setAccounts = createAction('SET_ADMIN_ACCOUNTS');
+    setRequests = createAction('SET_ADMIN_REQUESTS');
     updateAccount = createAction('UPDATE_ADMIN_ACCOUNT');
 
     reducer = handleActions(
@@ -103,6 +114,12 @@ export default class Access {
                 return {
                     ...state,
                     accounts: action.payload,
+                };
+            },
+            SET_ADMIN_REQUESTS: (state, action) => {
+                return {
+                    ...state,
+                    requests: action.payload,
                 };
             },
             UPDATE_ADMIN_ACCOUNT: (state, action) => {

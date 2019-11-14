@@ -16,11 +16,11 @@ const theme = createMuiTheme({
                 },
             },
         },
-        MuiButtonBase: {
-            disabled: {
-                color: 'red',
-            },
-        },
+        // MuiButtonBase: {
+        //     disabled: {
+        //         color: 'red',
+        //     },
+        // },
         MuiTableCell: {
             head: { fontWeight: 600 },
         },
