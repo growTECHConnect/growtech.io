@@ -25,7 +25,8 @@ interface IProps {
 }
 
 export interface ISignUp {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     companyName: string;
     recaptcha: boolean;
@@ -33,7 +34,8 @@ export interface ISignUp {
 
 class SignUp extends React.Component<IProps> {
     private validationSchema = yup.object().shape({
-        name: yup.string().required(),
+        firstName: yup.string().required(),
+        lastName: yup.string().required(),
         email: yup
             .string()
             .email()
@@ -44,7 +46,8 @@ class SignUp extends React.Component<IProps> {
         }),
     });
     private initialValues: ISignUp = {
-        name: '',
+        firstName: '',
+        lastName: '',
         email: '',
         companyName: '',
         recaptcha: false,
@@ -78,6 +81,7 @@ class SignUp extends React.Component<IProps> {
                                 initialValues={this.initialValues}
                                 onSubmit={this.handleSubmit}
                                 validationSchema={this.validationSchema}
+                                enableReinitialize={true}
                             >
                                 {({
                                     errors,
@@ -89,7 +93,7 @@ class SignUp extends React.Component<IProps> {
                                     setFieldValue,
                                     isValid,
                                     isSubmitting,
-                                    setStatus,
+                                    resetForm,
                                 }) => (
                                     <Form noValidate={true} style={{ padding: 24 }}>
                                         <Typography variant="h6" color="primary">
@@ -99,13 +103,25 @@ class SignUp extends React.Component<IProps> {
                                             fullWidth={true}
                                             variant="outlined"
                                             margin="normal"
-                                            placeholder="Name *"
-                                            id="name"
-                                            value={values.name}
+                                            placeholder="First Name *"
+                                            id="firstName"
+                                            value={values.firstName}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             required={true}
-                                            error={!!errors.name && touched.name}
+                                            error={!!errors.firstName && touched.firstName}
+                                        />
+                                        <TextField
+                                            fullWidth={true}
+                                            variant="outlined"
+                                            margin="normal"
+                                            placeholder="Last Name *"
+                                            id="lastName"
+                                            value={values.lastName}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            required={true}
+                                            error={!!errors.lastName && touched.lastName}
                                         />
                                         <TextField
                                             fullWidth={true}
@@ -137,19 +153,25 @@ class SignUp extends React.Component<IProps> {
                                             verifyCallback={() => this.onRecaptchaVerify(setFieldValue)}
                                         />
                                         <Grid container={true} item={true} xs={12} justify="flex-end" style={{ paddingTop: 24 }}>
-                                            <Button type="submit" disabled={!isValid} variant="outlined" size="large" color="secondary">
+                                            <Button
+                                                type="submit"
+                                                disabled={!isValid}
+                                                variant="outlined"
+                                                size="large"
+                                                color={isValid ? 'secondary' : undefined}
+                                            >
                                                 SIGN UP
                                                 {isSubmitting && (
                                                     <CircularProgress color="primary" style={{ position: 'absolute', padding: 4 }} />
                                                 )}
                                             </Button>
                                         </Grid>
-                                        <Dialog open={status}>
+                                        <Dialog open={!!status}>
                                             <DialogContent>
                                                 <DialogContentText id="alert-dialog-description">{status}</DialogContentText>
                                             </DialogContent>
                                             <DialogActions>
-                                                <Button onClick={() => setStatus(undefined)} color="primary" autoFocus>
+                                                <Button onClick={() => resetForm()} color="primary" autoFocus>
                                                     Ok
                                                 </Button>
                                             </DialogActions>
@@ -164,7 +186,7 @@ class SignUp extends React.Component<IProps> {
         );
     }
 
-    handleSubmit = (values: ISignUp, { setSubmitting, setStatus }: FormikActions<ISignUp>) => {
+    handleSubmit = (values: ISignUp, { setSubmitting, setStatus, resetForm }: FormikActions<ISignUp>) => {
         const { user } = this.props.actions;
 
         user.signUp(values)
@@ -202,9 +224,4 @@ const mapStateToProps = (state: any) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(SignUp);
-
-
+export default connect(mapStateToProps, null)(SignUp);

@@ -16,20 +16,23 @@ const theme = createMuiTheme({
                 },
             },
         },
-        MuiButtonBase: {
-            disabled: {
-                color: 'red',
-            },
-        },
+        // MuiButtonBase: {
+        //     disabled: {
+        //         color: 'red',
+        //     },
+        // },
         MuiTableCell: {
             head: { fontWeight: 600 },
         },
         MuiOutlinedInput: {
             notchedOutline: { borderRadius: 0 },
         },
+        MuiTypography: {
+            h6: { color: '#6fbe47 !important', textTransform: 'uppercase', fontWeight: 800 },
+        },
     },
     palette: {
-        primary: { main: '#bbd537', dark: '#bbd537' },
+        primary: { main: '#bbd537', dark: '#bbd537' }, // 6fbe47
         secondary: { main: '#ef864c' },
     },
 });

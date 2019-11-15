@@ -4,6 +4,7 @@ import axios from 'axios';
 interface IState {
     actions: any;
     accounts: null | any;
+    requests: null | any;
 }
 
 export default class Access {
@@ -12,7 +13,7 @@ export default class Access {
     constructor(private firebase: any) {}
 
     actions = {
-        getAccounts: () => {
+        readAccounts: () => {
             const { token } = this.store.getState().user.data;
 
             return axios({
@@ -27,7 +28,6 @@ export default class Access {
                 this.store.dispatch(this.setAccounts(data));
             });
         },
-
         updateAccount: (uid: string, data: any) => {
             const { token } = this.store.getState().user.data;
 
@@ -43,7 +43,6 @@ export default class Access {
                 this.store.dispatch(this.updateAccount(data));
             });
         },
-
         addAccount: (data: any) => {
             const { token } = this.store.getState().user.data;
 
@@ -65,7 +64,6 @@ export default class Access {
                     throw error;
                 });
         },
-
         updateCompanyApproval: (uid: string, value: any) => {
             const { token } = this.store.getState().user.data;
 
@@ -86,15 +84,50 @@ export default class Access {
                 throw error;
             });
         },
+        readRequests: () => {
+            const readRequests = this.firebase.functions().httpsCallable('admin-readRequests');
+
+            return readRequests().then(({ data }: any) => {
+                this.store.dispatch(this.setRequests(data));
+            });
+        },
+        deleteRequests: (data: any) => {
+            const deleteRequests = this.firebase.functions().httpsCallable('admin-deleteRequests');
+
+            return deleteRequests(data).then(() => {
+                this.actions.readRequests();
+            });
+        },
+        createAccount: (data: any) => {
+            const createAccount = this.firebase.functions().httpsCallable('admin-createAccount');
+
+            return createAccount(data).then(() => {
+                return this.firebase
+                    .auth()
+                    .sendPasswordResetEmail(data.email)
+                    .then(() => {
+                        return this.actions.readRequests();
+                    });
+            });
+        },
+        deleteAccount: (data: any) => {
+            const deleteAccount = this.firebase.functions().httpsCallable('admin-deleteAccount');
+
+            return deleteAccount(data).then(() => {
+                return this.actions.readAccounts();
+            });
+        },
     };
 
     initialState: IState = {
         actions: this.actions,
         accounts: null,
+        requests: null,
     };
 
     setError = createAction('SET_ERROR');
     setAccounts = createAction('SET_ADMIN_ACCOUNTS');
+    setRequests = createAction('SET_ADMIN_REQUESTS');
     updateAccount = createAction('UPDATE_ADMIN_ACCOUNT');
 
     reducer = handleActions(
@@ -103,6 +136,12 @@ export default class Access {
                 return {
                     ...state,
                     accounts: action.payload,
+                };
+            },
+            SET_ADMIN_REQUESTS: (state, action) => {
+                return {
+                    ...state,
+                    requests: action.payload,
                 };
             },
             UPDATE_ADMIN_ACCOUNT: (state, action) => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { CircularProgress, Button, Grid, MenuItem, TextField, Paper } from '@material-ui/core';
+import { CircularProgress, Button, Grid, MenuItem, TextField, Paper, Typography } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { Formik, Form, FormikActions } from 'formik';
 import * as yup from 'yup';
@@ -33,9 +33,9 @@ class Accounts extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-        const { getAccounts } = this.props.actions.admin;
+        const { readAccounts } = this.props.actions.admin;
 
-        getAccounts().then(() => {
+        readAccounts().then(() => {
             this.setState({ loaded: true });
         });
     }
@@ -43,24 +43,18 @@ class Accounts extends React.Component<IProps, IState> {
     render() {
         const { accounts, companies } = this.props;
         const { loaded } = this.state;
-        const data = Object.keys(accounts)
-            .filter((accountId: any) => {
-                const account = accounts[accountId];
+        const data = Object.keys(accounts).map((accountId: any) => {
+            const account = accounts[accountId];
 
-                return !!companies[account.company];
-            })
-            .map((accountId: any) => {
-                const account = accounts[accountId];
-
-                return {
-                    ...account,
-                    companyName: companies[account.company].name,
-                    companyId: account.company,
-                    isApproved: companies[account.company].isApproved,
-                    name: `${account.firstName} ${account.lastName}`,
-                    status: account.diabled ? 'disabled' : 'enabled',
-                };
-            });
+            return {
+                ...account,
+                companyName: companies[account.company] ? companies[account.company].name : '',
+                companyId: account.company,
+                isApproved: companies[account.company] ? companies[account.company].isApproved : '',
+                name: `${account.firstName} ${account.lastName}`,
+                status: account.disabled ? 'disabled' : 'enabled',
+            };
+        });
 
         return (
             <div className="section" style={{ height: '100%', width: '100%', position: 'relative' }}>
@@ -81,6 +75,9 @@ class Accounts extends React.Component<IProps, IState> {
                     </div>
                 )}
                 <div style={{ opacity: loaded ? 1 : 0.3, width: '100%' }}>
+                    <Typography variant="h6" color="primary">
+                        ACCOUNTS
+                    </Typography>
                     <MaterialTable
                         options={{
                             actionsColumnIndex: -1,
@@ -96,7 +93,6 @@ class Accounts extends React.Component<IProps, IState> {
                             { title: 'Company', field: 'companyName' },
                             { title: 'Role', field: 'role' },
                             { title: 'Status', field: 'status' },
-                            { render: this.renderRowActions, cellStyle: { whiteSpace: 'nowrap' } },
                         ]}
                         data={data}
                         detailPanel={this.renderDetailPanel}
@@ -106,31 +102,32 @@ class Accounts extends React.Component<IProps, IState> {
         );
     }
 
-    renderRowActions = (rowData: any) => {
-        const { disabled, isApproved, uid } = rowData;
+    // renderRowActions = (rowData: any) => {
+    //     const { disabled, isApproved, uid } = rowData;
 
-        return (
-            <React.Fragment>
-                <Button
-                    variant="outlined"
-                    className={`btn ${disabled ? 'btn-default' : 'btn-danger'} btn-xs btn-spacer`}
-                    onClick={() => this.handleUpdateStatus(uid)}
-                    style={{ marginRight: 8 }}
-                >
-                    {disabled ? 'Enable' : 'Disable'}
-                </Button>
-                <Button
-                    variant="outlined"
-                    className={`btn ${isApproved ? 'btn-danger' : 'btn-default'} btn-xs btn-spacer`}
-                    onClick={() => this.handleUpdateApproval(uid)}
-                >
-                    {isApproved ? 'Unapprove' : 'Approve'}
-                </Button>
-            </React.Fragment>
-        );
-    };
+    //     return (
+    //         <React.Fragment>
+    //             <Button
+    //                 variant="outlined"
+    //                 className={`btn ${disabled ? 'btn-default' : 'btn-danger'} btn-xs btn-spacer`}
+    //                 onClick={() => this.handleUpdateStatus(uid)}
+    //                 style={{ marginRight: 8 }}
+    //             >
+    //                 {disabled ? 'Enable' : 'Disable'}
+    //             </Button>
+    //             <Button
+    //                 variant="outlined"
+    //                 className={`btn ${isApproved ? 'btn-danger' : 'btn-default'} btn-xs btn-spacer`}
+    //                 onClick={() => this.handleUpdateApproval(uid)}
+    //             >
+    //                 {isApproved ? 'Unapprove' : 'Approve'}
+    //             </Button>
+    //         </React.Fragment>
+    //     );
+    // };
 
     renderDetailPanel = (rowData: any) => {
+        const { disabled, uid } = rowData;
         const companies = Object.keys(this.props.companies)
             .map((id) => {
                 const company = this.props.companies[id];
@@ -156,6 +153,7 @@ class Accounts extends React.Component<IProps, IState> {
                                 shrink: true,
                             }}
                             style={{ marginRight: 16 }}
+                            fullWidth={true}
                         />
                         <TextField
                             margin="normal"
@@ -170,6 +168,7 @@ class Accounts extends React.Component<IProps, IState> {
                                 shrink: true,
                             }}
                             style={{ marginRight: 16 }}
+                            fullWidth={true}
                         />
                         <TextField
                             name="companyId"
@@ -180,6 +179,7 @@ class Accounts extends React.Component<IProps, IState> {
                             onBlur={handleBlur}
                             margin="normal"
                             style={{ marginRight: 16 }}
+                            fullWidth={true}
                         >
                             {companies.map((company, index) => {
                                 const { companyId, name } = company;
@@ -190,7 +190,15 @@ class Accounts extends React.Component<IProps, IState> {
                                 );
                             })}
                         </TextField>
-                        <TextField name="role" select={true} label="Role" value={values.role} onChange={handleChange} margin="normal">
+                        <TextField
+                            name="role"
+                            select={true}
+                            label="Role"
+                            value={values.role}
+                            onChange={handleChange}
+                            margin="normal"
+                            fullWidth={true}
+                        >
                             {['admin', 'edit'].map((role, index) => {
                                 return (
                                     <MenuItem key={index} value={role}>
@@ -204,6 +212,16 @@ class Accounts extends React.Component<IProps, IState> {
                                 Save
                                 {isSubmitting && <CircularProgress style={{ width: 20, height: 20, position: 'absolute' }} />}
                             </Button>
+                            <Button
+                                variant="outlined"
+                                className={`btn ${disabled ? 'btn-default' : 'btn-danger'} btn-spacer`}
+                                onClick={() => this.handleUpdateStatus(uid)}
+                            >
+                                {disabled ? 'Enable' : 'Disable'}
+                            </Button>
+                            <Button variant="outlined" className="btn btn-danger btn-spacer" onClick={() => this.handleDeleteAccount(uid)}>
+                                Delete Account
+                            </Button>
                         </Grid>
                     </Form>
                 )}
@@ -211,17 +229,10 @@ class Accounts extends React.Component<IProps, IState> {
         );
     };
 
-    handleUpdateApproval = (uid: string) => {
-        const { updateCompanyApproval } = this.props.actions.admin;
-        const { companies } = this.props;
-        const account = this.props.accounts[uid];
+    handleDeleteAccount = (uid: string) => {
+        const { deleteAccount } = this.props.actions.admin;
 
-        if (account.company) {
-            const companyID = account.company;
-            const company = companies[companyID];
-
-            updateCompanyApproval(companyID, !company.isApproved);
-        }
+        deleteAccount({ uid });
     };
 
     handleUpdateStatus = (uid: string) => {
@@ -237,8 +248,6 @@ class Accounts extends React.Component<IProps, IState> {
     handleSubmit = (values: any, { setSubmitting }: FormikActions<any>) => {
         const { updateAccount } = this.props.actions.admin;
         const { firstName, lastName, companyId, role, uid } = values;
-
-        console.info(values);
 
         updateAccount(uid, {
             account: {
@@ -269,7 +278,4 @@ const mapStateToProps = (state: any) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(Accounts);
+export default connect(mapStateToProps, null)(Accounts);
