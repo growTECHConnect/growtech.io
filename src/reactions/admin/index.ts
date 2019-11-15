@@ -28,7 +28,6 @@ export default class Access {
                 this.store.dispatch(this.setAccounts(data));
             });
         },
-
         updateAccount: (uid: string, data: any) => {
             const { token } = this.store.getState().user.data;
 
@@ -44,7 +43,6 @@ export default class Access {
                 this.store.dispatch(this.updateAccount(data));
             });
         },
-
         addAccount: (data: any) => {
             const { token } = this.store.getState().user.data;
 
@@ -66,7 +64,6 @@ export default class Access {
                     throw error;
                 });
         },
-
         updateCompanyApproval: (uid: string, value: any) => {
             const { token } = this.store.getState().user.data;
 
@@ -87,12 +84,37 @@ export default class Access {
                 throw error;
             });
         },
-
         readRequests: () => {
             const readRequests = this.firebase.functions().httpsCallable('admin-readRequests');
 
             return readRequests().then(({ data }: any) => {
                 this.store.dispatch(this.setRequests(data));
+            });
+        },
+        deleteRequests: (data: any) => {
+            const deleteRequests = this.firebase.functions().httpsCallable('admin-deleteRequests');
+
+            return deleteRequests(data).then(() => {
+                this.actions.readRequests();
+            });
+        },
+        createAccount: (data: any) => {
+            const createAccount = this.firebase.functions().httpsCallable('admin-createAccount');
+
+            return createAccount(data).then(() => {
+                return this.firebase
+                    .auth()
+                    .sendPasswordResetEmail(data.email)
+                    .then(() => {
+                        return this.actions.readRequests();
+                    });
+            });
+        },
+        deleteAccount: (data: any) => {
+            const deleteAccount = this.firebase.functions().httpsCallable('admin-deleteAccount');
+
+            return deleteAccount(data).then(() => {
+                return this.actions.readAccounts();
             });
         },
     };

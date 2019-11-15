@@ -14,7 +14,7 @@ class User {
 
     actions = {
         signUp: (data: ISignUp) => {
-            const createRequest = this.firebase.functions().httpsCallable('createRequest');
+            const createRequest = this.firebase.functions().httpsCallable('public-createRequest');
 
             return createRequest(data);
         },

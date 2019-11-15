@@ -9,8 +9,10 @@
         "startDev-staging": "yarn workspace functions watch & sh -ac '. ./.env.local.staging; react-scripts start' & sh -ac '. ./.env.local.staging; firebase use growtech-staging; firebase serve --only functions --port 3030'",
         "startDev-production": "yarn workspace functions watch & sh -ac '. ./.env.local.production; react-scripts start' & sh -ac '. ./.env.local.production; firebase use growtech-production; firebase serve --only functions --port 3030'",
         "serve-staging": "yarn build-staging; sh -ac '. ./.env.local.staging; firebase use growtech-staging; firebase serve --only functions,hosting'",
+        "serve-staging-functions": "yarn workspace functions build; sh -ac '. ./.env.local.staging; firebase use growtech-staging; firebase serve --only functions'",
         "serve-production": "yarn build-production; sh -ac '. ./.env.local.production; firebase use growtech-production; firebase serve --only functions,hosting'",
         "deploy-staging": "yarn build-staging; firebase use growtech-staging; firebase deploy --only functions,hosting",
+        "deploy-staging-functions": "yarn workspace functions build; firebase use growtech-staging; firebase deploy --only functions",
         "deploy-production": "yarn build-production; firebase use growtech-production; firebase deploy --only functions,hosting",
         "build-staging": "sh -ac '. ./.env.staging; react-scripts build'; yarn workspace functions build",
         "build-production": "sh -ac '. ./.env.production; react-scripts build'; yarn workspace functions build"

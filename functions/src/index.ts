@@ -3,7 +3,6 @@ import * as admin from 'firebase-admin';
 import Express from 'express';
 import Cors from 'cors';
 import * as yup from 'yup';
-import uuid from 'uuid/v1';
 import { validateAdminAuthorization } from './utils';
 import env from './env';
 
@@ -282,10 +281,11 @@ const catchError = (error: functions.https.HttpsError) => {
     throw new functions.https.HttpsError('unknown', 'unknown: check logs');
 };
 
-exports = {
+exports.public = {
     createRequest: functions.https.onCall((data) => {
         const schema = yup.object().shape({
-            name: yup.string().required(),
+            firstName: yup.string().required(),
+            lastName: yup.string().required(),
             email: yup
                 .string()
                 .email()
@@ -316,7 +316,8 @@ exports = {
             .then((values) => {
                 return admin
                     .database()
-                    .ref(`/requests/${uuid()}`)
+                    .ref('/requests')
+                    .push()
                     .set(values);
             })
             .catch((error) => {
@@ -324,56 +325,142 @@ exports = {
                 throw new functions.https.HttpsError(error.name, error.message);
             });
     }),
-    admin: {
-        readRequests: functions.https.onCall((data, context) => {
-            return Promise.resolve()
-                .then(() => verifyAdmin(context))
-                .then(() => {
-                    return admin
-                        .database()
-                        .ref(`/requests`)
-                        .once('value')
-                        .then((snapshot) => snapshot.val());
-                })
-                .catch((error) => catchError(error));
-        }),
-        deleteRequests: functions.https.onCall((data, context) => {
-            const schema = yup.object().shape({
-                requestId: yup.string().required(),
-            });
+};
 
-            return schema
-                .validate(data, { stripUnknown: true })
-                .then(({ requestId }) => {
-                    return Promise.resolve()
-                        .then(() => verifyAdmin(context))
-                        .then(() => {
-                            return admin
-                                .database()
-                                .ref(`/requests/${requestId}`)
-                                .remove();
+exports.admin = {
+    readRequests: functions.https.onCall((data, context) => {
+        return Promise.resolve()
+            .then(() => verifyAdmin(context))
+            .then(() => {
+                return admin
+                    .database()
+                    .ref(`/requests`)
+                    .once('value')
+                    .then((snapshot) => snapshot.val());
+            })
+            .catch((error) => catchError(error));
+    }),
+    deleteRequests: functions.https.onCall((data, context) => {
+        const schema = yup.object().shape({
+            requestId: yup.string().required(),
+        });
+
+        return schema
+            .validate(data, { stripUnknown: true })
+            .then(({ requestId }) => {
+                return Promise.resolve()
+                    .then(() => verifyAdmin(context))
+                    .then(() => {
+                        return admin
+                            .database()
+                            .ref(`/requests/${requestId}`)
+                            .remove();
+                    });
+            })
+            .catch((error) => catchError(error));
+    }),
+    createAccount: functions.https.onCall((data, context) => {
+        const schema = yup.object().shape({
+            companyId: yup.string().required(),
+            companyName: yup.string().required(),
+            firstName: yup.string().required(),
+            lastName: yup.string().required(),
+            email: yup
+                .string()
+                .email()
+                .required(),
+            requestId: yup.string().required(),
+        });
+
+        return schema
+            .validate(data, { stripUnknown: true })
+            .then(({ firstName, lastName, companyId, companyName, email, requestId }) => {
+                return Promise.resolve()
+                    .then(() => verifyAdmin(context))
+                    .then(() => {
+                        if (companyId !== '-1') {
+                            return Promise.resolve(companyId);
+                        }
+
+                        const companyRef = admin
+                            .database()
+                            .ref('/companies')
+                            .push();
+
+                        return companyRef
+                            .set({
+                                name: companyName,
+                                active: true,
+                                companyType: 'EDUCATIONAL',
+                                employeeSize: '0',
+                                employmentType: 'FULL_TIME',
+                                hiring: false,
+                                industryType: 'ACCOUNTING',
+                                createdAt: new Date(),
+                            })
+                            .then(() => companyRef.key);
+                    })
+                    .then((companyKey) => {
+                        return admin
+                            .auth()
+                            .createUser({ email })
+                            .then((user) => {
+                                const { uid } = user;
+                                const account = admin
+                                    .database()
+                                    .ref(`/account/${uid}`)
+                                    .update({
+                                        createdAt: new Date(),
+                                        email,
+                                        firstName,
+                                        lastName,
+                                    });
+                                const access = admin
+                                    .database()
+                                    .ref(`/access/${uid}`)
+                                    .update({
+                                        createdAt: new Date(),
+                                        company: companyKey,
+                                        role: 'edit',
+                                    });
+
+                                return Promise.all([account, access]);
+                            });
+                    })
+                    .then(() => {
+                        return admin
+                            .database()
+                            .ref(`/requests/${requestId}`)
+                            .remove();
+                    });
+            })
+            .catch((error) => catchError(error));
+    }),
+    deleteAccount: functions.https.onCall((data, context) => {
+        const schema = yup.object().shape({
+            uid: yup.string().required(),
+        });
+
+        return schema
+            .validate(data, { stripUnknown: true })
+            .then(({ uid }) => {
+                return Promise.resolve()
+                    .then(() => verifyAdmin(context))
+                    .then(() => {
+                        const account = admin
+                            .database()
+                            .ref(`/account/${uid}`)
+                            .remove();
+                        const access = admin
+                            .database()
+                            .ref(`/access/${uid}`)
+                            .remove();
+
+                        return Promise.all([account, access]).then(() => {
+                            return admin.auth().deleteUser(uid);
                         });
-                })
-                .catch((error) => catchError(error));
-        }),
-        createAccount: functions.https.onCall((data, context) => {
-            const schema = yup.object().shape({
-                companyId: yup.string().required(),
-                requestId: yup.string().required(),
-            });
-
-            return schema
-                .validate(data, { stripUnknown: true })
-                .then(({ companyId, requestId }) => {
-                    return Promise.resolve().then(() => verifyAdmin(context));
-                    // .then(() => {
-                    //     return admin
-                    //         .database()
-                    //         .ref(`/requests/${requestId}`)
-                    //         .remove();
-                    // });
-                })
-                .catch((error) => catchError(error));
-        }),
-    },
+                    });
+            })
+            .catch((error) => catchError(error));
+    }),
 };
