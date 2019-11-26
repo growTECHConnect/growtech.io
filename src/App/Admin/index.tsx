@@ -41,7 +41,7 @@ class Admin extends React.Component<IProps> {
                                 <NavLink to="/admin/global-content">Global Content</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/admin/news-data">News Data</NavLink>
+                                <NavLink to="/admin/news">News</NavLink>
                             </li>
                         </ul>
                     </nav>
@@ -59,7 +59,4 @@ const mapStateToProps = (state: any) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(Admin);
+export default connect(mapStateToProps, null)(Admin);

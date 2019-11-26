@@ -36,7 +36,7 @@ class NewsData extends React.Component<IProps> {
 
         return (
             <div className="section">
-                <h2>News Data</h2>
+                <h2>News</h2>
                 <MaterialTable
                     title={
                         <button type="button" className="btn btn-default" onClick={this.addNew}>
@@ -177,7 +177,4 @@ const mapStateToProps = (state: any) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(NewsData);
+export default connect(mapStateToProps, null)(NewsData);

@@ -95,7 +95,7 @@ export default class App extends React.Component<any, IState> {
                                                     <Route exact path="/admin/accounts" component={Accounts} />
                                                     <Route path="/admin/configuration" component={Configuration} />
                                                     <Route path="/admin/global-content" component={GlobalContent} />
-                                                    <Route path="/admin/news-data" component={NewsData} />
+                                                    <Route path="/admin/news" component={NewsData} />
                                                     <Route path="/admin/page-content" component={PageContent} />
                                                     <Redirect to="/admin/requests" />
                                                 </Admin>
