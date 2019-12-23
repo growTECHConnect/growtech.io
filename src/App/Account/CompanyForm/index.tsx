@@ -1,8 +1,9 @@
+import 'easymde/dist/easymde.min.css';
+
 import React from 'react';
+import SimpleMDE from 'react-simplemde-editor';
 import { connect } from 'react-redux';
-import ReactMde, { commands } from 'react-mde';
 import striptags from 'striptags';
-import 'react-mde/lib/styles/css/react-mde-all.css';
 
 interface IProps {
     actions: any;
@@ -27,9 +28,7 @@ interface IState {
         culture: string;
         benefits: string;
     };
-    benefits: { text: string; selection: any };
-    culture: { text: string; selection: any };
-    why: { text: string; selection: any };
+    why: any;
     errors: any;
     dropdown: any;
 }
@@ -55,9 +54,10 @@ class CompanyForm extends React.Component<IProps, IState> {
                 culture: '',
                 benefits: '',
             },
-            benefits: { text: '', selection: null },
-            culture: { text: '', selection: null },
-            why: { text: '', selection: null },
+            why: {},
+            // benefits: { text: '', tab: 'write' },
+            // culture: { text: '', tab: 'write' },
+            // why: { text: '', tab: 'write' },
             errors: {},
             dropdown: {},
         };
@@ -79,9 +79,6 @@ class CompanyForm extends React.Component<IProps, IState> {
     getFormData = () => {
         return {
             ...this.state.form,
-            benefits: this.state.benefits.text,
-            culture: this.state.culture.text,
-            why: this.state.why.text,
         };
     };
 
@@ -102,18 +99,6 @@ class CompanyForm extends React.Component<IProps, IState> {
                     culture: '',
                     benefits: '',
                     ...company,
-                },
-                benefits: {
-                    ...this.state.benefits,
-                    text: company.benefits,
-                },
-                culture: {
-                    ...this.state.culture,
-                    text: company.culture,
-                },
-                why: {
-                    ...this.state.why,
-                    text: company.why,
                 },
             });
         }
@@ -149,7 +134,6 @@ class CompanyForm extends React.Component<IProps, IState> {
     };
 
     toggleDropdown = (field: string) => {
-        // event.preventDefault();
         this.setState({
             dropdown: {
                 ...this.state.dropdown,
@@ -159,11 +143,9 @@ class CompanyForm extends React.Component<IProps, IState> {
     };
 
     onEditorChange = (value: any, id: string) => {
-        value.text = striptags(value.text);
+        const field = { target: { id, value: striptags(value) } };
 
-        this.setState({ [id]: value }, () => {
-            this.setField({ target: { id, value: value.text } });
-        });
+        this.setField(field);
     };
 
     renderDropdownOptions(options: any, id: string) {
@@ -187,11 +169,6 @@ class CompanyForm extends React.Component<IProps, IState> {
             config: { sizes, states },
         } = this.props;
         const { dropdown, errors, form } = this.state;
-        const listCommands = [
-            { commands: [commands.headerCommand, commands.boldCommand, commands.italicCommand] },
-            { commands: [commands.linkCommand, commands.quoteCommand] },
-            { commands: [commands.orderedListCommand, commands.unorderedListCommand] },
-        ];
 
         return (
             <div className="acc_form_section">
@@ -309,14 +286,11 @@ class CompanyForm extends React.Component<IProps, IState> {
                     <div className="acc_form_wrap">
                         <div className="acc_form_fields full">
                             <div className={this.getGroupClass('why')}>
-                                <label className="control-label" htmlFor="why">
-                                    Why Work With Us
-                                </label>
-                                <ReactMde
-                                    textAreaProps={{ id: 'why_mde' }}
-                                    value={this.state.why.text}
+                                <SimpleMDE
+                                    className={''}
+                                    label="Why Work With Us"
+                                    value={this.state.form.why}
                                     onChange={(value) => this.onEditorChange(value, 'why')}
-                                    commands={listCommands}
                                 />
                             </div>
                         </div>
@@ -324,14 +298,11 @@ class CompanyForm extends React.Component<IProps, IState> {
                     <div className="acc_form_wrap">
                         <div className="acc_form_fields full">
                             <div className={this.getGroupClass('culture')}>
-                                <label className="control-label" htmlFor="culture">
-                                    Culture
-                                </label>
-                                <ReactMde
-                                    textAreaProps={{ id: 'culture_mde' }}
-                                    value={this.state.culture.text}
+                                <SimpleMDE
+                                    className={''}
+                                    label="Culture"
+                                    value={this.state.form.culture}
                                     onChange={(value) => this.onEditorChange(value, 'culture')}
-                                    commands={listCommands}
                                 />
                             </div>
                         </div>
@@ -339,14 +310,11 @@ class CompanyForm extends React.Component<IProps, IState> {
                     <div className="acc_form_wrap">
                         <div className="acc_form_fields full">
                             <div className={this.getGroupClass('benefits')}>
-                                <label className="control-label" htmlFor="benefits">
-                                    Perks &amp; Benefits
-                                </label>
-                                <ReactMde
-                                    textAreaProps={{ id: 'benefits_mde' }}
-                                    value={this.state.benefits.text}
+                                <SimpleMDE
+                                    className={''}
+                                    label="Perks & Benefits"
+                                    value={this.state.form.benefits}
                                     onChange={(value) => this.onEditorChange(value, 'benefits')}
-                                    commands={listCommands}
                                 />
                             </div>
                         </div>
@@ -367,7 +335,4 @@ const mapStateToProps = (state: any) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(CompanyForm);
+export default connect(mapStateToProps, null)(CompanyForm);
