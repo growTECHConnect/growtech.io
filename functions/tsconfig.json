@@ -10,7 +10,8 @@
         "moduleResolution": "node",
         "skipLibCheck": true,
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "noImplicitAny": false
     },
     "compileOnSave": true,
     "include": ["src"],
