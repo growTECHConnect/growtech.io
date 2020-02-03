@@ -1,4 +1,5 @@
 import { createAction, handleActions } from 'redux-actions';
+
 import uuidv1 from 'uuid/v1';
 
 interface IState {
@@ -35,13 +36,15 @@ class Company {
                 const fileRef = this.firebase.storage().ref(`/companies/${cid}/${uuidv1()}-${filename}`);
 
                 return fileRef.putString(data_url, 'data_url').then((snapshot: any) => {
-                    return {
-                        url: snapshot.metadata.downloadURLs[0],
-                        name: filename,
-                        size: snapshot.metadata.size,
-                        state: snapshot.state,
-                        key,
-                    };
+                    return fileRef.getDownloadURL().then(function(url) {
+                        return {
+                            name: filename,
+                            size: snapshot.metadata.size,
+                            state: 'success',
+                            key,
+                            url,
+                        };
+                    });
                 });
             });
 
