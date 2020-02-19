@@ -52,10 +52,10 @@ class NewsData extends React.Component<IProps> {
                         Container: (props) => <Paper {...props} elevation={0} style={{ width: '100%' }} />,
                     }}
                     columns={[
-                        { title: 'Date', field: 'date', defaultSort: 'desc' },
+                        { title: 'Publish Date', field: 'date', defaultSort: 'desc' },
                         { title: 'Title', field: 'title' },
-                        { title: 'Body', field: 'body' },
-                        { render: this.renderRowActions, cellStyle: { width: 35 } },
+                        // { title: 'Body', field: 'body' },
+                        // { render: this.renderRowActions, cellStyle: { width: 35 } },
                     ]}
                     data={data}
                     detailPanel={this.renderDetailPanel}
@@ -81,7 +81,7 @@ class NewsData extends React.Component<IProps> {
                     <Form noValidate={true} style={{ padding: 24 }}>
                         <TextField
                             margin="normal"
-                            label="Date"
+                            label="Publish Date"
                             name="date"
                             type="date"
                             value={values.date}
@@ -125,6 +125,14 @@ class NewsData extends React.Component<IProps> {
                         <Grid container={true} item={true} xs={12} style={{ paddingTop: 24 }}>
                             <Button type="submit" className="btn btn-default">
                                 Save
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                style={{ marginLeft: 24 }}
+                                className={'btn btn-danger'}
+                                onClick={() => this.handleDelete(rowData.index)}
+                            >
+                                Delete
                             </Button>
                         </Grid>
                     </Form>
