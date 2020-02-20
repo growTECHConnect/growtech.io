@@ -18,6 +18,17 @@ class News {
     constructor(private firebase: any) {}
 
     actions = {
+        readNews: () => {
+            return this.firebase
+                .database()
+                .ref(`/news`)
+                .once('value')
+                .then((snapshot: any) => {
+                    const data = snapshot.val();
+
+                    return this.store.dispatch(this.setNews(data));
+                });
+        },
         create: (news: News) => {
             return this.firebase
                 .database()

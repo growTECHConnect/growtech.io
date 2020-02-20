@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Grid, TextField, Paper } from '@material-ui/core';
+import { CircularProgress, Button, Grid, TextField, Paper, Typography } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { Formik, Form, FormikActions } from 'formik';
 import * as yup from 'yup';
@@ -12,7 +12,11 @@ interface IProps {
     news: any;
 }
 
-class NewsData extends React.Component<IProps> {
+interface IState {
+    loaded: boolean;
+}
+
+class NewsData extends React.Component<IProps, IState> {
     private validationSchema = yup.object().shape({
         index: yup.number().required(),
         date: yup.string().required(),
@@ -20,8 +24,25 @@ class NewsData extends React.Component<IProps> {
         body: yup.string().required(),
     });
 
+    constructor(props: IProps) {
+        super(props);
+
+        this.state = {
+            loaded: false,
+        };
+    }
+
+    componentDidMount() {
+        const { readNews } = this.props.actions.news;
+
+        readNews().then(() => {
+            this.setState({ loaded: true });
+        });
+    }
+
     render() {
         const { news } = this.props;
+        const { loaded } = this.state;
         const data = Object.keys(news).map((newsKey: any) => {
             const newsData = news[newsKey];
 
@@ -35,31 +56,51 @@ class NewsData extends React.Component<IProps> {
         });
 
         return (
-            <div className="section">
-                <h2>News</h2>
-                <MaterialTable
-                    title={
-                        <button type="button" className="btn btn-default" onClick={this.addNew}>
-                            Add New
-                        </button>
-                    }
-                    options={{
-                        actionsColumnIndex: -1,
-                        paging: false,
-                        showTitle: true,
-                    }}
-                    components={{
-                        Container: (props) => <Paper {...props} elevation={0} style={{ width: '100%' }} />,
-                    }}
-                    columns={[
-                        { title: 'Publish Date', field: 'date', defaultSort: 'desc' },
-                        { title: 'Title', field: 'title' },
-                        // { title: 'Body', field: 'body' },
-                        // { render: this.renderRowActions, cellStyle: { width: 35 } },
-                    ]}
-                    data={data}
-                    detailPanel={this.renderDetailPanel}
-                />
+            <div className="section" style={{ height: '100%', width: '100%', position: 'relative' }}>
+                {!loaded && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            bottom: 0,
+                            left: 0,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <CircularProgress />
+                    </div>
+                )}
+                <div style={{ opacity: loaded ? 1 : 0.3, width: '100%' }}>
+                    <Typography variant="h6" color="primary">
+                        NEWS
+                    </Typography>
+                    <MaterialTable
+                        title={
+                            <button type="button" className="btn btn-default" onClick={this.addNew}>
+                                Add New
+                            </button>
+                        }
+                        options={{
+                            actionsColumnIndex: -1,
+                            paging: false,
+                            showTitle: true,
+                        }}
+                        components={{
+                            Container: (props) => <Paper {...props} elevation={0} style={{ width: '100%' }} />,
+                        }}
+                        columns={[
+                            { title: 'Publish Date', field: 'date', defaultSort: 'desc' },
+                            { title: 'Title', field: 'title' },
+                            // { title: 'Body', field: 'body' },
+                            // { render: this.renderRowActions, cellStyle: { width: 35 } },
+                        ]}
+                        data={data}
+                        detailPanel={this.renderDetailPanel}
+                    />
+                </div>
             </div>
         );
     }
